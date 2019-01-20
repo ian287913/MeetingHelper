@@ -4,11 +4,26 @@
              xmlns:local="clr-namespace:MeetingHelper"
              x:Class="MeetingHelper.MainPage">
 
-    <StackLayout>
-        <!-- Place new controls here -->
-    	<Label Text="Welcome to Xamarin.Forms!" 
-           HorizontalOptions="Center"
-           VerticalOptions="CenterAndExpand" />
+    <StackLayout Padding="20">
+        <StackLayout VerticalOptions="CenterAndExpand">
+            <Label 
+                x:Name="Label1"
+                Text="Welcome"
+                FontSize="50"
+                VerticalOptions="Center"
+                HorizontalOptions="Center"/>
+            <Entry 
+                x:Name="NameEntry"
+                Text=""
+                FontSize="30"
+                Placeholder="username here"
+                HorizontalOptions="Center"/>
+            <Button 
+                x:Name="Button1"
+                Text="Enter"
+                Clicked="OnClicked1"
+                HorizontalOptions="Center"/>
+        </StackLayout>
     </StackLayout>
 
 </ContentPage>
