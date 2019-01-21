@@ -8,22 +8,37 @@
         <StackLayout VerticalOptions="CenterAndExpand">
             <Label 
                 x:Name="Label1"
-                Text="Welcome"
-                FontSize="50"
+                Text="Welcome,"
+                FontSize="40"
                 VerticalOptions="Center"
                 HorizontalOptions="Center"/>
             <Entry 
                 x:Name="NameEntry"
                 Text=""
                 FontSize="30"
+                PlaceholderColor="CadetBlue"
                 Placeholder="username here"
                 HorizontalOptions="Center"/>
+            <BoxView HeightRequest="0" Margin="20"></BoxView>
             <Button 
                 x:Name="Button1"
+                
                 Text="Enter"
+                FontSize="25"
+                WidthRequest="125"
+                BorderRadius="50"
+                BorderWidth="3"
+                BorderColor="DimGray"
                 Clicked="OnClicked1"
                 HorizontalOptions="Center"/>
         </StackLayout>
+        <Label 
+            x:Name="Label_Debug"
+            Text="Debug"
+            FontSize="Small"
+            TextColor="Gray"
+            VerticalOptions="End"
+            HorizontalOptions="Center"/>
     </StackLayout>
 
 </ContentPage>

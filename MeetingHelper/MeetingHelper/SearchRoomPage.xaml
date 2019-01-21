@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+    <!--
+    About ListView highlight:
+    https://stackoverflow.com/questions/25885238/xamarin-forms-listview-set-the-highlight-color-of-a-tapped-item
+    -->
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MeetingHelper.SearchRoomPage">
+    <ContentPage.Content>
+        <Grid>
+            <!--Background image-->
+            <!--<Image Opacity="0.5"
+				   x:Name="img"
+				   Source="bridge_bg.png"
+				   Scale="1.5"
+				   Aspect="AspectFill"/>-->
+            <BoxView BackgroundColor="#333333"></BoxView>
+
+            <StackLayout Padding="10,25,10,5" x:Name="Main_Layout">
+                <StackLayout HeightRequest="160">
+                    <Label Text="Current WiFi:" FontSize="Large" HorizontalOptions="Center" Margin="0,0,0,5"/>
+                    <Label Text="WiFi Name" TextColor="Black" BackgroundColor="Orange" FontAttributes="Bold" FontSize="30"  HorizontalTextAlignment="Center" Margin="10,0,10,0"/>
+                    <Label Text="BSSID: ca:6c:87:3b:de:18               Link speed: 34Mb/s" TextColor="Black" BackgroundColor="#88FFA500" FontSize="20"  HorizontalTextAlignment="Center" Margin="10,0,10,0"/>
+                    
+                </StackLayout>
+                
+                <Label Text="Available Rooms:" FontAttributes="None" FontSize="Large" HorizontalOptions="Center"/>
+                
+                <ListView 
+                    ItemsSource="{Binding .}" 
+					SeparatorVisibility="None"
+					BackgroundColor="Transparent"
+					SeparatorColor="#DFDFDF"
+					HasUnevenRows="false"
+					RowHeight="130"
+                    Margin="0,0,0,20"
+                    >
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <!--Element of ListView (Fake background - To hide the ListView highlight)-->
+                                <StackLayout Spacing="0" Margin="0" Padding="5,0,5,0" BackgroundColor="#333333" >
+                                    <!--Frame-->
+                                    <StackLayout Padding="5" BackgroundColor="#333333">
+                                        <!--Content-->
+                                        <StackLayout Spacing="0" BackgroundColor="#505050">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="190"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="5"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <!--<Image Grid.Column="0" Source="{Binding Photo}"/>-->
+                                                <StackLayout Grid.Column="0" Spacing="0" Padding="10,10,0,10">
+                                                    <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="Large" TextColor="#FFFFFF"/>
+                                                </StackLayout>
+                                                <StackLayout Grid.Column="1" Orientation="Horizontal" Spacing="4" HorizontalOptions="End" Padding="0" VerticalOptions="Center">
+                                                    <Label Text="(locked)" TextColor="#AAAAAA"/>
+                                                </StackLayout>
+                                            </Grid>
+
+                                            <BoxView BackgroundColor="DarkOrange" HeightRequest="3"></BoxView>
+
+                                            <Grid>
+                                                <StackLayout Margin="10" HeightRequest="50">
+                                                    <StackLayout Spacing="0" Orientation="Horizontal">
+                                                        <Label Text="found by " FontSize="20" VerticalOptions="Center" TextColor="#999999"/>
+                                                        <Label Text="{Binding Founder}" FontSize="Large"/>
+                                                    </StackLayout>
+                                                    <StackLayout Spacing="0" Orientation="Horizontal" HorizontalOptions="End">
+                                                        <Label Text="at  " VerticalOptions="Center" TextColor="#999999"/>
+                                                        <Label Text="{Binding Found_Time}" HorizontalTextAlignment="End"/>
+                                                    </StackLayout>
+                                                    
+                                                </StackLayout>
+                                            </Grid>
+                                        
+                                        </StackLayout>
+                                    </StackLayout>
+                                </StackLayout>
+
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+            
+            <!--Notification (password request)-->
+            <StackLayout x:Name="Password_Layout" BackgroundColor="#99000000" IsVisible="False">
+                <Grid VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Padding="50" >
+                    <StackLayout BackgroundColor="DimGray" Padding="10" Spacing="0">
+                        <Label Text="Selected room requires" FontSize="22" TextColor="#FFFFFF" HorizontalOptions="Center" Margin="0,10,0,0"/>
+                        <Entry Placeholder="Password" FontSize="22"></Entry>
+                        <Button Text="Enter" ></Button>
+                        <!--<Label Text="[ wrong password ]" FontAttributes="Bold" FontSize="15" TextColor="#FF4444" HorizontalOptions="Center"/>-->
+                        <!--<Label Text="[ accepted, entering... ]" FontAttributes="Bold" FontSize="15" TextColor="#44FF44" HorizontalOptions="Center"/>-->
+                    </StackLayout>
+                </Grid>
+            </StackLayout>
+
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
