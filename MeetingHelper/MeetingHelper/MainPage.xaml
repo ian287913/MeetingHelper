@@ -28,14 +28,15 @@
                     Clicked="OnClicked1"
                     Text="Enter"
                     FontSize="25"
-                    TextColor="White"
+                    TextColor="Black"
                     FontAttributes="Bold"
                     BorderRadius="0"
-                    BackgroundColor="#A96f00"
+                    BackgroundColor="#FF8C00"
                     HorizontalOptions="Center"
                     HeightRequest="50"
                     WidthRequest="130"
-                    Margin="0,4,0,0"/>
+                    Margin="0,4,0,4"/>
+                <BoxView BackgroundColor="Orange" WidthRequest="130" HeightRequest="3" VerticalOptions="Center" HorizontalOptions="Center"></BoxView>
             </StackLayout>
             
         </StackLayout>

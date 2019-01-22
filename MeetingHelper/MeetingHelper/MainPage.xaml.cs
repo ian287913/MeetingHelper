@@ -23,7 +23,7 @@ namespace MeetingHelper
                 NameEntry.Text = app.UserName;
 		}
 
-        //  Botton1 clicked
+        //  Enter clicked
         public void OnClicked1(object sender, EventArgs args)
         {
             if (NameEntry.Text.Contains("(") || NameEntry.Text.Contains(")"))

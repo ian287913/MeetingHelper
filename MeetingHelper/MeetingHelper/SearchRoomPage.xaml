@@ -17,10 +17,14 @@
             <BoxView BackgroundColor="#282828"></BoxView>
 
             <StackLayout x:Name="Main_Layout" Padding="10,25,10,5">
-                <StackLayout HeightRequest="160">
+                <StackLayout HeightRequest="250">
                     <Label Text="Current WiFi:" FontSize="Large" HorizontalOptions="Center" Margin="0,0,0,5"/>
-                    <Label Text="WiFi Name" TextColor="Black" BackgroundColor="Orange" FontAttributes="Bold" FontSize="30"  HorizontalTextAlignment="Center" Margin="10,0,10,0"/>
-                    <Label Text="BSSID: ca:6c:87:3b:de:18               Link speed: 34Mb/s" TextColor="White" BackgroundColor="#88FFA500" FontSize="20"  HorizontalTextAlignment="Center" Margin="10,0,10,0"/>
+                    <Grid HeightRequest="190" BackgroundColor="Orange" Margin="10,0,10,0">
+                        <Label x:Name="Label_WiFi_Name" Text="Searching..." TextColor="Black" FontAttributes="Bold" FontSize="30" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Center"/>
+                    </Grid>
+                    <Grid HeightRequest="220" BackgroundColor="#88FFA500" Margin="10,0,10,0" Padding="5">
+                        <Label x:Name="Label_WiFi_Content" Text="---" TextColor="White" FontSize="20" HorizontalOptions="Center"/>
+                    </Grid>
                 </StackLayout>
 
                 <Label Text="Available Rooms:" FontAttributes="None" FontSize="Large" HorizontalOptions="Center"/>
@@ -96,34 +100,48 @@
                     <BoxView Grid.Column="2" BackgroundColor="White" HeightRequest="5" WidthRequest="5" Opacity="1" VerticalOptions="Center" HorizontalOptions="End"></BoxView>
                 </Grid>-->
                 <StackLayout Spacing="0" Margin="0,15,0,25">
-                    <BoxView BackgroundColor="Orange" WidthRequest="200" HeightRequest="3" VerticalOptions="Center" HorizontalOptions="Center"></BoxView>
+                    <BoxView BackgroundColor="DarkOrange" WidthRequest="200" HeightRequest="3" VerticalOptions="Center" HorizontalOptions="Center"></BoxView>
                     <Button
                     Clicked="OnClicked_Create"
                     Text="Create Room"
-                    FontSize="25"
+                    FontSize="22"
                     TextColor="White"
                     FontAttributes="Bold"
                     BorderRadius="0"
-                    BackgroundColor="#A96f00"
+                    BackgroundColor="#77FF8C00"
                     HorizontalOptions="Center"
                     HeightRequest="50"
                     WidthRequest="200"
-                    Margin="0,4,0,0"/>
+                    Margin="0,4,0,4"/>
                 </StackLayout>
             </StackLayout>
             
             
-            <!--Notification (password request)-->
-            <StackLayout x:Name="Password_Layout" BackgroundColor="#99000000" IsVisible="False">
-                <Grid VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Padding="50">
+            <!--Password request-->
+            <StackLayout x:Name="Password_Layout" BackgroundColor="#AA000000" IsVisible="False">
+                <Grid VerticalOptions="Center" HorizontalOptions="CenterAndExpand" Padding="50,150,50,20">
                     <StackLayout BackgroundColor="#444444" Padding="10" Spacing="0">
                         <Label Text="Selected room requires" FontSize="22" TextColor="#FFFFFF" HorizontalOptions="Center" Margin="0,10,0,0"/>
-                        <Entry x:Name="Password_Entry" Placeholder="Password" FontSize="22" TextColor="Orange" FontAttributes="Bold" HorizontalTextAlignment="Center"></Entry>
-                        <Button Text="Enter" Clicked="Password_Clicked"></Button>
+                        <Entry x:Name="Password_Entry" Placeholder="Password" FontSize="22" TextColor="White" PlaceholderColor="#BBBBBB" FontAttributes="Bold" HorizontalTextAlignment="Center"></Entry>
+                        <Button Clicked="Password_Clicked" Text="Enter" FontSize="16" FontAttributes="Bold" BackgroundColor="Orange" TextColor="Black"></Button>
                         <Label x:Name="Password_Label_Wrong" Text="[ wrong password ]" IsVisible="False" FontAttributes="Bold" FontSize="15" TextColor="#FF4444" HorizontalOptions="Center"/>
                         <!--<Label Text="[ accepted, entering... ]" FontAttributes="Bold" FontSize="15" TextColor="#44FF44" HorizontalOptions="Center"/>-->
                     </StackLayout>
                 </Grid>
+                <Button Clicked="GoBack" Text="Go Back" FontAttributes="Bold" FontSize="16" BorderRadius="100" WidthRequest="100" HeightRequest="55" HorizontalOptions="Center" VerticalOptions="Start" BorderWidth="0"></Button>
+            </StackLayout>
+
+            <!--Create Room -->
+            <StackLayout x:Name="Create_Layout" BackgroundColor="#AA000000" IsVisible="True">
+                <Grid VerticalOptions="Center" HorizontalOptions="CenterAndExpand" Padding="50,150,50,20">
+                    <StackLayout BackgroundColor="#444444" Padding="10" Spacing="0">
+                        <Entry x:Name="Create_RoomName_Entry" Placeholder="Room Name" FontSize="22" TextColor="White" PlaceholderColor="#DDDDDD" FontAttributes="Bold" HorizontalTextAlignment="Center"></Entry>
+                        <Entry x:Name="Create_Password_Entry" Placeholder="Password" FontSize="22" TextColor="White" PlaceholderColor="#AAAAAA" FontAttributes="Bold" HorizontalTextAlignment="Center"></Entry>
+                        <Button Clicked="Create_Confirm_Clicked" Text="Create Room" FontSize="18" FontAttributes="Bold" BackgroundColor="Orange" TextColor="Black" Margin="5"></Button>
+                        <Label x:Name="Create_Label" IsVisible="False" Text="[ scaning nearby roomname... ]" FontAttributes="Bold" FontSize="15" TextColor="#44FF44" HorizontalOptions="Center"/>
+                    </StackLayout>
+                </Grid>
+                <Button Clicked="GoBack" Text="Go Back" FontAttributes="Bold" FontSize="16" BorderRadius="100" WidthRequest="100" HeightRequest="55" HorizontalOptions="Center" VerticalOptions="Start" BorderWidth="0"></Button>
             </StackLayout>
 
             <!--Warning Screen (Error & Debugging)-->
@@ -131,7 +149,7 @@
                 <Grid VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Padding="50">
                     <StackLayout BackgroundColor="#CC000000" Padding="10" Margin="2,4,2,4" Spacing="0">
                         <Label x:Name="Warning_Title" Text="ERROR - 07" FontAttributes="Bold" FontSize="22" TextColor="White" HorizontalOptions="Start" Margin="0,5,0,5"/>
-                        <BoxView BackgroundColor="DarkOrange" HeightRequest="3"></BoxView>
+                        <BoxView BackgroundColor="Red" HeightRequest="3"></BoxView>
                         <Label x:Name="Warning_Content" Text="This is the discription of the error message." FontSize="20" TextColor="#AAAAAA" HorizontalOptions="Center" HorizontalTextAlignment="Center" Margin="0,10,0,10"/>
                         <Button Clicked="Warning_Clicked" Text="Dismiss" HorizontalOptions="Center"></Button>
                     </StackLayout>

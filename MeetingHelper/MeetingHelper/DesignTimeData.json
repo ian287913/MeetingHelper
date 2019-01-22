@@ -3,17 +3,20 @@
     {
       "Name": "Room Alpha",
       "Founder": "Alexander",
-      "Found_Time": "2019/1/21 19:35"
+      "Found_Time": "2019/1/21 19:35",
+      "Password": ""
     },
     {
       "Name": "BrovoHello",
       "Founder": "ian's robot",
-      "Found_Time": "1998/12/16 06:54"
+      "Found_Time": "1998/12/16 06:54",
+      "Password": ""
     },
     {
       "Name": "Ccc",
       "Founder": "aa",
-      "Found_Time": "2019/1/21 19:35"
+      "Found_Time": "2019/1/21 19:35",
+      "Password": ""
     }
   ],
   "HostPage.xaml": [
