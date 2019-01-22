@@ -17,6 +17,8 @@ namespace MeetingHelper
 
             Label_Debug.Text = $"LastSleep: {app.LastSleep}";
 
+            Warning_Layout.IsVisible = false;
+
             if (app.UserName == "Unnamed")
                 NameEntry.Text = "";
             else
@@ -42,5 +44,29 @@ namespace MeetingHelper
             }
         }
 
+        protected override bool OnBackButtonPressed()
+        {
+            Warning("Quit?", "There's no way out.");
+            return true;
+        }
+
+        //  Warning
+        private void Warning(string title, string message)
+        {
+            //  show warning and disable main layout
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                Warning_Title.Text = title;
+                Warning_Content.Text = message;
+                Warning_Layout.IsVisible = true;
+            });
+        }
+        private void Warning_Clicked(object sender, EventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                Warning_Layout.IsVisible = false;
+            });
+        }
     }
 }

@@ -16,80 +16,97 @@
 				   Aspect="AspectFill"/>-->
             <BoxView BackgroundColor="#282828"></BoxView>
 
-            <StackLayout x:Name="Main_Layout" Padding="10,25,10,5">
-                <StackLayout HeightRequest="250">
-                    <Label Text="Current WiFi:" FontSize="Large" HorizontalOptions="Center" Margin="0,0,0,5"/>
-                    <Grid HeightRequest="190" BackgroundColor="Orange" Margin="10,0,10,0">
-                        <Label x:Name="Label_WiFi_Name" Text="Searching..." TextColor="Black" FontAttributes="Bold" FontSize="30" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Center"/>
+            <StackLayout x:Name="Main_Layout" Padding="10,10,10,5">
+                <Grid VerticalOptions="FillAndExpand">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="155"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="90"/>
+                    </Grid.RowDefinitions>
+
+
+                    <Grid Grid.Row="0" RowSpacing="0" VerticalOptions="Start">
+                        <StackLayout VerticalOptions="Start">
+                            <Label Text="Current WiFi:" FontSize="Large" HorizontalOptions="Center" Margin="0,0,0,0"/>
+                            <Grid HeightRequest="170" BackgroundColor="Orange" Margin="10,0,10,0" VerticalOptions="Start">
+                                <Label x:Name="Label_WiFi_Name" Text="Searching..." TextColor="Black" FontAttributes="Bold" FontSize="30" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Center"/>
+                            </Grid>
+                            <Grid HeightRequest="210" BackgroundColor="#88FFA500" Margin="10,0,10,0" Padding="5">
+                                <Label x:Name="Label_WiFi_Content" Text="---" TextColor="White" FontSize="20" HorizontalOptions="Center"/>
+                            </Grid>
+                        </StackLayout>
+
                     </Grid>
-                    <Grid HeightRequest="220" BackgroundColor="#88FFA500" Margin="10,0,10,0" Padding="5">
-                        <Label x:Name="Label_WiFi_Content" Text="---" TextColor="White" FontSize="20" HorizontalOptions="Center"/>
-                    </Grid>
-                </StackLayout>
 
-                <Label Text="Available Rooms:" FontAttributes="None" FontSize="Large" HorizontalOptions="Center"/>
-                <!--Room List-->
-                <ListView
-                    x:Name="ListView_Rooms"
-                    ItemsSource="{Binding .}"
-					SeparatorVisibility="None"
-					BackgroundColor="Transparent"
-					SeparatorColor="#DFDFDF"
-					HasUnevenRows="false"
-					RowHeight="130"
-                    Margin="0,0,0,10"
-                    >
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell>
-                                <!--Element of ListView (Fake background - To hide the ListView highlight)-->
-                                <StackLayout Spacing="0" Margin="0" Padding="5,0,5,0" BackgroundColor="#282828" >
-                                    <!--Frame-->
-                                    <StackLayout Padding="5" BackgroundColor="#282828">
-                                        <!--Content-->
-                                        <StackLayout Spacing="0" BackgroundColor="#505050">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="190"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="5"/>
-                                                </Grid.ColumnDefinitions>
+                    <StackLayout Spacing="0" Grid.Row="1">
+                        <Label Text="Choose A Room:" FontAttributes="None" FontSize="Large" HorizontalOptions="Center"/>
+                        <!--Room List-->
+                        <ListView
+                            IsVisible="True"
+                            x:Name="ListView_Rooms"
+                            ItemsSource="{Binding .}"
+					        SeparatorVisibility="None"
+					        BackgroundColor="Transparent"
+					        SeparatorColor="#DFDFDF"
+					        HasUnevenRows="false"
+					        RowHeight="130"
+                            Margin="0,0,0,10"
+                            >
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell>
+                                        <!--Element of ListView (Fake background - To hide the ListView highlight)-->
+                                        <StackLayout Spacing="0" Margin="0" Padding="5,0,5,0" BackgroundColor="#282828" >
+                                            <!--Frame-->
+                                            <StackLayout Padding="5" BackgroundColor="#282828">
+                                                <!--Content-->
+                                                <StackLayout Spacing="0" BackgroundColor="#505050">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="190"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="5"/>
+                                                        </Grid.ColumnDefinitions>
 
-                                                <!--<Image Grid.Column="0" Source="{Binding Photo}"/>-->
-                                                <StackLayout Grid.Column="0" Spacing="0" Padding="10,10,0,10">
-                                                    <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="Large" TextColor="#FFFFFF"/>
+                                                        <!--<Image Grid.Column="0" Source="{Binding Photo}"/>-->
+                                                        <StackLayout Grid.Column="0" Spacing="0" Padding="10,10,0,10">
+                                                            <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="Large" TextColor="#FFFFFF"/>
+                                                        </StackLayout>
+                                                        <StackLayout Grid.Column="1" Orientation="Horizontal" Spacing="4" HorizontalOptions="End" Padding="0" VerticalOptions="Center">
+                                                            <Label Text="(locked)" TextColor="#AAAAAA"/>
+                                                        </StackLayout>
+                                                    </Grid>
+
+                                                    <BoxView BackgroundColor="DarkOrange" HeightRequest="3"></BoxView>
+
+                                                    <Grid>
+                                                        <StackLayout Margin="10" HeightRequest="50">
+                                                            <StackLayout Spacing="0" Orientation="Horizontal">
+                                                                <Label Text="found by " FontSize="20" VerticalOptions="Center" TextColor="#999999"/>
+                                                                <Label Text="Binding Founder" FontSize="Large"/>
+                                                                <!--<Label Text="{Binding Founder}" FontSize="Large"/>-->
+                                                            </StackLayout>
+                                                            <StackLayout Spacing="0" Orientation="Horizontal" HorizontalOptions="End">
+                                                                <Label Text="at  " VerticalOptions="Center" TextColor="#999999"/>
+                                                                <Label Text="Binding Found_Time" HorizontalTextAlignment="End"/>
+                                                                <!--<Label Text="{Binding Found_Time}" HorizontalTextAlignment="End"/>-->
+                                                            </StackLayout>
+                                                        </StackLayout>
+                                                    </Grid>
+
                                                 </StackLayout>
-                                                <StackLayout Grid.Column="1" Orientation="Horizontal" Spacing="4" HorizontalOptions="End" Padding="0" VerticalOptions="Center">
-                                                    <Label Text="(locked)" TextColor="#AAAAAA"/>
-                                                </StackLayout>
-                                            </Grid>
-
-                                            <BoxView BackgroundColor="DarkOrange" HeightRequest="3"></BoxView>
-
-                                            <Grid>
-                                                <StackLayout Margin="10" HeightRequest="50">
-                                                    <StackLayout Spacing="0" Orientation="Horizontal">
-                                                        <Label Text="found by " FontSize="20" VerticalOptions="Center" TextColor="#999999"/>
-                                                        <Label Text="{Binding Founder}" FontSize="Large"/>
-                                                    </StackLayout>
-                                                    <StackLayout Spacing="0" Orientation="Horizontal" HorizontalOptions="End">
-                                                        <Label Text="at  " VerticalOptions="Center" TextColor="#999999"/>
-                                                        <Label Text="{Binding Found_Time}" HorizontalTextAlignment="End"/>
-                                                    </StackLayout>
-                                                </StackLayout>
-                                            </Grid>
-                                        
+                                            </StackLayout>
                                         </StackLayout>
-                                    </StackLayout>
-                                </StackLayout>
 
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-                
-                <!--Create Room-->
-                <!--<Grid HeightRequest="15" Margin="10,0,10,10" Padding="0" >
+                                    </ViewCell>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </StackLayout>
+                    
+
+                    <!--Create Room-->
+                    <!--<Grid HeightRequest="15" Margin="10,0,10,10" Padding="0" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="5"/>
                         <ColumnDefinition Width="*"/>
@@ -99,21 +116,23 @@
                     <BoxView Grid.Column="0" BackgroundColor="White" HeightRequest="5" WidthRequest="5" Opacity="1" VerticalOptions="Center" HorizontalOptions="Start"></BoxView>
                     <BoxView Grid.Column="2" BackgroundColor="White" HeightRequest="5" WidthRequest="5" Opacity="1" VerticalOptions="Center" HorizontalOptions="End"></BoxView>
                 </Grid>-->
-                <StackLayout Spacing="0" Margin="0,15,0,25">
-                    <BoxView BackgroundColor="DarkOrange" WidthRequest="200" HeightRequest="3" VerticalOptions="Center" HorizontalOptions="Center"></BoxView>
-                    <Button
-                    Clicked="OnClicked_Create"
-                    Text="Create Room"
-                    FontSize="22"
-                    TextColor="White"
-                    FontAttributes="Bold"
-                    BorderRadius="0"
-                    BackgroundColor="#77FF8C00"
-                    HorizontalOptions="Center"
-                    HeightRequest="50"
-                    WidthRequest="200"
-                    Margin="0,4,0,4"/>
-                </StackLayout>
+                    <StackLayout Grid.Row="2" Spacing="0" Margin="0,5,0,20" VerticalOptions="End">
+                        <BoxView BackgroundColor="DarkOrange" WidthRequest="200" HeightRequest="3" VerticalOptions="Center" HorizontalOptions="Center"></BoxView>
+                        <Button
+                        Clicked="OnClicked_Create"
+                        Text="Create Room"
+                        FontSize="22"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        BorderRadius="0"
+                        BackgroundColor="#77FF8C00"
+                        HorizontalOptions="Center"
+                        HeightRequest="50"
+                        WidthRequest="200"
+                        Margin="0,4,0,4"/>
+                    </StackLayout>
+                </Grid>
+                
             </StackLayout>
             
             
@@ -132,13 +151,13 @@
             </StackLayout>
 
             <!--Create Room -->
-            <StackLayout x:Name="Create_Layout" BackgroundColor="#AA000000" IsVisible="True">
+            <StackLayout x:Name="Create_Layout" BackgroundColor="#AA000000" IsVisible="False">
                 <Grid VerticalOptions="Center" HorizontalOptions="CenterAndExpand" Padding="50,150,50,20">
                     <StackLayout BackgroundColor="#444444" Padding="10" Spacing="0">
                         <Entry x:Name="Create_RoomName_Entry" Placeholder="Room Name" FontSize="22" TextColor="White" PlaceholderColor="#DDDDDD" FontAttributes="Bold" HorizontalTextAlignment="Center"></Entry>
                         <Entry x:Name="Create_Password_Entry" Placeholder="Password" FontSize="22" TextColor="White" PlaceholderColor="#AAAAAA" FontAttributes="Bold" HorizontalTextAlignment="Center"></Entry>
                         <Button Clicked="Create_Confirm_Clicked" Text="Create Room" FontSize="18" FontAttributes="Bold" BackgroundColor="Orange" TextColor="Black" Margin="5"></Button>
-                        <Label x:Name="Create_Label" IsVisible="False" Text="[ scaning nearby roomname... ]" FontAttributes="Bold" FontSize="15" TextColor="#44FF44" HorizontalOptions="Center"/>
+                        <Label x:Name="Create_Label" IsVisible="False" Text="" FontAttributes="Bold" FontSize="15" TextColor="#44FF44" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
                     </StackLayout>
                 </Grid>
                 <Button Clicked="GoBack" Text="Go Back" FontAttributes="Bold" FontSize="16" BorderRadius="100" WidthRequest="100" HeightRequest="55" HorizontalOptions="Center" VerticalOptions="Start" BorderWidth="0"></Button>
@@ -147,7 +166,7 @@
             <!--Warning Screen (Error & Debugging)-->
             <StackLayout x:Name="Warning_Layout" BackgroundColor="#77000000" IsVisible="False">
                 <Grid VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Padding="50">
-                    <StackLayout BackgroundColor="#CC000000" Padding="10" Margin="2,4,2,4" Spacing="0">
+                    <StackLayout BackgroundColor="#CC000000" Padding="10" Margin="2,1,2,1" Spacing="0">
                         <Label x:Name="Warning_Title" Text="ERROR - 07" FontAttributes="Bold" FontSize="22" TextColor="White" HorizontalOptions="Start" Margin="0,5,0,5"/>
                         <BoxView BackgroundColor="Red" HeightRequest="3"></BoxView>
                         <Label x:Name="Warning_Content" Text="This is the discription of the error message." FontSize="20" TextColor="#AAAAAA" HorizontalOptions="Center" HorizontalTextAlignment="Center" Margin="0,10,0,10"/>

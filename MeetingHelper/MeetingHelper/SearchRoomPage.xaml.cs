@@ -9,39 +9,62 @@ using Xamarin.Forms.Xaml;
 
 using System.Collections.ObjectModel;
 using Controller;
+using Controller.Component;
+using System.Net;
+
+/// <summary>
+/// 目前房間資訊沒有: Host名、建立時間、有無密碼
+/// TODO: 防轉向、頂條、implementation、WiFi內容更新
+/// </summary>
 
 namespace MeetingHelper
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class SearchRoomPage : ContentPage
 	{
+        //  Include WiFi, User, Room...
+        App app = Application.Current as App;
+        
         //  Rooms ItemSource
-        ObservableCollection<Room> Rooms;
-        //  Wifi controller
-        WifiController mWifiController;
+        ObservableCollection<ianRoom> Rooms;
+        
         // LocationController mLocationController;
         bool show_Warning;
         bool show_Password;
         bool show_Create;
 
-        Room targetRoom;
+        ianRoom targetRoom;
 
         public SearchRoomPage ()
 		{
 			InitializeComponent ();
-            
+
+            ///  init DJ
+            app.user.StartListener();
+            app.user.OnEnterRoom += User_OnEnterRoom;
+            app.user.OnRoomListChanged += User_OnRoomListChanged;
+
             //  init Room ItemSource
-            Rooms = new ObservableCollection<Room>();
+            Rooms = new ObservableCollection<ianRoom>();
+
             /// FAKE DATA
-            Rooms.Add(new Room("Alpha Room", "Ian287913", "2019/1/21 19:35", ""));
-            Rooms.Add(new Room("Bravo", "Founder", "2018/1/1 19:08", "ADCB"));
-            Rooms.Add(new Room("Charlie", "someone", "1998/12/16 07:32", "1234"));
+            //Rooms.Add(new ianRoom("Alpha Room", "Ian287913", "2019/1/21 19:35", ""));
+            //Rooms.Add(new ianRoom("Bravo", "Founder", "2018/1/1 19:08", "ABCD"));
+            //Rooms.Add(new ianRoom("Charlie", "someone", "1998/12/16 07:32", "1234"));
+            //Rooms.Add(new ianRoom("Charlie", "someone", "1998/12/16 07:32", "1234"));
+            //Rooms.Add(new ianRoom("Charlie", "someone", "1998/12/16 07:32", "1234"));
+            //Rooms.Add(new ianRoom("Charlie", "someone", "1998/12/16 07:32", "1234"));
+            /// FAKE DATA
 
             ListView_Rooms.ItemsSource = Rooms;
 
             //  init WiFi
-            mWifiController = new WifiController();
-            mWifiController.OnNetworkChanged += OnStatusChanged;
+            app.mWifiController.OnNetworkChanged += OnStatusChanged;
+
+            //  init Entry
+            Create_Password_Entry.Text = "";
+            Create_RoomName_Entry.Text = "";
+            Password_Entry.Text = "";
 
             //  init Visibility
             show_Warning = false;
@@ -53,7 +76,7 @@ namespace MeetingHelper
             ListView_Rooms.ItemTapped += (sender, e) =>
             {
                 //  get target room
-                targetRoom = e.Item as Room;
+                targetRoom = e.Item as ianRoom;
                 ((ListView)sender).SelectedItem = null;
                 if(targetRoom.Password != "")
                 {
@@ -69,6 +92,35 @@ namespace MeetingHelper
             };
         }
 
+        
+
+        #region User_Events
+
+        private void User_OnEnterRoom(object sender, EventArgs e)
+        {
+            Create_Label.Text = "entering room...";
+            app.user.StopListener();
+            // Host page
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                Navigation.PushModalAsync(new HostPage());
+            });
+        }
+
+        private void User_OnRoomListChanged(object sender, EventArgs e)
+        {
+            //  get room list into listview
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                Rooms.Clear();
+                foreach (string room in app.user.RoomList)
+                {
+                    Rooms.Add(new ianRoom(room, "undefined", "2019/1/21 19:35", "1234"));
+                }
+            });
+        }
+
+        #endregion
 
         //  update Layouts' visibility
         private void show_Layout()
@@ -104,6 +156,13 @@ namespace MeetingHelper
             });
         }
 
+        //  disable BackButton
+        protected override bool OnBackButtonPressed()
+        {
+            ///...
+            return true;
+        }
+
         #region delegeates
 
         //  Create Room
@@ -112,10 +171,45 @@ namespace MeetingHelper
             show_Create = true;
             show_Layout();
         }
-        //  Create Confirm
+        //  Create Confirm (Validation)
         private void Create_Confirm_Clicked(object sender, EventArgs e)
         {
-            ///...
+            if(Create_RoomName_Entry.Text.Length > 12)
+            {
+                Create_Label.TextColor = Color.FromHex("FF4444");
+                Create_Label.Text = "the length of Room-Name should less than 12.";
+                Create_Label.IsVisible = true;
+            }
+            else if (Create_RoomName_Entry.Text == "")
+            {
+                Create_Label.TextColor = Color.FromHex("FF4444");
+                Create_Label.Text = "Room-Name can not be unnamed.";
+                Create_Label.IsVisible = true;
+            }
+            else if(Create_Password_Entry.Text.Length > 8)
+            {
+                Create_Label.TextColor = Color.FromHex("FF4444");
+                Create_Label.Text = "the length of Password should less than 8.";
+                Create_Label.IsVisible = true;
+            }
+            else
+            {
+                Create_Label.TextColor = Color.FromHex("44FF44");
+                Create_Label.Text = "creating...\nscaning nearby roomname...";
+                Create_Label.IsVisible = true;
+
+                /// Create a room
+                app.myRoom = new Room(Create_RoomName_Entry.Text, Create_Password_Entry.Text);
+                app.myRoom.Open();
+                app.myRoom.StartBroadcast(0, TimeUnit.Second);
+                //  get current IP
+                string strHostName = Dns.GetHostName();
+                IPHostEntry iphostentry = Dns.GetHostEntry(strHostName);
+                IPAddress ip = iphostentry.AddressList[0];
+                //  (get into the room)
+                app.user.BecomeHost(Create_RoomName_Entry.Text, Create_Password_Entry.Text, app.UserName, ip);
+                //  wait for enter event...
+            }
         }
 
         //  Enter Password
@@ -142,6 +236,7 @@ namespace MeetingHelper
             {
                 Password_Label_Wrong.IsVisible = false;
                 Password_Entry.Text = "";
+                Create_Label.IsVisible = false;
                 Create_RoomName_Entry.Text = "";
                 Create_Password_Entry.Text = "";
             });
@@ -158,8 +253,8 @@ namespace MeetingHelper
             {
                 if (e.State.Equals(WifiDetailedState.Connected))
                 {
-                    Label_WiFi_Name.Text = mWifiController.ConnectionInfo.SSID;
-                    Label_WiFi_Content.Text = $"BSSID: {mWifiController.ConnectionInfo.BSSID}\nLink Speed: {mWifiController.ConnectionInfo.LinkSpeed} Mbps";
+                    Label_WiFi_Name.Text = app.mWifiController.ConnectionInfo.SSID;
+                    Label_WiFi_Content.Text = $"BSSID: {app.mWifiController.ConnectionInfo.BSSID}\nLink Speed: {app.mWifiController.ConnectionInfo.LinkSpeed} Mbps";
                 }
                 else
                 {
@@ -169,6 +264,7 @@ namespace MeetingHelper
             });
         }
         
+        //  Warning
         private void Warning(string title, string message)
         {
             //  show warning and disable main layout
@@ -189,7 +285,7 @@ namespace MeetingHelper
         #endregion
     }
 
-    public class Room : BindableObject
+    public class ianRoom : BindableObject
     {
         public string Name { get; set; }
         public string Founder { get; set; }
@@ -207,7 +303,7 @@ namespace MeetingHelper
             }
         }
         
-        public Room(string name, string founder, string foundTime, string password)
+        public ianRoom(string name, string founder, string foundTime, string password)
         {
             Name = name;
             Founder = founder;

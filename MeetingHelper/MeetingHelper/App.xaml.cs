@@ -2,11 +2,20 @@ using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
+using Controller;
+using Controller.Component;
+
 [assembly: XamlCompilation (XamlCompilationOptions.Compile)]
 namespace MeetingHelper
 {
 	public partial class App : Application
 	{
+        /// DJ
+        public User user;
+        public Room myRoom;
+
+        //  WiFi
+        public WifiController mWifiController;
         //  Save & Load for Username
         const string Property_Username = "UserName";
         public string UserName { set; get; }
@@ -18,8 +27,13 @@ namespace MeetingHelper
 		{
 			InitializeComponent();
 
+            //  init User
+            user = new User();
+
+            //  init WiFi
+            mWifiController = new WifiController();
+
             //  Debug_LastSleep
-            
             if (Properties.ContainsKey(Property_LastSleep))
                 LastSleep = (bool)Properties[Property_LastSleep];
             Properties[Property_LastSleep] = false;

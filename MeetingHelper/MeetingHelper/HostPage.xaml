@@ -17,12 +17,13 @@
                     <Label Text="Current WiFi:" FontSize="Large" HorizontalOptions="Center" Margin="0,0,0,5"/>
                     <Label Text="WiFi Name" TextColor="Black" BackgroundColor="Orange" FontAttributes="Bold" FontSize="30"  HorizontalTextAlignment="Center" Margin="10,0,10,0"/>
                     <Label Text="BSSID: ca:6c:87:3b:de:18               Link speed: 34Mb/s" TextColor="Black" BackgroundColor="#88FFA500" FontSize="20"  HorizontalTextAlignment="Center" Margin="10,0,10,0"/>
-
                 </StackLayout>-->
-
+                <Label x:Name="Debug_Label" Text="debug" FontSize="Large" HorizontalOptions="Center" Margin="10"/>
+                <Label x:Name="Debug_Label2" Text="debug2" FontSize="Large" HorizontalOptions="Center" Margin="10"/>
                 <Label Text="Members:" FontAttributes="None" FontSize="Large" HorizontalOptions="Center"/>
 
                 <ListView 
+                    x:Name="ListView_Guests"
                     ItemsSource="{Binding .}" 
 					SeparatorVisibility="None"
 					BackgroundColor="Transparent"
@@ -48,14 +49,14 @@
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="5"/>
                                                 </Grid.ColumnDefinitions>
-                                                
+
                                                 <BoxView Grid.Column="0" BackgroundColor="DarkOrange" WidthRequest="3" HorizontalOptions="Fill" ></BoxView>
                                                 <StackLayout Grid.Column="1" Spacing="0" Padding="10,8,0,11" Margin="5,1,5,1" BackgroundColor="#66FFAA11">
                                                     <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="Large" TextColor="#FFFFFF" VerticalOptions="Center" />
                                                 </StackLayout>
                                                 <BoxView Grid.Column="2" BackgroundColor="DarkOrange" WidthRequest="3" HorizontalOptions="Fill" ></BoxView>
                                                 <StackLayout Grid.Column="3" Padding="0,13,0,11" Margin="5,1,5,1" BackgroundColor="#555555">
-                                                    <Label IsVisible="{Binding IsSpeaking}" Text="Speaking" FontAttributes="Bold" FontSize="16"  TextColor="#EEEEEE" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
+                                                    <Label IsVisible="True" Text="Speaking" FontAttributes="Bold" FontSize="16"  TextColor="#EEEEEE" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
                                                 </StackLayout>
                                             </Grid>
 
@@ -68,33 +69,15 @@
                     </ListView.ItemTemplate>
                 </ListView>
             </StackLayout>
-
-            <!--Notification (password request)-->
-            <StackLayout x:Name="Password_Layout" BackgroundColor="#99000000" IsVisible="false">
-                <Grid VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Padding="50" >
-                    <StackLayout BackgroundColor="DimGray" Padding="10" Spacing="0">
-                        <Label x:Name="TargetName" Text="Guest Name" FontSize="24" TextColor="#FFFFFF" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,5,0,5"/>
-
-                        <Button Text="Assign Voice" FontAttributes="Bold" BackgroundColor="DarkOrange" Margin="5" FontSize="Medium" TextColor="White"></Button>
-                        <Grid>
-                            <Button Text="Dismiss" FontAttributes="Bold" BackgroundColor="#11CC11" Opacity="0.7" Margin="8" FontSize="16" TextColor="White" HorizontalOptions="Start"></Button>
-                            <Button Text="Kick" FontAttributes="Bold" BackgroundColor="#EE2222" Opacity="0.7" Margin="8" FontSize="16" TextColor="White" HorizontalOptions="End"></Button>
-                        </Grid>
-                        <!--<Label Text="[ wrong password ]" FontAttributes="Bold" FontSize="15" TextColor="#FF4444" HorizontalOptions="Center"/>-->
-                        <!--<Label Text="[ accepted, entering... ]" FontAttributes="Bold" FontSize="15" TextColor="#44FF44" HorizontalOptions="Center"/>-->
-                    </StackLayout>
-                </Grid>
-            </StackLayout>
-
-
+            
             <!--Warning Screen (Error & Debugging)-->
             <StackLayout x:Name="Warning_Layout" BackgroundColor="#77000000" IsVisible="False">
-                <Grid VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Padding="50" >
-                    <StackLayout BackgroundColor="#CC000000" Padding="10" Margin="2,4,2,4" Spacing="0">
+                <Grid VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Padding="50">
+                    <StackLayout BackgroundColor="#CC000000" Padding="10" Margin="2,1,2,1" Spacing="0">
                         <Label x:Name="Warning_Title" Text="ERROR - 07" FontAttributes="Bold" FontSize="22" TextColor="White" HorizontalOptions="Start" Margin="0,5,0,5"/>
-                        <BoxView BackgroundColor="DarkOrange" HeightRequest="3"></BoxView>
+                        <BoxView BackgroundColor="Red" HeightRequest="3"></BoxView>
                         <Label x:Name="Warning_Content" Text="This is the discription of the error message." FontSize="20" TextColor="#AAAAAA" HorizontalOptions="Center" HorizontalTextAlignment="Center" Margin="0,10,0,10"/>
-                        <Button Text="Dismiss" HorizontalOptions="Center" ></Button>
+                        <Button Clicked="Warning_Clicked" Text="Dismiss" HorizontalOptions="Center"></Button>
                     </StackLayout>
                     <BoxView BackgroundColor="#BBFFFFFF" HeightRequest="1.5" VerticalOptions="Start"></BoxView>
                     <BoxView BackgroundColor="#BBFFFFFF" HeightRequest="1.5" VerticalOptions="End"></BoxView>
