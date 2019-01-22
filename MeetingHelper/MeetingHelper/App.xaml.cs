@@ -19,7 +19,9 @@ namespace MeetingHelper
 			InitializeComponent();
 
             //  Debug_LastSleep
-            LastSleep = (bool)Properties[Property_LastSleep];
+            
+            if (Properties.ContainsKey(Property_LastSleep))
+                LastSleep = (bool)Properties[Property_LastSleep];
             Properties[Property_LastSleep] = false;
 
             //  UserName

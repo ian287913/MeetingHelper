@@ -3,6 +3,21 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MeetingHelper.App">
 	<Application.Resources>
-        
+        <!--font suggested: Montserrat-->
+        <ResourceDictionary>
+            <Style TargetType="Label">
+                <Setter Property="TextColor" Value="#CCCCCC" />
+            </Style>
+            <Style TargetType="Button">
+                <Setter Property="TextColor" Value="#CCCCCC" />
+                <Setter Property="BackgroundColor" Value="#555555" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="HeightRequest" Value="40" />
+            </Style>
+            <!--<Style TargetType="StackLayout">
+                <Setter Property="BackgroundColor" Value="#282828" />
+            </Style>-->
+            
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

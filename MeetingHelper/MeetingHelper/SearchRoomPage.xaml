@@ -14,34 +14,34 @@
 				   Source="bridge_bg.png"
 				   Scale="1.5"
 				   Aspect="AspectFill"/>-->
-            <BoxView BackgroundColor="#333333"></BoxView>
+            <BoxView BackgroundColor="#282828"></BoxView>
 
-            <StackLayout Padding="10,25,10,5" x:Name="Main_Layout">
+            <StackLayout x:Name="Main_Layout" Padding="10,25,10,5">
                 <StackLayout HeightRequest="160">
                     <Label Text="Current WiFi:" FontSize="Large" HorizontalOptions="Center" Margin="0,0,0,5"/>
                     <Label Text="WiFi Name" TextColor="Black" BackgroundColor="Orange" FontAttributes="Bold" FontSize="30"  HorizontalTextAlignment="Center" Margin="10,0,10,0"/>
-                    <Label Text="BSSID: ca:6c:87:3b:de:18               Link speed: 34Mb/s" TextColor="Black" BackgroundColor="#88FFA500" FontSize="20"  HorizontalTextAlignment="Center" Margin="10,0,10,0"/>
-                    
+                    <Label Text="BSSID: ca:6c:87:3b:de:18               Link speed: 34Mb/s" TextColor="White" BackgroundColor="#88FFA500" FontSize="20"  HorizontalTextAlignment="Center" Margin="10,0,10,0"/>
                 </StackLayout>
-                
+
                 <Label Text="Available Rooms:" FontAttributes="None" FontSize="Large" HorizontalOptions="Center"/>
-                
-                <ListView 
-                    ItemsSource="{Binding .}" 
+                <!--Room List-->
+                <ListView
+                    x:Name="ListView_Rooms"
+                    ItemsSource="{Binding .}"
 					SeparatorVisibility="None"
 					BackgroundColor="Transparent"
 					SeparatorColor="#DFDFDF"
 					HasUnevenRows="false"
 					RowHeight="130"
-                    Margin="0,0,0,20"
+                    Margin="0,0,0,10"
                     >
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
                                 <!--Element of ListView (Fake background - To hide the ListView highlight)-->
-                                <StackLayout Spacing="0" Margin="0" Padding="5,0,5,0" BackgroundColor="#333333" >
+                                <StackLayout Spacing="0" Margin="0" Padding="5,0,5,0" BackgroundColor="#282828" >
                                     <!--Frame-->
-                                    <StackLayout Padding="5" BackgroundColor="#333333">
+                                    <StackLayout Padding="5" BackgroundColor="#282828">
                                         <!--Content-->
                                         <StackLayout Spacing="0" BackgroundColor="#505050">
                                             <Grid>
@@ -72,7 +72,6 @@
                                                         <Label Text="at  " VerticalOptions="Center" TextColor="#999999"/>
                                                         <Label Text="{Binding Found_Time}" HorizontalTextAlignment="End"/>
                                                     </StackLayout>
-                                                    
                                                 </StackLayout>
                                             </Grid>
                                         
@@ -84,18 +83,60 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
+                
+                <!--Create Room-->
+                <!--<Grid HeightRequest="15" Margin="10,0,10,10" Padding="0" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="5"/>
+                    </Grid.ColumnDefinitions>
+                    <BoxView Grid.Column="1" BackgroundColor="Orange" HeightRequest="3" Opacity="0.7" VerticalOptions="Center"></BoxView>
+                    <BoxView Grid.Column="0" BackgroundColor="White" HeightRequest="5" WidthRequest="5" Opacity="1" VerticalOptions="Center" HorizontalOptions="Start"></BoxView>
+                    <BoxView Grid.Column="2" BackgroundColor="White" HeightRequest="5" WidthRequest="5" Opacity="1" VerticalOptions="Center" HorizontalOptions="End"></BoxView>
+                </Grid>-->
+                <StackLayout Spacing="0" Margin="0,15,0,25">
+                    <BoxView BackgroundColor="Orange" WidthRequest="200" HeightRequest="3" VerticalOptions="Center" HorizontalOptions="Center"></BoxView>
+                    <Button
+                    Clicked="OnClicked_Create"
+                    Text="Create Room"
+                    FontSize="25"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    BorderRadius="0"
+                    BackgroundColor="#A96f00"
+                    HorizontalOptions="Center"
+                    HeightRequest="50"
+                    WidthRequest="200"
+                    Margin="0,4,0,0"/>
+                </StackLayout>
             </StackLayout>
+            
             
             <!--Notification (password request)-->
             <StackLayout x:Name="Password_Layout" BackgroundColor="#99000000" IsVisible="False">
-                <Grid VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Padding="50" >
-                    <StackLayout BackgroundColor="DimGray" Padding="10" Spacing="0">
+                <Grid VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Padding="50">
+                    <StackLayout BackgroundColor="#444444" Padding="10" Spacing="0">
                         <Label Text="Selected room requires" FontSize="22" TextColor="#FFFFFF" HorizontalOptions="Center" Margin="0,10,0,0"/>
-                        <Entry Placeholder="Password" FontSize="22"></Entry>
-                        <Button Text="Enter" ></Button>
-                        <!--<Label Text="[ wrong password ]" FontAttributes="Bold" FontSize="15" TextColor="#FF4444" HorizontalOptions="Center"/>-->
+                        <Entry x:Name="Password_Entry" Placeholder="Password" FontSize="22" TextColor="Orange" FontAttributes="Bold" HorizontalTextAlignment="Center"></Entry>
+                        <Button Text="Enter" Clicked="Password_Clicked"></Button>
+                        <Label x:Name="Password_Label_Wrong" Text="[ wrong password ]" IsVisible="False" FontAttributes="Bold" FontSize="15" TextColor="#FF4444" HorizontalOptions="Center"/>
                         <!--<Label Text="[ accepted, entering... ]" FontAttributes="Bold" FontSize="15" TextColor="#44FF44" HorizontalOptions="Center"/>-->
                     </StackLayout>
+                </Grid>
+            </StackLayout>
+
+            <!--Warning Screen (Error & Debugging)-->
+            <StackLayout x:Name="Warning_Layout" BackgroundColor="#77000000" IsVisible="False">
+                <Grid VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Padding="50">
+                    <StackLayout BackgroundColor="#CC000000" Padding="10" Margin="2,4,2,4" Spacing="0">
+                        <Label x:Name="Warning_Title" Text="ERROR - 07" FontAttributes="Bold" FontSize="22" TextColor="White" HorizontalOptions="Start" Margin="0,5,0,5"/>
+                        <BoxView BackgroundColor="DarkOrange" HeightRequest="3"></BoxView>
+                        <Label x:Name="Warning_Content" Text="This is the discription of the error message." FontSize="20" TextColor="#AAAAAA" HorizontalOptions="Center" HorizontalTextAlignment="Center" Margin="0,10,0,10"/>
+                        <Button Clicked="Warning_Clicked" Text="Dismiss" HorizontalOptions="Center"></Button>
+                    </StackLayout>
+                    <BoxView BackgroundColor="#BBFFFFFF" HeightRequest="1.5" VerticalOptions="Start"></BoxView>
+                    <BoxView BackgroundColor="#BBFFFFFF" HeightRequest="1.5" VerticalOptions="End"></BoxView>
                 </Grid>
             </StackLayout>
 

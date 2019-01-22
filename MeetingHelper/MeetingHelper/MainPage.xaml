@@ -4,7 +4,7 @@
              xmlns:local="clr-namespace:MeetingHelper"
              x:Class="MeetingHelper.MainPage">
 
-    <StackLayout Padding="20">
+    <StackLayout Padding="20" BackgroundColor="#282828">
         <StackLayout VerticalOptions="CenterAndExpand">
             <Label 
                 x:Name="Label1"
@@ -16,21 +16,28 @@
                 x:Name="NameEntry"
                 Text=""
                 FontSize="30"
-                PlaceholderColor="CadetBlue"
+                TextColor="Orange"
+                PlaceholderColor="#888888"
                 Placeholder="username here"
-                HorizontalOptions="Center"/>
-            <BoxView HeightRequest="0" Margin="20"></BoxView>
-            <Button 
-                x:Name="Button1"
-                
-                Text="Enter"
-                FontSize="25"
-                WidthRequest="125"
-                BorderRadius="50"
-                BorderWidth="3"
-                BorderColor="DimGray"
-                Clicked="OnClicked1"
-                HorizontalOptions="Center"/>
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"/>
+
+            <StackLayout Spacing="0" Margin="0,15,0,25">
+                <BoxView BackgroundColor="Orange" WidthRequest="130" HeightRequest="3" VerticalOptions="Center" HorizontalOptions="Center"></BoxView>
+                <Button
+                    Clicked="OnClicked1"
+                    Text="Enter"
+                    FontSize="25"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    BorderRadius="0"
+                    BackgroundColor="#A96f00"
+                    HorizontalOptions="Center"
+                    HeightRequest="50"
+                    WidthRequest="130"
+                    Margin="0,4,0,0"/>
+            </StackLayout>
+            
         </StackLayout>
         <Label 
             x:Name="Label_Debug"

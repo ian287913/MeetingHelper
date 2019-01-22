@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resources>
   
-  <style name="MainTheme" parent="android:style/Theme.Material.Light.DarkActionBar">
-   <item name="android:colorPressedHighlight">@color/ListViewSelected</item>
-   <item name="android:colorLongPressedHighlight">@color/ListViewHighlighted</item>
-   <item name="android:colorFocusedHighlight">@color/ListViewSelected</item>
-   <item name="android:colorActivatedHighlight">@color/ListViewSelected</item>
-   <item name="android:activatedBackgroundIndicator">@color/ListViewSelected</item>
-  </style>
-  <color name="ListViewSelected">#555555</color>
-  <color name="ListViewHighlighted">#555555</color>
-    
-  
   <style name="MainTheme" parent="MainTheme.Base">
   </style>
   <!-- Base theme applied no matter what API -->

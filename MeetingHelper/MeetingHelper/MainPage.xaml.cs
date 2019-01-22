@@ -29,13 +29,16 @@ namespace MeetingHelper
             if (NameEntry.Text.Contains("(") || NameEntry.Text.Contains(")"))
                 Label_Debug.Text = "The name can't include '(' or ')'.";
             else if (NameEntry.Text == "")
-                Label_Debug.Text = "Username cannot be unnamed.";
+                Label_Debug.Text = "Username cannot be Unnamed.";
             else if (NameEntry.Text == "Unnamed")
                 Label_Debug.Text = "Username cannot be \"Unnamed\" ;)";
+            else if (NameEntry.Text.Length > 12)
+                Label_Debug.Text = "Name length must less than 12.";
             else
             {
                 app.UserName = NameEntry.Text;
-                /// Next page
+                // Next page
+                Navigation.PushModalAsync(new SearchRoomPage());
             }
         }
 

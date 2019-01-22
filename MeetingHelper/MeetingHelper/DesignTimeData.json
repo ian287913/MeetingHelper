@@ -15,6 +15,44 @@
       "Founder": "aa",
       "Found_Time": "2019/1/21 19:35"
     }
+  ],
+  "HostPage.xaml": [
+    {
+      "Name": "Room Alpha",
+      "Founder": "Alexander",
+      "Found_Time": "2019/1/21 19:35",
+      "IsSpeaking": "true"
+    },
+    {
+      "Name": "BrovoHello",
+      "Founder": "ian's robot",
+      "Found_Time": "1998/12/16 06:54",
+      "IsSpeaking": "False"
+    },
+    {
+      "Name": "Ccc",
+      "Founder": "aa",
+      "Found_Time": "2019/1/21 19:35",
+      "IsSpeaking": "False"
+    },
+    {
+      "Name": "Room Alpha",
+      "Founder": "Alexander",
+      "Found_Time": "2019/1/21 19:35",
+      "IsSpeaking": "true"
+    },
+    {
+      "Name": "BrovoHello",
+      "Founder": "ian's robot",
+      "Found_Time": "1998/12/16 06:54",
+      "IsSpeaking": "False"
+    },
+    {
+      "Name": "Ccc",
+      "Founder": "aa",
+      "Found_Time": "2019/1/21 19:35",
+      "IsSpeaking": "False"
+    }
   ]
 
 }
