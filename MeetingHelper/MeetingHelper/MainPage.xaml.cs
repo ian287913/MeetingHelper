@@ -16,7 +16,6 @@ namespace MeetingHelper
 			InitializeComponent();
 
             Label_Debug.Text = $"LastSleep: {app.LastSleep}";
-
             Warning_Layout.IsVisible = false;
 
             if (app.UserName == "Unnamed")
@@ -43,7 +42,7 @@ namespace MeetingHelper
                 Navigation.PushModalAsync(new SearchRoomPage());
             }
         }
-
+        
         protected override bool OnBackButtonPressed()
         {
             Warning("Quit?", "There's no way out.");

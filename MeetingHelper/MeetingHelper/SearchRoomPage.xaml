@@ -27,7 +27,7 @@
 
                     <Grid Grid.Row="0" RowSpacing="0" VerticalOptions="Start">
                         <StackLayout VerticalOptions="Start">
-                            <Label Text="Current WiFi:" FontSize="Large" HorizontalOptions="Center" Margin="0,0,0,0"/>
+                            <Label x:Name="Debug_Label" Text="Current WiFi:" FontSize="Large" HorizontalOptions="Center" Margin="0,0,0,0"/>
                             <Grid HeightRequest="170" BackgroundColor="Orange" Margin="10,0,10,0" VerticalOptions="Start">
                                 <Label x:Name="Label_WiFi_Name" Text="Searching..." TextColor="Black" FontAttributes="Bold" FontSize="30" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Center"/>
                             </Grid>
@@ -83,12 +83,12 @@
                                                         <StackLayout Margin="10" HeightRequest="50">
                                                             <StackLayout Spacing="0" Orientation="Horizontal">
                                                                 <Label Text="found by " FontSize="20" VerticalOptions="Center" TextColor="#999999"/>
-                                                                <Label Text="Binding Founder" FontSize="Large"/>
+                                                                <Label Text="{Binding Founder}" FontSize="Large"/>
                                                                 <!--<Label Text="{Binding Founder}" FontSize="Large"/>-->
                                                             </StackLayout>
                                                             <StackLayout Spacing="0" Orientation="Horizontal" HorizontalOptions="End">
                                                                 <Label Text="at  " VerticalOptions="Center" TextColor="#999999"/>
-                                                                <Label Text="Binding Found_Time" HorizontalTextAlignment="End"/>
+                                                                <Label Text="{Binding Found_Time}" HorizontalTextAlignment="End"/>
                                                                 <!--<Label Text="{Binding Found_Time}" HorizontalTextAlignment="End"/>-->
                                                             </StackLayout>
                                                         </StackLayout>
@@ -140,11 +140,11 @@
             <StackLayout x:Name="Password_Layout" BackgroundColor="#AA000000" IsVisible="False">
                 <Grid VerticalOptions="Center" HorizontalOptions="CenterAndExpand" Padding="50,150,50,20">
                     <StackLayout BackgroundColor="#444444" Padding="10" Spacing="0">
-                        <Label Text="Selected room requires" FontSize="22" TextColor="#FFFFFF" HorizontalOptions="Center" Margin="0,10,0,0"/>
+                        <Label x:Name="Password_Title_Label" Text="Join room" FontSize="22" TextColor="#FFFFFF" HorizontalOptions="Center" Margin="0,10,0,0"/>
                         <Entry x:Name="Password_Entry" Placeholder="Password" FontSize="22" TextColor="White" PlaceholderColor="#BBBBBB" FontAttributes="Bold" HorizontalTextAlignment="Center"></Entry>
-                        <Button Clicked="Password_Clicked" Text="Enter" FontSize="16" FontAttributes="Bold" BackgroundColor="Orange" TextColor="Black"></Button>
-                        <Label x:Name="Password_Label_Wrong" Text="[ wrong password ]" IsVisible="False" FontAttributes="Bold" FontSize="15" TextColor="#FF4444" HorizontalOptions="Center"/>
-                        <!--<Label Text="[ accepted, entering... ]" FontAttributes="Bold" FontSize="15" TextColor="#44FF44" HorizontalOptions="Center"/>-->
+                        <Button Clicked="Password_Clicked" Text="Join" FontSize="16" FontAttributes="Bold" BackgroundColor="Orange" TextColor="Black"></Button>
+                        <Label x:Name="Password_Label" IsVisible="False" Text="" FontAttributes="Bold" FontSize="15" TextColor="#44FF44" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                        <Label x:Name="Password_Error_Label" IsVisible="False" Text="" FontAttributes="Bold" FontSize="15" TextColor="#FF4444" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
                     </StackLayout>
                 </Grid>
                 <Button Clicked="GoBack" Text="Go Back" FontAttributes="Bold" FontSize="16" BorderRadius="100" WidthRequest="100" HeightRequest="55" HorizontalOptions="Center" VerticalOptions="Start" BorderWidth="0"></Button>
@@ -158,6 +158,7 @@
                         <Entry x:Name="Create_Password_Entry" Placeholder="Password" FontSize="22" TextColor="White" PlaceholderColor="#AAAAAA" FontAttributes="Bold" HorizontalTextAlignment="Center"></Entry>
                         <Button Clicked="Create_Confirm_Clicked" Text="Create Room" FontSize="18" FontAttributes="Bold" BackgroundColor="Orange" TextColor="Black" Margin="5"></Button>
                         <Label x:Name="Create_Label" IsVisible="False" Text="" FontAttributes="Bold" FontSize="15" TextColor="#44FF44" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                        <Label x:Name="Create_Error_Label" IsVisible="False" Text="" FontAttributes="Bold" FontSize="15" TextColor="#FF4444" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
                     </StackLayout>
                 </Grid>
                 <Button Clicked="GoBack" Text="Go Back" FontAttributes="Bold" FontSize="16" BorderRadius="100" WidthRequest="100" HeightRequest="55" HorizontalOptions="Center" VerticalOptions="Start" BorderWidth="0"></Button>

@@ -14,7 +14,8 @@ using System.Net;
 
 /// <summary>
 /// 目前房間資訊沒有: Host名、建立時間、有無密碼
-/// TODO: 防轉向、頂條、implementation、WiFi內容更新
+/// TODO: 防轉向、頂條、implementation、    //WiFi內容更新
+/// ??: host join failed but room exist??
 /// </summary>
 
 namespace MeetingHelper
@@ -27,28 +28,31 @@ namespace MeetingHelper
         
         //  Rooms ItemSource
         ObservableCollection<ianRoom> Rooms;
-        
-        // LocationController mLocationController;
+        //  Layout control
         bool show_Warning;
         bool show_Password;
         bool show_Create;
         //  WiFi update
         bool Do_Update_WiFi;
-
+        //  Target room (to join or create)
         ianRoom targetRoom;
+        bool isTargetRoomFine = false;
+        bool isHost = false;
 
         public SearchRoomPage ()
 		{
 			InitializeComponent ();
-
             ///  init DJ
-            app.user.StartListener();
             app.user.OnEnterRoom += User_OnEnterRoom;
             app.user.OnRoomListChanged += User_OnRoomListChanged;
+            app.user.OnDuplicateName += User_OnDuplicateName;
+            app.user.OnWrongPassword += User_OnWrongPassword;
+            app.user.OnForbid += User_OnForbid;
+            app.user.OnError += User_OnError;
 
             //  init Room ItemSource
             Rooms = new ObservableCollection<ianRoom>();
-
+            ListView_Rooms.ItemsSource = Rooms;
             /// FAKE DATA
             //Rooms.Add(new ianRoom("Alpha Room", "Ian287913", "2019/1/21 19:35", ""));
             //Rooms.Add(new ianRoom("Bravo", "Founder", "2018/1/1 19:08", "ABCD"));
@@ -58,45 +62,70 @@ namespace MeetingHelper
             //Rooms.Add(new ianRoom("Charlie", "someone", "1998/12/16 07:32", "1234"));
             /// FAKE DATA
 
-            ListView_Rooms.ItemsSource = Rooms;
-
             //  init WiFi
             app.mWifiController.OnNetworkChanged += OnStatusChanged;
             //  Update WiFi
-            Do_Update_WiFi = true;
             Update_WiFi();
-
-            //  init Entry
-            Create_Password_Entry.Text = "";
-            Create_RoomName_Entry.Text = "";
-            Password_Entry.Text = "";
-
-            //  init Visibility
-            show_Warning = false;
-            show_Password = false;
-            show_Create = false;
-            show_Layout();
             
             //  click event
             ListView_Rooms.ItemTapped += (sender, e) =>
             {
                 //  get target room
                 targetRoom = e.Item as ianRoom;
+
                 ((ListView)sender).SelectedItem = null;
-                if(targetRoom.Password != "")
+                //  enable join layout
+                Device.BeginInvokeOnMainThread(() =>
                 {
-                    //  enable password layout
+                    Password_Title_Label.Text = targetRoom.Name;
+                    Password_Entry.Text = "";
+                    Password_Label.IsVisible = false;
+                    Password_Error_Label.IsVisible = false;
+                    Password_Error_Label.Text = "";
+
                     show_Password = true;
                     show_Layout();
-                }
-                else
-                {
-                    /// Enter room...
-                    Warning($"{targetRoom.Name}", $"Entering \"{targetRoom.Name}\"...");
-                }
+                });
             };
         }
 
+        
+
+
+
+        //  Initialyze page
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                //  updata room
+                Rooms.Clear();
+                /// use new DJ's properties
+                foreach (string room in app.user.RoomList)
+                    Rooms.Add(new ianRoom(room, "undefined", "2019/1/21 19:35", "1234"));
+                //  Update WiFi
+                Do_Update_WiFi = true;
+                //  Start Search room
+                app.user.StartListener();
+                //  init Entry
+                Create_Password_Entry.Text = "";
+                Create_RoomName_Entry.Text = "";
+                Password_Entry.Text = "";
+                Create_Label.Text = "";
+                Create_Label.IsVisible = false;
+                Create_Error_Label.Text = "";
+                Create_Error_Label.IsVisible = false;
+                //  init Visibility
+                show_Warning = false;
+                show_Password = false;
+                show_Create = false;
+                show_Layout();
+            });
+        }
+
+        //  Async - Update WiFi info
         async void Update_WiFi()
         {
             await Task.Delay(1000);
@@ -118,35 +147,7 @@ namespace MeetingHelper
                 await Task.Delay(500);
             }
         }
-
-        #region User_Events
-
-        private void User_OnEnterRoom(object sender, EventArgs e)
-        {
-            Create_Label.Text = "entering room...";
-            app.user.StopListener();
-            // Host page
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                Navigation.PushModalAsync(new HostPage());
-            });
-        }
-
-        private void User_OnRoomListChanged(object sender, EventArgs e)
-        {
-            //  get room list into listview
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                Rooms.Clear();
-                foreach (string room in app.user.RoomList)
-                {
-                    Rooms.Add(new ianRoom(room, "undefined", "2019/1/21 19:35", "1234"));
-                }
-            });
-        }
-
-        #endregion
-
+        
         //  update Layouts' visibility
         private void show_Layout()
         {
@@ -184,19 +185,179 @@ namespace MeetingHelper
         //  disable BackButton
         protected override bool OnBackButtonPressed()
         {
-            ///...
             return true;
         }
 
-        #region delegeates
+        //  Create a Room (host)
+        async private void CreateRoom()
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                isTargetRoomFine = true;
+                isHost = true;
+                //  notification
+                Create_Label.TextColor = Color.FromHex("44FF44");
+                Create_Label.Text = "establishing...";
+                Create_Label.IsVisible = true;
+                Create_Error_Label.Text = "";
 
-        //  Create Room
+                //  Create a room
+                app.myRoom = new Room(targetRoom.Name, targetRoom.Password);
+                app.myRoom.Open();
+                app.myRoom.StartBroadcast(0, TimeUnit.Second);
+            });
+            //  wait for 0.5sec
+            await Task.Delay(1000);
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                //  validate room
+                if (isTargetRoomFine)
+                {
+                    Create_Label.Text = "trying to enter...";
+                    //  get current IP
+                    string strHostName = Dns.GetHostName();
+                    IPHostEntry iphostentry = Dns.GetHostEntry(strHostName);
+                    IPAddress ip = iphostentry.AddressList[0];
+                    //  get into the room
+                    app.user.BecomeHost(Create_RoomName_Entry.Text, Create_Password_Entry.Text, app.UserName, ip);
+                    //  wait for enter event...
+                }
+                else
+                {
+                    //  create room failed
+                    Create_Error_Label.Text = "[create failed]";
+                    Create_Error_Label.IsVisible = true;
+                }
+            });
+        }
+
+        //  Enter a Room (guest)
+        async private void EnterRoom()
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                isTargetRoomFine = true;
+                isHost = false;
+                //  notification
+                Password_Label.Text = "verifying...";
+                Password_Label.IsVisible = true;
+                Password_Error_Label.IsVisible = false;
+
+                //  check room
+                app.user.JoinRoom(app.UserName, Password_Entry.Text, targetRoom.Name);
+            });
+            //  wait for 0.5sec
+            await Task.Delay(1000);
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                //  validate room
+                if (isTargetRoomFine)
+                {
+                    Password_Label.Text = "trying to enter...";
+                    //  wait for enter event...
+                }
+                else
+                {
+                    ///  failed (unknown)
+                    //Warning("Unknown", "join failed.");
+                }
+            });
+        }
+
+        //  Go to NextPage (HostPage or GuestPage)
+        private void NextPage()
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                //  Stop updating WiFi
+                Do_Update_WiFi = false;
+                //  Stop Search room
+                app.user.StopListener();
+                /// there should be some way to check...
+                if (isHost)
+                {
+                    Navigation.PushModalAsync(new HostPage());
+                }
+                else
+                {
+                    Navigation.PushModalAsync(new GuestPage());
+                }
+            });
+        }
+
+
+        #region User_Events
+        private void User_OnEnterRoom(object sender, EventArgs e)
+        {
+            Create_Label.Text = "entering...";
+            Password_Label.Text = "entering...";
+            // Go to Host page
+            NextPage();
+        }
+
+        private void User_OnRoomListChanged(object sender, EventArgs e)
+        {
+            //  get room list into listview
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                Rooms.Clear();
+                foreach (string room in app.user.RoomList)
+                {
+                    /// use new DJ's properties
+                    Rooms.Add(new ianRoom(room, "undefined", "2019/1/21 19:35", "1234"));
+                }
+            });
+        }
+
+        private void User_OnDuplicateName(object sender, EventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                isTargetRoomFine = false;
+                //  notification
+                Create_Error_Label.Text += "Same room-name existed\n";
+                Create_Error_Label.IsVisible = true;
+            });
+        }
+
+        private void User_OnWrongPassword(object sender, WrongPasswordEventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                isTargetRoomFine = false;
+                //  notification
+                Password_Error_Label.Text = $"wrong password ({e.RemainingTimes})";
+                Password_Error_Label.IsVisible = true;
+            });
+        }
+
+        private void User_OnForbid(object sender, EventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                isTargetRoomFine = false;
+                //  notification
+                Create_Error_Label.Text += "request forbidden\n";
+                Create_Error_Label.IsVisible = true;
+                Password_Error_Label.Text += "request forbidden\n";
+                Password_Error_Label.IsVisible = true;
+            });
+        }
+
+        private void User_OnError(object sender, ErrorEventArgs e)
+        {
+            Warning("Error_01", e.Exception.Message);
+        }
+        #endregion
+
+        #region delegeates
+        //  (B) Create Room
         private void OnClicked_Create(object sender, EventArgs e)
         {
             show_Create = true;
             show_Layout();
         }
-        //  Create Confirm (Validation)
+        //  (B) Create Confirm (Validation)
         private void Create_Confirm_Clicked(object sender, EventArgs e)
         {
             if(Create_RoomName_Entry.Text.Length > 12)
@@ -219,59 +380,36 @@ namespace MeetingHelper
             }
             else
             {
-                Create_Label.TextColor = Color.FromHex("44FF44");
-                Create_Label.Text = "creating...\nscaning nearby roomname...";
-                Create_Label.IsVisible = true;
-
-                /// Create a room
-                app.myRoom = new Room(Create_RoomName_Entry.Text, Create_Password_Entry.Text);
-                app.myRoom.Open();
-                app.myRoom.StartBroadcast(0, TimeUnit.Second);
-                //  get current IP
-                string strHostName = Dns.GetHostName();
-                IPHostEntry iphostentry = Dns.GetHostEntry(strHostName);
-                IPAddress ip = iphostentry.AddressList[0];
-                //  (get into the room)
-                app.user.BecomeHost(Create_RoomName_Entry.Text, Create_Password_Entry.Text, app.UserName, ip);
-                //  wait for enter event...
+                targetRoom = new ianRoom(Create_RoomName_Entry.Text, app.UserName, DateTime.Now.ToLocalTime().ToShortTimeString(), Create_Password_Entry.Text);
+                CreateRoom();
             }
         }
 
-        //  Enter Password
+        //  (B) Enter Password
         private void Password_Clicked(object sender, EventArgs e)
         {
-            /// validate password...
-            if (Password_Entry.Text == targetRoom.Password)
-            {
-                Password_Label_Wrong.IsVisible = false;
-                show_Password = false;
-                show_Layout();
-
-                /// Enter Room...
-                //...
-            }
-            else
-                Password_Label_Wrong.IsVisible = true;
+            EnterRoom();
         }
 
-        //  Go back
+        //  (B) Go back
         private void GoBack(object sender, EventArgs e)
         {
             Device.BeginInvokeOnMainThread(() =>
             {
-                Password_Label_Wrong.IsVisible = false;
+                Password_Error_Label.IsVisible = false;
                 Password_Entry.Text = "";
                 Create_Label.IsVisible = false;
+                Create_Error_Label.IsVisible = false;
                 Create_RoomName_Entry.Text = "";
                 Create_Password_Entry.Text = "";
-            });
 
-            show_Create = false;
-            show_Password = false;
-            show_Layout();
+                show_Create = false;
+                show_Password = false;
+                show_Layout();
+            });
         }
 
-        //  WiFi status changed
+        //  (W) WiFi status changed
         private void OnStatusChanged(object sender, NetworkChangedEventArgs e)
         {
             Device.BeginInvokeOnMainThread(() =>
@@ -297,10 +435,11 @@ namespace MeetingHelper
             {
                 Warning_Title.Text = title;
                 Warning_Content.Text = message;
+                show_Warning = true;
+                show_Layout();
             });
-            show_Warning = true;
-            show_Layout();
         }
+        //  (B) Warning
         private void Warning_Clicked(object sender, EventArgs e)
         {
             show_Warning = false;
@@ -313,20 +452,19 @@ namespace MeetingHelper
     public class ianRoom : BindableObject
     {
         public string Name { get; set; }
+        public string Password { get; set; }
         public string Founder { get; set; }
         public string Found_Time { get; set; }
-        public string Password { get; set; }
-        private bool _isSelected;
-
-        public bool IsSelected
-        {
-            get { return _isSelected; }
-            set
-            {
-                _isSelected = value;
-                OnPropertyChanged("IsSelected");
-            }
-        }
+        //private bool _isSelected;
+        //public bool IsSelected
+        //{
+        //    get { return _isSelected; }
+        //    set
+        //    {
+        //        _isSelected = value;
+        //        OnPropertyChanged("IsSelected");
+        //    }
+        //}
         
         public ianRoom(string name, string founder, string foundTime, string password)
         {
@@ -334,7 +472,7 @@ namespace MeetingHelper
             Founder = founder;
             Found_Time = foundTime;
             Password = password;
-            _isSelected = false;
+            //_isSelected = false;
         }
     }
 }
