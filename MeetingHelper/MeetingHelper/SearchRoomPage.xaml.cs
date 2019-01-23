@@ -32,6 +32,8 @@ namespace MeetingHelper
         bool show_Warning;
         bool show_Password;
         bool show_Create;
+        //  WiFi update
+        bool Do_Update_WiFi;
 
         ianRoom targetRoom;
 
@@ -60,6 +62,9 @@ namespace MeetingHelper
 
             //  init WiFi
             app.mWifiController.OnNetworkChanged += OnStatusChanged;
+            //  Update WiFi
+            Do_Update_WiFi = true;
+            Update_WiFi();
 
             //  init Entry
             Create_Password_Entry.Text = "";
@@ -92,7 +97,27 @@ namespace MeetingHelper
             };
         }
 
-        
+        async void Update_WiFi()
+        {
+            await Task.Delay(1000);
+            while(Do_Update_WiFi)
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    if (app.mWifiController.currentStatus.State.Equals(WifiDetailedState.Connected))
+                    {
+                        Label_WiFi_Name.Text = app.mWifiController.ConnectionInfo.SSID;
+                        Label_WiFi_Content.Text = $"BSSID: {app.mWifiController.ConnectionInfo.BSSID}\nLink Speed: {app.mWifiController.ConnectionInfo.LinkSpeed} Mbps";
+                    }
+                    else
+                    {
+                        Label_WiFi_Name.Text = app.mWifiController.currentStatus.State.ToString();
+                        Label_WiFi_Content.Text = "Please connect to any WiFi to join or create a room.";
+                    }
+                });
+                await Task.Delay(500);
+            }
+        }
 
         #region User_Events
 

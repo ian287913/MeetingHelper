@@ -107,6 +107,7 @@ namespace Controller
         private readonly Context ctx = null;
         public Action<string> myException;
         public event NetworkChangedEventHandler OnNetworkChanged;
+        public NetworkChangedEventArgs currentStatus = new NetworkChangedEventArgs(DetailedState.Idle);
         public bool Enable
         {
             get
@@ -141,7 +142,8 @@ namespace Controller
         {
             NetworkInfo info = (NetworkInfo)intent.GetParcelableExtra(WifiManager.ExtraNetworkInfo);
             DetailedState state = info.GetDetailedState();
-            OnNetworkChanged?.Invoke(this, new NetworkChangedEventArgs(state));
+            currentStatus = new NetworkChangedEventArgs(state);
+            OnNetworkChanged?.Invoke(this, currentStatus);
         }
         public async Task<IList<ScanResult>> GetWifiList()
         {
