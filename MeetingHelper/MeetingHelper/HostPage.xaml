@@ -4,24 +4,66 @@
              x:Class="MeetingHelper.HostPage">
     <ContentPage.Content>
         <Grid>
-            <!--Background image-->
-            <!--<Image Opacity="0.5"
-				   x:Name="img"
-				   Source="bridge_bg.png"
-				   Scale="1.5"
-				   Aspect="AspectFill"/>-->
-            <BoxView BackgroundColor="#333333"></BoxView>
+            <BoxView BackgroundColor="#282828"></BoxView>
 
-            <StackLayout Padding="10,25,10,5" x:Name="Main_Layout">
-                <!--<StackLayout HeightRequest="160">
-                    <Label Text="Current WiFi:" FontSize="Large" HorizontalOptions="Center" Margin="0,0,0,5"/>
-                    <Label Text="WiFi Name" TextColor="Black" BackgroundColor="Orange" FontAttributes="Bold" FontSize="30"  HorizontalTextAlignment="Center" Margin="10,0,10,0"/>
-                    <Label Text="BSSID: ca:6c:87:3b:de:18               Link speed: 34Mb/s" TextColor="Black" BackgroundColor="#88FFA500" FontSize="20"  HorizontalTextAlignment="Center" Margin="10,0,10,0"/>
-                </StackLayout>-->
-                <Label x:Name="Debug_Label" Text="debug" FontSize="Large" HorizontalOptions="Center" Margin="10"/>
-                <Label x:Name="Debug_Label2" Text="debug2" FontSize="Large" HorizontalOptions="Center" Margin="10"/>
+            <StackLayout Padding="10,0,10,5" x:Name="Main_Layout">
+                <StackLayout Spacing="0" Padding="5,0,5,0">
+                    <Grid RowSpacing="0" BackgroundColor="#282828">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="15"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="15"/>
+                        </Grid.RowDefinitions>
+                        <Label x:Name="RoomName_Label" Grid.Row="1" Text="RoomName" TextColor="White" FontAttributes="Bold" FontSize="35"  HorizontalTextAlignment="Start" Margin="30,0,10,0"/>
+                        <Label x:Name="SSID_Label" Grid.Row="2" Text="WiFi SSID" TextColor="Orange" FontAttributes="Bold" FontSize="25"  HorizontalTextAlignment="Start" Margin="30,0,10,0"/>
+                        <StackLayout Grid.Row="4" Orientation="Horizontal" HorizontalOptions="End" Padding="5,0,15,0" HeightRequest="30">
+                            <Grid RowSpacing="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="4"/>
+                                    <RowDefinition Height="3"/>
+                                    <RowDefinition Height="23"/>
+                                </Grid.RowDefinitions>
+                                <BoxView x:Name="Door_BoxView" Grid.Row="0" BackgroundColor="#44FF44"></BoxView>
+                                <Button Clicked="Door_Clicked" Grid.Row="2" Text="Door" TextColor="White" FontAttributes="Bold" ></Button>
+                            </Grid>
+                            <Grid RowSpacing="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="4"/>
+                                    <RowDefinition Height="3"/>
+                                    <RowDefinition Height="23"/>
+                                </Grid.RowDefinitions>
+                                <BoxView x:Name="Sound_BoxView" Grid.Row="0" BackgroundColor="#FF4444"></BoxView>
+                                <Button Clicked="Sound_Clicked" Grid.Row="2" Text="Sound" TextColor="White" FontAttributes="Bold" ></Button>
+                            </Grid>
+                            <Grid RowSpacing="0" WidthRequest="50">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="4"/>
+                                    <RowDefinition Height="3"/>
+                                    <RowDefinition Height="23"/>
+                                </Grid.RowDefinitions>
+                                <BoxView x:Name="Exit_BoxView" Grid.Row="0" BackgroundColor="#FF4444" HeightRequest="1"></BoxView>
+                                <Button Clicked="Exit_Clicked" Grid.Row="2" Text="Exit" TextColor="White" FontAttributes="Bold" ></Button>
+                            </Grid>
+                        </StackLayout>
+                    </Grid>
+                </StackLayout>
+
+                <StackLayout Orientation="Horizontal" Spacing="0" HorizontalOptions="FillAndExpand" Padding="5,0,5,0">
+                    <BoxView BackgroundColor="#CCCCCC" HeightRequest="4" WidthRequest="4" Margin="0,0,5,0"></BoxView>
+                    <BoxView BackgroundColor="#555555" HeightRequest="3" HorizontalOptions="FillAndExpand" VerticalOptions="Center"></BoxView>
+                    <BoxView BackgroundColor="#CCCCCC" HeightRequest="4" WidthRequest="4" Margin="5,0,0,0"></BoxView>
+                </StackLayout>
+                
+                <StackLayout IsVisible="False">
+                    <Label x:Name="Debug_Label" Text="debug" FontSize="Large" HorizontalOptions="Center" Margin="10"/>
+                    <Label x:Name="Debug_Label2" Text="debug2" FontSize="Large" HorizontalOptions="Center" Margin="10"/>
+                </StackLayout>
+
+                <!--Members-->
                 <Label Text="Members:" FontAttributes="None" FontSize="Large" HorizontalOptions="Center"/>
-
                 <ListView 
                     x:Name="ListView_Guests"
                     ItemsSource="{Binding .}" 
@@ -36,11 +78,11 @@
                         <DataTemplate>
                             <ViewCell>
                                 <!--Element of ListView (Fake background - To hide the ListView highlight)-->
-                                <StackLayout Spacing="0" Margin="0" Padding="5,0,5,0" BackgroundColor="#333333" >
+                                <StackLayout Spacing="0" Margin="0" Padding="5,0,5,0" BackgroundColor="#282828" >
                                     <!--Frame-->
-                                    <StackLayout Padding="5" BackgroundColor="#333333">
+                                    <StackLayout Padding="5" BackgroundColor="#282828">
                                         <!--Content-->
-                                        <StackLayout Spacing="0" BackgroundColor="#333333">
+                                        <StackLayout Spacing="0" BackgroundColor="#282828">
                                             <Grid ColumnSpacing="0">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="3"/>
@@ -68,8 +110,11 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
+
+                <Button x:Name="Action_Button" Text="Request" FontSize="35" FontAttributes="Bold" HeightRequest="60" Margin="45,0,45,20"></Button>
+                
             </StackLayout>
-            
+
             <!--Warning Screen (Error & Debugging)-->
             <StackLayout x:Name="Warning_Layout" BackgroundColor="#77000000" IsVisible="False">
                 <Grid VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Padding="50">
@@ -83,7 +128,7 @@
                     <BoxView BackgroundColor="#BBFFFFFF" HeightRequest="1.5" VerticalOptions="End"></BoxView>
                 </Grid>
             </StackLayout>
-            
+
         </Grid>
     </ContentPage.Content>
 </ContentPage>

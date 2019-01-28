@@ -13,9 +13,8 @@ using Controller.Component;
 using System.Net;
 
 /// <summary>
-/// 目前房間資訊沒有: Host名、建立時間、有無密碼
-/// TODO: 防轉向、頂條、implementation、    //WiFi內容更新
-/// ??: host join failed but room exist??
+/// TODO: 防轉向、頂條、implementation
+/// ??host join failed but room exist??
 /// </summary>
 
 namespace MeetingHelper
