@@ -71,7 +71,9 @@ namespace MeetingHelper
                 {
                     //  give Mic to target
                     app.user.AcceptAsker(target.Name);
+                    /// debug
                 }
+                /// else debug
             };
         }
 
@@ -87,6 +89,7 @@ namespace MeetingHelper
             });
             //  update list
             UpdateList();
+            UpdateButton();
             //  update WiFi
             Do_Update_WiFi = true;
         }

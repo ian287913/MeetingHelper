@@ -11,7 +11,7 @@
                     <Grid RowSpacing="0" BackgroundColor="#282828">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="15"/>
-                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="45"/>
                             <RowDefinition Height="30"/>
                             <RowDefinition Height="20"/>
                             <RowDefinition Height="30"/>
@@ -27,7 +27,8 @@
                                     <RowDefinition Height="23"/>
                                 </Grid.RowDefinitions>
                                 <BoxView x:Name="Door_BoxView" Grid.Row="0" BackgroundColor="#44FF44"></BoxView>
-                                <Button Clicked="Door_Clicked" Grid.Row="2" Text="Door" TextColor="White" FontAttributes="Bold" ></Button>
+                                <Button Clicked="Door_Clicked" Grid.Row="2" Text=""></Button>
+                                <Label Grid.Row="2" Text="DOOR" FontSize="16" TextColor="White" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Grid>
                             <Grid RowSpacing="0">
                                 <Grid.RowDefinitions>
@@ -36,7 +37,8 @@
                                     <RowDefinition Height="23"/>
                                 </Grid.RowDefinitions>
                                 <BoxView x:Name="Sound_BoxView" Grid.Row="0" BackgroundColor="#FF4444"></BoxView>
-                                <Button Clicked="Sound_Clicked" Grid.Row="2" Text="Sound" TextColor="White" FontAttributes="Bold" ></Button>
+                                <Button Clicked="Sound_Clicked" Grid.Row="2" Text=""></Button>
+                                <Label Grid.Row="2" Text="SOUND" FontSize="16" TextColor="White" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Grid>
                             <Grid RowSpacing="0" WidthRequest="50">
                                 <Grid.RowDefinitions>
@@ -45,7 +47,8 @@
                                     <RowDefinition Height="23"/>
                                 </Grid.RowDefinitions>
                                 <BoxView x:Name="Exit_BoxView" Grid.Row="0" BackgroundColor="#FF4444" HeightRequest="1"></BoxView>
-                                <Button Clicked="Exit_Clicked" Grid.Row="2" Text="Exit" TextColor="White" FontAttributes="Bold" ></Button>
+                                <Button Clicked="Exit_Clicked" Grid.Row="2" Text=""></Button>
+                                <Label Grid.Row="2" Text="EXIT" FontSize="16" TextColor="White" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Grid>
                         </StackLayout>
                     </Grid>
