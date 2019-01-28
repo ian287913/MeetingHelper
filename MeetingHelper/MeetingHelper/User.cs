@@ -3,6 +3,7 @@ using Controller.NetWork;
 using System;
 using System.Collections.Generic;
 using System.Net;
+
 namespace Controller.Component
 {
     public class UserEventArgs : EventArgs
@@ -45,23 +46,20 @@ namespace Controller.Component
         /// <summary>
         /// 房間列表。
         /// </summary>
-        private readonly Dictionary<IPAddress, string> m_RoomList;
+        private readonly Dictionary<IPAddress, RoomInfo> m_RoomList;
         /// <summary>
         /// 定時移除房間。
         /// </summary>
-        private readonly Dictionary<IPAddress, DelayCaller> RemoveEvent;
+        private readonly Dictionary<IPAddress, DelayCaller> m_RemoveEvent;
         /// <summary>
         /// 房間的資訊，有名稱和IP位址。
         /// </summary>
-        public List<string> RoomList
+        public List<RoomInfo> RoomList
         {
             get
             {
-                List<string> temp = new List<string>();
-                foreach (var roomInfo in m_RoomList)
-                {
-                    temp.Add($"{roomInfo.Value}({roomInfo.Key})");
-                }
+                List<RoomInfo> temp = new List<RoomInfo>();
+                temp.AddRange(m_RoomList.Values);
                 return temp;
             }
         }
@@ -133,8 +131,8 @@ namespace Controller.Component
         #region Constructor
         public User()
         {
-            m_RoomList = new Dictionary<IPAddress, string>();
-            RemoveEvent = new Dictionary<IPAddress, DelayCaller>();
+            m_RoomList = new Dictionary<IPAddress, RoomInfo>();
+            m_RemoveEvent = new Dictionary<IPAddress, DelayCaller>();
             Config = new UserConfigure();
             RoomConfig = new RoomConfigure();
             m_audioSender = new SimpleUdpServer(0);
@@ -145,19 +143,32 @@ namespace Controller.Component
 
         #region Method
         /// <summary>
-        /// 開始接收房間列表。
+        /// 清除當前房間列表，並開始接收房間列表。
         /// </summary>
         public void StartListener()
         {
+            foreach (var pair in m_RemoveEvent)
+            {
+                pair.Value.Close();
+                m_RoomList.Remove(pair.Key);
+            }
+            m_RoomList.Clear();
+            m_RemoveEvent.Clear();
+            OnRoomListChanged?.Invoke(this, EventArgs.Empty);
             m_Listener.Start();
         }
 
         /// <summary>
-        /// 取消接收房間列表。
+        /// 保持當前房間列表，並停止接收房間列表。
         /// </summary>
         public void StopListener()
         {
             m_Listener.Close();
+            foreach (var pair in m_RemoveEvent)
+            {
+                pair.Value.Close();
+            }
+            OnRoomListChanged?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -169,28 +180,32 @@ namespace Controller.Component
         public void JoinRoom(string Name, string Password, string RoomInfo)
         {
             IPAddress RoomAddr = FindRoom(RoomInfo);
-            Config.Name = Name;
-            RoomConfig.Password = Password;
-            if (m_cmdReceiver != null && !m_cmdReceiver.Address.Equals(RoomAddr))
+            if (m_RoomList.ContainsKey(RoomAddr) && m_RemoveEvent.TryGetValue(RoomAddr, out DelayCaller caller))
             {
-                m_cmdReceiver.Dispose();
-                m_cmdReceiver = null;
-            }
-            if (m_cmdReceiver is null)
-            {
-                m_cmdReceiver = new SimpleTcpClient(new IPEndPoint(RoomAddr, NetWorkPort.Commuting));
-                m_cmdReceiver.OnConnect += OnRoomConnect;
-                m_cmdReceiver.OnMessage += OnReceiveCommand;
-                m_cmdReceiver.OnError += OnReceiverError;
-                m_cmdReceiver.Connect();
-            }
-            else if (m_cmdReceiver.IsConnected)
-            {
-                m_cmdReceiver.Send(Helper.MessageWrapper(MessageType.JoinRoom, Config.Name, RoomConfig.Password));
+                caller.Cancel();
+                Config.Name = Name;
+                RoomConfig.Password = Password;
+                if (m_cmdReceiver != null && !(m_cmdReceiver.Address.Equals(RoomAddr) && m_cmdReceiver.IsConnected))
+                {
+                    m_cmdReceiver.Dispose();
+                    m_cmdReceiver = null;
+                }
+                if (m_cmdReceiver == null)
+                {
+                    m_cmdReceiver = new SimpleTcpClient(new IPEndPoint(RoomAddr, NetWorkPort.Commuting));
+                    m_cmdReceiver.OnConnect += OnRoomConnect;
+                    m_cmdReceiver.OnMessage += OnReceiveCommand;
+                    m_cmdReceiver.OnError += OnReceiverError;
+                    m_cmdReceiver.Connect();
+                }
+                else if (m_cmdReceiver.IsConnected)
+                {
+                    m_cmdReceiver.Send(Helper.MessageWrapper(MessageType.JoinRoom, Config.Name, RoomConfig.Password));
+                }
             }
             else
             {
-                OnError?.Invoke(this, new ErrorEventArgs(new Exception("Can't Join Room. Wait Later.")));
+                OnError?.Invoke(this, new ErrorEventArgs(new ArgumentException("Room does not exist.")));
             }
         }
 
@@ -231,6 +246,19 @@ namespace Controller.Component
         }
 
         /// <summary>
+        /// 成為主席。
+        /// </summary>
+        /// <param name="RoomName">房間名稱</param>
+        /// <param name="Password">房間密碼</param>
+        /// <param name="Name">使用者名稱</param>
+        /// <param name="RoomAddr">房間IP位址</param>
+        public void BecomeHost(string RoomName, string Password, string Name, IPAddress RoomAddr)
+        {
+            AddRoom(RoomAddr, new RoomInfo(RoomName, Name, Password != "", RoomAddr));
+            JoinRoom(Name, Password, $"{RoomName}({RoomAddr})");
+        }
+
+        /// <summary>
         /// 用房間資訊搜尋IP位址。
         /// </summary>
         /// <param name="RoomInfo">房間資訊</param>
@@ -251,38 +279,26 @@ namespace Controller.Component
         }
 
         /// <summary>
-        /// 成為主席。
-        /// </summary>
-        /// <param name="RoomName">房間名稱</param>
-        /// <param name="Password">房間密碼</param>
-        /// <param name="Name">使用者名稱</param>
-        /// <param name="RoomAddr">房間IP位址</param>
-        public void BecomeHost(string RoomName, string Password, string Name, IPAddress RoomAddr)
-        {
-            AddRoom(RoomAddr, RoomName);
-            JoinRoom(Name, Password, $"{RoomName}({RoomAddr})");
-        }
-
-        /// <summary>
         /// 新增房間。
         /// </summary>
         /// <param name="RoomAddr">房間IP位址</param>
         /// <param name="RoomName">房間名稱</param>
-        private void AddRoom(IPAddress RoomAddr, string RoomName)
+        private void AddRoom(IPAddress RoomAddr, RoomInfo Info)
         {
-            m_RoomList[RoomAddr] = RoomName;
-            if (RemoveEvent.TryGetValue(RoomAddr, out DelayCaller caller))
+            m_RoomList[RoomAddr] = Info;
+            if (m_RemoveEvent.TryGetValue(RoomAddr, out DelayCaller caller))
             {
                 caller.Reset();
             }
             else
             {
-                RemoveEvent[RoomAddr] = new DelayCaller(5000, () =>
+                m_RemoveEvent[RoomAddr] = new DelayCaller(500, () =>
                 {
                     m_RoomList.Remove(RoomAddr);
-                    RemoveEvent.Remove(RoomAddr);
+                    m_RemoveEvent.Remove(RoomAddr);
                     OnRoomListChanged?.Invoke(this, EventArgs.Empty);
                 });
+                OnRoomListChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -315,25 +331,26 @@ namespace Controller.Component
         private void OnRoomFind(object sender, UdpMessageEventArgs e)
         {
             SimpleTcpClient NameGetter = new SimpleTcpClient(Helper.ChangePort(e.RemoteEndPoint, NetWorkPort.Broadcast));
-            NameGetter.OnMessage += OnNameReceive;
+            NameGetter.OnMessage += OnInfoReceive;
             NameGetter.OnConnect += (sender2, e2) =>
             {
                 NameGetter.Send(e.Data);
             };
             NameGetter.Connect();
         }
+
         /// <summary>
         /// 接收到房間名稱。
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnNameReceive(object sender, TcpMessageEventArgs e)
+        private void OnInfoReceive(object sender, TcpMessageEventArgs e)
         {
             SimpleTcpClient Getter = (SimpleTcpClient)sender;
-            AddRoom(Getter.Address, Helper.GetString(e.Data));
+            AddRoom(Getter.Address, new RoomInfo(e.Data, Getter.Address));
             Getter.Dispose();
-            OnRoomListChanged?.Invoke(this, EventArgs.Empty);
         }
+
         /// <summary>
         /// 成功連線到房間主機，並要求進入房間。
         /// </summary>
@@ -343,6 +360,7 @@ namespace Controller.Component
         {
             m_cmdReceiver.Send(Helper.MessageWrapper(MessageType.JoinRoom, Config.Name, RoomConfig.Password));
         }
+
         /// <summary>
         /// TCP連線出現問題。
         /// </summary>
@@ -352,6 +370,7 @@ namespace Controller.Component
         {
             OnError?.Invoke(this, e);
         }
+
         /// <summary>
         /// 接收到房間主機下的指令。
         /// </summary>
@@ -371,15 +390,17 @@ namespace Controller.Component
                 #region Success
                 case MessageType.Success:
                     Config.IsInRoom = true;
-                    RoomConfig.Host = cmd.Data[0];
-                    RoomConfig.Name = m_RoomList[m_cmdReceiver.Address];
-                    RoomConfig.Address = m_cmdReceiver.Address;
+                    RoomInfo Info = m_RoomList[m_cmdReceiver.Address];
+                    RoomConfig.SetByInfo(Info);
+                    m_RoomList.Clear();
+                    m_RemoveEvent.Clear();
                     m_cmdReceiver.Send(Helper.MessageWrapper(MessageType.UserList));
                     break;
                 #endregion
                 #region Forbidden
                 case MessageType.Forbidden:
                     Config.IsInRoom = false;
+                    Config.HaveMic = false;
                     m_cmdReceiver.Close();
                     OnForbid?.Invoke(this, EventArgs.Empty);
                     break;
@@ -461,11 +482,11 @@ namespace Controller.Component
                     m_cmdReceiver.Dispose();
                     m_audioSender.Dispose();
                     m_RoomList.Clear();
-                    foreach (var item in RemoveEvent)
+                    foreach (var item in m_RemoveEvent)
                     {
                         item.Value.Close();
                     }
-                    RemoveEvent.Clear();
+                    m_RemoveEvent.Clear();
                 }
                 disposedValue = true;
             }

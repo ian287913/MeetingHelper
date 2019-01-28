@@ -10,7 +10,7 @@ namespace Controller
         public byte[] Data { get; private set; }
         public TcpMessageEventArgs(int dataLength, byte[] data)
         {
-            Length = data.Length < dataLength ? data.Length : dataLength;
+            Length = Math.Min(data.Length, dataLength);
             Data = new byte[dataLength];
             Array.Copy(data, Data, Length);
         }
@@ -24,13 +24,14 @@ namespace Controller
         public byte[] Data { get; private set; }
         public UdpMessageEventArgs(int dataLength, byte[] data, EndPoint endPoint)
         {
-            Length = data.Length < dataLength ? data.Length : dataLength;
+            Length = Math.Min(data.Length, dataLength);
             Data = new byte[dataLength];
             Array.Copy(data, Data, Length);
-            RemoteEndPoint = endPoint as IPEndPoint;
+            RemoteEndPoint = (IPEndPoint)endPoint;
         }
     }
 
+    public delegate void ErrorEventHandler(object sender, ErrorEventArgs e);
     public class ErrorEventArgs : EventArgs
     {
         public Exception Exception { get; private set; }
@@ -39,5 +40,4 @@ namespace Controller
             Exception = ex;
         }
     }
-    public delegate void ErrorEventHandler(object sender, ErrorEventArgs e);
 }

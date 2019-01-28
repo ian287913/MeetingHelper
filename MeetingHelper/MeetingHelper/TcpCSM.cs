@@ -2,10 +2,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Controller.NetWork
 {
@@ -26,9 +26,9 @@ namespace Controller.NetWork
         #region Event
         public event EventHandler OnAccept;
         public event TcpMessageEventHandler OnMessage;
+        public event EventHandler OnClose;
         public event ErrorEventHandler OnError;
         public event ErrorEventHandler OnClientError;
-        public event EventHandler OnClose;
         #endregion
 
         #region Constructor
@@ -121,8 +121,8 @@ namespace Controller.NetWork
             }
             m_ConnList.Clear();
             m_Socket?.Close();
-            m_Socket = null;
             m_Active = false;
+            m_Socket = null;
         }
 
         public void KeepAlive(SimpleTcpClient conn)
@@ -139,7 +139,7 @@ namespace Controller.NetWork
 
         private async void RemoveConn(object obj)
         {
-            SimpleTcpClient conn = obj as SimpleTcpClient;
+            SimpleTcpClient conn = (SimpleTcpClient)obj;
             await Task.Delay(conn.TTL);
             conn.Close();
             m_ConnList.Remove(conn);
@@ -182,7 +182,7 @@ namespace Controller.NetWork
 
         private void _OnClose(object sender, EventArgs e)
         {
-            SimpleTcpClient conn = sender as SimpleTcpClient;
+            SimpleTcpClient conn = (SimpleTcpClient)sender;
             conn.Close();
             m_ConnList.Remove(conn);
             OnClose?.Invoke(conn, e);
@@ -241,7 +241,7 @@ namespace Controller.NetWork
         #region Constructor
         public SimpleTcpClient(IPEndPoint localEP)
         {
-            m_SocketEP = new IPEndPoint(new IPAddress(localEP.Address.GetAddressBytes()), localEP.Port); ;
+            m_SocketEP = new IPEndPoint(new IPAddress(localEP.Address.GetAddressBytes()), localEP.Port);
             m_Socket = new Socket(m_SocketEP.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             receiveBuffer = new byte[m_Socket.ReceiveBufferSize];
         }
@@ -311,7 +311,7 @@ namespace Controller.NetWork
             try
             {
                 int len = m_Socket.EndReceive(result);
-                if (len == 0 && m_Socket.Available == 0 || m_Socket.Connected == false)
+                if (m_Socket.Connected == false || len == 0 && m_Socket.Available == 0)
                 {
                     Close();
                 }
@@ -360,8 +360,9 @@ namespace Controller.NetWork
             {
                 if (m_Active)
                 {
-                    m_Socket.BeginDisconnect(true, DisconnectCallBack, null);
                     m_Active = false;
+                    m_Socket.Shutdown(SocketShutdown.Both);
+                    m_Socket.BeginDisconnect(true, DisconnectCallBack, null);
                 }
             }
             catch (Exception ex)

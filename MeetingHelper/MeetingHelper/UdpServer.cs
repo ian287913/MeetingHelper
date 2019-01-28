@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
 namespace Controller.NetWork
 {
@@ -44,7 +44,7 @@ namespace Controller.NetWork
         #region UdpEvent
         public void Start()
         {
-            if (m_Socket is null)
+            if (m_Socket == null)
             {
                 m_Socket = new Socket(m_SocketEP.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
             }

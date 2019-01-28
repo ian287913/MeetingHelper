@@ -3,6 +3,7 @@ using Controller.NetWork;
 using System;
 using System.Collections.Generic;
 using System.Net;
+
 namespace Controller.Component
 {
     public class Room : IDisposable
@@ -90,7 +91,8 @@ namespace Controller.Component
             m_trigger.SetSendBuffer(m_checkByte);
 
             m_nameSender = new SimpleTcpServer(NetWorkPort.Broadcast);
-            m_nameSender.OnAccept += OnNameWanted;
+            m_nameSender.OnAccept += OnGetterAccept;
+            m_nameSender.OnMessage += OnNameWanted;
 
             m_audioReceiver = new SimpleUdpServer(NetWorkPort.Talking);
             m_audioReceiver.OnMessage += OnAudioDataReceive;
@@ -124,7 +126,7 @@ namespace Controller.Component
         }
 
         /// <summary>
-        /// 開啟房間。
+        /// 開啟房間，預設是關閉麥克風。
         /// </summary>
         public void Open()
         {
@@ -143,7 +145,7 @@ namespace Controller.Component
         }
 
         /// <summary>
-        /// 開啟麥克風。
+        /// 開啟麥克風時，房間也會跟著打開。
         /// </summary>
         public void OpenMic()
         {
@@ -162,15 +164,39 @@ namespace Controller.Component
 
         #region EventCaller
         /// <summary>
+        /// 要求房間名稱的連線要求。
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnGetterAccept(object sender, EventArgs e)
+        {
+            SimpleTcpClient conn = (SimpleTcpClient)sender;
+            m_nameSender.KeepAlive(conn, 3000);
+        }
+        /// <summary>
         /// 傳送房間名稱。
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnNameWanted(object sender, EventArgs e)
+        private void OnNameWanted(object sender, TcpMessageEventArgs e)
         {
             SimpleTcpClient conn = (SimpleTcpClient)sender;
-            m_nameSender.KeepAlive(conn, 3000);
-            conn.Send(Config.Name);
+            if (e.Length != m_checkByte.Length)
+            {
+                conn.Close();
+            }
+            else
+            {
+                for (int i = 0; i < e.Length; i++)
+                {
+                    if (e.Data[i] != m_checkByte[i])
+                    {
+                        conn.Close();
+                        return;
+                    }
+                }
+                conn.Send(Config.GetInfoBytes());
+            }
         }
 
         /// <summary>
@@ -197,7 +223,7 @@ namespace Controller.Component
         /// <param name="e"></param>
         private void OnAccept(object sender, EventArgs e)
         {
-            m_cmdSender.KeepAlive(sender as SimpleTcpClient);
+            m_cmdSender.KeepAlive((SimpleTcpClient)sender);
         }
 
         /// <summary>
@@ -207,7 +233,7 @@ namespace Controller.Component
         /// <param name="e"></param>
         private void OnRequestReceive(object sender, TcpMessageEventArgs e)
         {
-            SimpleTcpClient conn = sender as SimpleTcpClient;
+            SimpleTcpClient conn = (SimpleTcpClient)sender;
             byte[] TotalData = e.Data;
             if (!Helper.IsEnough(e, out int remain))
             {
@@ -247,10 +273,11 @@ namespace Controller.Component
                     }
                     else
                     {
-                        if (HostConn is null)
+                        if (HostConn == null)
                         {
                             HostConn = conn;
                             Config.Host = cmd.Data[0];
+                            Config.CreatedAt = DateTime.UtcNow;
                         }
                         ErrorCount.Remove(conn);
                         NCMap.AddByKey(cmd.Data[0], conn);

@@ -102,9 +102,9 @@ namespace MeetingHelper
             {
                 //  updata room
                 Rooms.Clear();
-                /// use new DJ's properties
-                foreach (string room in app.user.RoomList)
-                    Rooms.Add(new ianRoom(room, "undefined", "2019/1/21 19:35", "1234"));
+            /// use new DJ's properties
+            foreach (RoomInfo room in app.user.RoomList)
+                Rooms.Add(new ianRoom(room.Name, room.Host, room.CreatedAt.ToLocalTime().ToShortDateString(), room.Locked, room.Address.ToString()));
                 //  Update WiFi
                 Do_Update_WiFi = true;
                 //  Start Search room
@@ -214,12 +214,8 @@ namespace MeetingHelper
                 if (isTargetRoomFine)
                 {
                     Create_Label.Text = "trying to enter...";
-                    //  get current IP
-                    string strHostName = Dns.GetHostName();
-                    IPHostEntry iphostentry = Dns.GetHostEntry(strHostName);
-                    IPAddress ip = iphostentry.AddressList[0];
                     //  get into the room
-                    app.user.BecomeHost(Create_RoomName_Entry.Text, Create_Password_Entry.Text, app.UserName, ip);
+                    app.user.BecomeHost(targetRoom.Name, targetRoom.Password, app.UserName, IPAddress.Parse(targetRoom.IpAddress));
                     //  wait for enter event...
                 }
                 else
@@ -301,10 +297,10 @@ namespace MeetingHelper
             Device.BeginInvokeOnMainThread(() =>
             {
                 Rooms.Clear();
-                foreach (string room in app.user.RoomList)
+                foreach (RoomInfo room in app.user.RoomList)
                 {
                     /// use new DJ's properties
-                    Rooms.Add(new ianRoom(room, "undefined", "2019/1/21 19:35", "1234"));
+                    Rooms.Add(new ianRoom(room.Name, room.Host, room.CreatedAt.ToLocalTime().ToShortDateString(), room.Locked, room.Address.ToString()));
                 }
             });
         }
@@ -380,7 +376,12 @@ namespace MeetingHelper
             }
             else
             {
-                targetRoom = new ianRoom(Create_RoomName_Entry.Text, app.UserName, DateTime.Now.ToLocalTime().ToShortTimeString(), Create_Password_Entry.Text);
+                //  get current IP
+                string strHostName = Dns.GetHostName();
+                IPHostEntry iphostentry = Dns.GetHostEntry(strHostName);
+                IPAddress ip = iphostentry.AddressList[0];
+                //  Create a target room
+                targetRoom = new ianRoom(Create_RoomName_Entry.Text, app.UserName, DateTime.Now.ToLocalTime().ToShortTimeString(), Create_Password_Entry.Text, ip.ToString());
                 CreateRoom();
             }
         }
@@ -452,9 +453,11 @@ namespace MeetingHelper
     public class ianRoom : BindableObject
     {
         public string Name { get; set; }
-        public string Password { get; set; }
         public string Founder { get; set; }
         public string Found_Time { get; set; }
+        public string IpAddress { get; set; }
+        public bool IsLocked { get; set; }
+        public string Password { get; set; }
         //private bool _isSelected;
         //public bool IsSelected
         //{
@@ -465,14 +468,28 @@ namespace MeetingHelper
         //        OnPropertyChanged("IsSelected");
         //    }
         //}
-        
-        public ianRoom(string name, string founder, string foundTime, string password)
+
+        public ianRoom(string name, string founder, string foundTime, bool isLocked, string ipAddress)
+        {
+            Name = name;
+            Founder = founder;
+            Found_Time = foundTime;
+            IsLocked = isLocked;
+            IpAddress = ipAddress;
+            //_isSelected = false;
+            Password = "unknown";
+        }
+        public ianRoom(string name, string founder, string foundTime, string password, string ipAddress)
         {
             Name = name;
             Founder = founder;
             Found_Time = foundTime;
             Password = password;
-            //_isSelected = false;
+            IpAddress = ipAddress;
+            if (password == "")
+                IsLocked = false;
+            else
+                IsLocked = true;
         }
     }
 }

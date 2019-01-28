@@ -73,7 +73,7 @@
                                                             <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="Large" TextColor="#FFFFFF"/>
                                                         </StackLayout>
                                                         <StackLayout Grid.Column="1" Orientation="Horizontal" Spacing="4" HorizontalOptions="End" Padding="0" VerticalOptions="Center">
-                                                            <Label Text="(locked)" TextColor="#AAAAAA"/>
+                                                            <Label Text="{Binding IpAddress}" TextColor="#AAAAAA"/>
                                                         </StackLayout>
                                                     </Grid>
 

@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
+using System.Text;
+
 namespace Controller
 {
     public static class NetWorkPort
@@ -20,28 +23,38 @@ namespace Controller
 
     public class RoomConfigure
     {
+        /// <summary>
+        /// 使用者名稱的不重複列表。
+        /// </summary>
         private HashSet<string> m_userlist;
+        /// <summary>
+        /// 要求者的不重複列表。
+        /// </summary>
         private List<string> m_askerlist;
         /// <summary>
         /// 房間IP位址。
         /// </summary>
-        public IPAddress Address { get; set; }
+        public IPAddress Address { get; set; } = IPAddress.Loopback;
         /// <summary>
         /// 主席名稱。
         /// </summary>
-        public string Host { get; set; }
+        public string Host { get; set; } = "";
         /// <summary>
         /// 房間名稱。
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = "";
         /// <summary>
         /// 房間密碼。
         /// </summary>
-        public string Password { get; set; }
+        public string Password { get; set; } = "";
+        /// <summary>
+        /// 建立時間。
+        /// </summary>
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         /// <summary>
         /// 發言者名稱。
         /// </summary>
-        public string Speaker { get; set; }
+        public string Speaker { get; set; } = "";
         /// <summary>
         /// 房間成員名單。
         /// </summary>
@@ -62,15 +75,17 @@ namespace Controller
             get
             {
                 string[] temp = new string[m_askerlist.Count];
-                m_userlist.CopyTo(temp);
+                m_askerlist.CopyTo(temp);
                 return temp;
             }
         }
+
         public RoomConfigure()
         {
             m_userlist = new HashSet<string>();
             m_askerlist = new List<string>();
         }
+
         /// <summary>
         /// 新增使用者。
         /// </summary>
@@ -146,6 +161,34 @@ namespace Controller
         {
             m_askerlist.Clear();
         }
+        /// <summary>
+        /// 取得建立<see cref="RoomInfo"/>的位元組資訊。
+        /// </summary>
+        /// <returns></returns>
+        public byte[] GetInfoBytes()
+        {
+            byte[] nameBytes = Encoding.UTF8.GetBytes(Name);
+            byte[] hostBytes = Encoding.UTF8.GetBytes(Host);
+            byte[] createAtBytes = BitConverter.GetBytes(CreatedAt.Ticks);
+            byte[] result = new byte[createAtBytes.Length + nameBytes.Length + hostBytes.Length + 2];
+            result.Initialize();
+            createAtBytes.CopyTo(result, 0);
+            result[8] = (byte)(Password != "" ? 1 : 0);
+            nameBytes.CopyTo(result, createAtBytes.Length + 1);
+            hostBytes.CopyTo(result, result.Length - hostBytes.Length);
+            return result;
+        }
+        /// <summary>
+        /// 用<see cref="RoomInfo"/>來輸入資訊。
+        /// </summary>
+        /// <param name="Info"></param>
+        public void SetByInfo(RoomInfo Info)
+        {
+            Host = Info.Host;
+            Address = Info.Address;
+            Name = Info.Name;
+            CreatedAt = Info.CreatedAt;
+        }
     }
 
     public class UserConfigure
@@ -162,5 +205,49 @@ namespace Controller
         /// 使用者是否有發言權。
         /// </summary>
         public bool HaveMic { get; internal set; } = false;
+    }
+
+    public class RoomInfo
+    {
+        public string Name { get; private set; }
+        public string Host { get; private set; }
+        public IPAddress Address { get; private set; }
+        public DateTime CreatedAt { get; private set; }
+        public bool Locked { get; private set; }
+        public RoomInfo(string Name, string Host, bool isLock, IPAddress addr)
+        {
+            this.Name = Name;
+            this.Host = Host;
+            Locked = isLock;
+            CreatedAt = DateTime.UtcNow;
+            Address = addr;
+        }
+        public RoomInfo(byte[] data, IPAddress addr)
+        {
+            long ticks = BitConverter.ToInt64(data, 0);
+            CreatedAt = new DateTime(ticks, DateTimeKind.Utc);
+            Locked = data[8] == 1;
+            string[] temp = Encoding.UTF8.GetString(data, 9, data.Length - 9).Split('\0');
+            Name = temp[0];
+            Host = temp[1];
+            Address = addr;
+        }
+        public byte[] ToBytes()
+        {
+            byte[] nameBytes = Encoding.UTF8.GetBytes(Name);
+            byte[] hostBytes = Encoding.UTF8.GetBytes(Host);
+            byte[] createAtBytes = BitConverter.GetBytes(CreatedAt.Ticks);
+            byte[] result = new byte[createAtBytes.Length + nameBytes.Length + hostBytes.Length + 2];
+            result.Initialize();
+            createAtBytes.CopyTo(result, 0);
+            result[8] = (byte)(Locked ? 1 : 0);
+            nameBytes.CopyTo(result, createAtBytes.Length + 1);
+            hostBytes.CopyTo(result, result.Length - hostBytes.Length);
+            return result;
+        }
+        public override string ToString()
+        {
+            return $"{Name }({Address})";
+        }
     }
 }
