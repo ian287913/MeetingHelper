@@ -18,7 +18,7 @@
                             <RowDefinition Height="15"/>
                         </Grid.RowDefinitions>
                         <Label x:Name="RoomName_Label" Grid.Row="1" Text="RoomName" TextColor="White" FontAttributes="Bold" FontSize="35"  HorizontalTextAlignment="Start" Margin="30,0,10,0"/>
-                        <Label x:Name="SSID_Label" Grid.Row="2" Text="WiFi SSID" TextColor="Orange" FontAttributes="Bold" FontSize="25"  HorizontalTextAlignment="Start" Margin="30,0,10,0"/>
+                        <Label x:Name="SSID_Label" Grid.Row="2" Text="WiFi SSID" TextColor="Orange" FontAttributes="Bold" FontSize="25"  HorizontalTextAlignment="Start" Margin="35,0,10,0"/>
                         <StackLayout Grid.Row="4" Orientation="Horizontal" HorizontalOptions="End" Padding="5,0,15,0" HeightRequest="30">
                             <Grid RowSpacing="0">
                                 <Grid.RowDefinitions>
@@ -72,7 +72,7 @@
 					SeparatorColor="#DFDFDF"
 					HasUnevenRows="false"
 					RowHeight="60"
-                    Margin="0,0,0,20"
+                    Margin="20,0,20,20"
                     >
                     <ListView.ItemTemplate>
                         <DataTemplate>
@@ -85,21 +85,24 @@
                                         <StackLayout Spacing="0" BackgroundColor="#282828">
                                             <Grid ColumnSpacing="0">
                                                 <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="3"/>
-                                                    <ColumnDefinition Width="210"/>
-                                                    <ColumnDefinition Width="3"/>
+                                                    <ColumnDefinition Width="4"/>
                                                     <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="4"/>
+                                                    <ColumnDefinition Width="0"/>
                                                     <ColumnDefinition Width="5"/>
                                                 </Grid.ColumnDefinitions>
 
-                                                <BoxView Grid.Column="0" BackgroundColor="DarkOrange" WidthRequest="3" HorizontalOptions="Fill" ></BoxView>
-                                                <StackLayout Grid.Column="1" Spacing="0" Padding="10,8,0,11" Margin="5,1,5,1" BackgroundColor="#66FFAA11">
-                                                    <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="Large" TextColor="#FFFFFF" VerticalOptions="Center" />
+                                                <BoxView Grid.Column="0" BackgroundColor="{Binding SideColor}" WidthRequest="4" HorizontalOptions="Fill" ></BoxView>
+                                                <StackLayout Grid.Column="1" Spacing="0" Padding="10,8,0,11" Margin="5,0,5,0" BackgroundColor="{Binding Color}">
+                                                    <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="Large" TextColor="White" VerticalOptions="Center" Margin="10,0,0,0"/>
                                                 </StackLayout>
-                                                <BoxView Grid.Column="2" BackgroundColor="DarkOrange" WidthRequest="3" HorizontalOptions="Fill" ></BoxView>
-                                                <StackLayout Grid.Column="3" Padding="0,13,0,11" Margin="5,1,5,1" BackgroundColor="#555555">
-                                                    <Label IsVisible="True" Text="Speaking" FontAttributes="Bold" FontSize="16"  TextColor="#EEEEEE" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
+                                                <StackLayout Grid.Column="1" Spacing="0" Padding="10,8,0,11" Margin="5,0,5,0">
+                                                    <Label Text="{Binding Host}" FontAttributes="Bold" FontSize="Large" TextColor="#BBBBBB" VerticalOptions="Center" Margin="10,0,20,0" HorizontalOptions="End"/>
                                                 </StackLayout>
+                                                <BoxView Grid.Column="2" BackgroundColor="{Binding SideColor}" WidthRequest="4" HorizontalOptions="Fill" ></BoxView>
+                                                <!--<StackLayout Grid.Column="3" Padding="0,13,0,11" Margin="5,1,5,1" BackgroundColor="#555555">
+                                                    <Label IsVisible="True" Text="Host" FontAttributes="Bold" FontSize="16"  TextColor="#EEEEEE" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
+                                                </StackLayout>-->
                                             </Grid>
 
                                         </StackLayout>
@@ -111,7 +114,7 @@
                     </ListView.ItemTemplate>
                 </ListView>
 
-                <Button x:Name="Action_Button" Text="Request" FontSize="35" FontAttributes="Bold" HeightRequest="60" Margin="45,0,45,20"></Button>
+                <Button x:Name="Action_Button" Clicked="Action_Clicked" Text="Take Mic" FontSize="35" FontAttributes="Bold" HeightRequest="60" Margin="45,0,45,20"></Button>
                 
             </StackLayout>
 

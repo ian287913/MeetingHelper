@@ -27,37 +27,55 @@
       "Name": "Room Alpha",
       "Founder": "Alexander",
       "Found_Time": "2019/1/21 19:35",
-      "IsSpeaking": "true"
+      "IsSpeaking": "true",
+      "Color": "#88FFA922",
+      "SideColor": "#FFA500",
+      "Host": "H"
     },
     {
       "Name": "BrovoHello",
       "Founder": "ian's robot",
       "Found_Time": "1998/12/16 06:54",
-      "IsSpeaking": "False"
+      "IsSpeaking": "False",
+      "Color": "#444444",
+      "SideColor": "#44FF44",
+      "Host": "H"
     },
     {
       "Name": "Ccc",
       "Founder": "aa",
       "Found_Time": "2019/1/21 19:35",
-      "IsSpeaking": "False"
+      "IsSpeaking": "False",
+      "Color": "#444444",
+      "SideColor": "#FFA500",
+      "Host": ""
     },
     {
       "Name": "Room Alpha",
       "Founder": "Alexander",
       "Found_Time": "2019/1/21 19:35",
-      "IsSpeaking": "true"
+      "IsSpeaking": "true",
+      "Color": "#444444",
+      "SideColor": "#707070",
+      "Host": ""
     },
     {
       "Name": "BrovoHello",
       "Founder": "ian's robot",
       "Found_Time": "1998/12/16 06:54",
-      "IsSpeaking": "False"
+      "IsSpeaking": "False",
+      "Color": "#444444",
+      "SideColor": "#44FF44",
+      "Host": ""
     },
     {
       "Name": "Ccc",
       "Founder": "aa",
       "Found_Time": "2019/1/21 19:35",
-      "IsSpeaking": "False"
+      "IsSpeaking": "False",
+      "Color": "#444444",
+      "SideColor": "#707070",
+      "Host": ""
     }
   ]
 

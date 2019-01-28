@@ -87,11 +87,7 @@ namespace MeetingHelper
                 });
             };
         }
-
         
-
-
-
         //  Initialyze page
         protected override void OnAppearing()
         {
@@ -101,9 +97,9 @@ namespace MeetingHelper
             {
                 //  updata room
                 Rooms.Clear();
-            /// use new DJ's properties
-            foreach (RoomInfo room in app.user.RoomList)
-                Rooms.Add(new ianRoom(room.Name, room.Host, room.CreatedAt.ToLocalTime().ToShortDateString(), room.Locked, room.Address.ToString()));
+                /// use new DJ's properties
+                foreach (RoomInfo room in app.user.RoomList)
+                    Rooms.Add(new ianRoom(room.Name, room.Host, room.CreatedAt.ToLocalTime().ToShortDateString(), room.Locked, room.Address.ToString()));
                 //  Update WiFi
                 Do_Update_WiFi = true;
                 //  Start Search room
