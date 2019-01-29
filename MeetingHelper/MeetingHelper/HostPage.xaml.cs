@@ -232,7 +232,7 @@ namespace MeetingHelper
                 //  open door (start broadcast)
                 isDoorOpen = true;
                 Device.BeginInvokeOnMainThread(() => Door_BoxView.BackgroundColor = Color.FromHex("44FF44"));
-                app.myRoom.StartBroadcast(0, TimeUnit.Hour);
+                app.myRoom.StartBroadcast(10, TimeUnit.Minute);
             }
         }
         private void Sound_Clicked(object sender, EventArgs e)
