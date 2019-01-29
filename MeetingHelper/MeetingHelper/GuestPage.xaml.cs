@@ -19,6 +19,9 @@ namespace MeetingHelper
         App app = Application.Current as App;
 
         ObservableCollection<ianGuest> Guests;
+        ObservableCollection<DebugInfo> DebugList;
+        int Debug_Status;
+
         bool Do_Update_WiFi = false;
 
         public GuestPage ()
@@ -28,6 +31,8 @@ namespace MeetingHelper
             //  init list
             Guests = new ObservableCollection<ianGuest>();
             ListView_Guests.ItemsSource = Guests;
+            DebugList = new ObservableCollection<DebugInfo>();
+            Debug_ListView.ItemsSource = DebugList;
 
             //  bind events
             app.user.OnMicCapture += User_OnMicCapture;
@@ -49,6 +54,10 @@ namespace MeetingHelper
                 ((ListView)sender).SelectedItem = null;
                 /// Guest do nothing...
             };
+            Debug_ListView.ItemTapped += (sender, e) =>
+            {
+                ((ListView)sender).SelectedItem = null;
+            };
         }
 
         //  init page
@@ -66,6 +75,10 @@ namespace MeetingHelper
             UpdateButton();
             //  update WiFi
             Do_Update_WiFi = true;
+
+            //  Debug
+            Debug_Status = 0;
+            Debug("Page OnAppearing");
         }
 
         private void UpdateList()
@@ -225,6 +238,66 @@ namespace MeetingHelper
             Device.BeginInvokeOnMainThread(() =>
             {
                 Warning_Layout.IsVisible = false;
+            });
+        }
+        #endregion
+
+        #region Debug
+        private void Debug(string message)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                if (DebugList.Count <= 0)
+                    DebugList.Add(new DebugInfo("x", 0));
+
+                if (DebugList[0].Debug == message)
+                {
+                    DebugList.Insert(0, new DebugInfo(DebugList[0].Debug, DebugList[0].Count + 1));
+                    DebugList.RemoveAt(1);
+                }
+                else
+                    DebugList.Insert(0, new DebugInfo(message, 1));
+            });
+        }
+        private void Debug_Clicked(object sender, EventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                Debug_Status = (Debug_Status + 1) % 3;
+                switch (Debug_Status)
+                {
+                    case 1:
+                        Debug_Layout.IsVisible = true;
+                        Debug_Layout.InputTransparent = true;
+                        Debug_Layout.BackgroundColor = Color.FromHex("#77000000");
+                        break;
+                    case 2:
+                        Debug_Layout.IsVisible = true;
+                        Debug_Layout.InputTransparent = false;
+                        Debug_Layout.BackgroundColor = Color.FromHex("#000000");
+                        break;
+                    default:
+                        Debug_Layout.IsVisible = false;
+                        Debug_Layout.InputTransparent = true;
+                        break;
+                }
+            });
+        }
+        private void Debug_Action_Clicked(object sender, EventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                switch (Debug_Status)
+                {
+                    case 1:
+                        Debug($"Speaker: { app.user.RoomConfig.Speaker}\nHaveMic: {app.user.Config.HaveMic.ToString()}");
+                        break;
+                    case 2:
+                        DebugList.Clear();
+                        break;
+                    default:
+                        break;
+                }
             });
         }
         #endregion

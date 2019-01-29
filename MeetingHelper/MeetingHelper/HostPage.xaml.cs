@@ -19,6 +19,9 @@ namespace MeetingHelper
         App app = Application.Current as App;
 
         ObservableCollection<ianGuest> Guests;
+        ObservableCollection<DebugInfo> DebugList;
+        int Debug_Status;
+
         bool Do_Update_WiFi = false;
         //  Button(switch) status
         bool isDoorOpen;
@@ -31,7 +34,9 @@ namespace MeetingHelper
             //  init list
             Guests = new ObservableCollection<ianGuest>();
             ListView_Guests.ItemsSource = Guests;
-
+            DebugList = new ObservableCollection<DebugInfo>();
+            Debug_ListView.ItemsSource = DebugList;
+            
             //  bind events
             app.user.OnMicCapture += User_OnMicCapture;
             app.user.OnMicMissing += User_OnMicMissing;
@@ -65,6 +70,10 @@ namespace MeetingHelper
                 UpdateList();
                 UpdateButton();
             };
+            Debug_ListView.ItemTapped += (sender, e) =>
+            {
+                ((ListView)sender).SelectedItem = null;
+            };
         }
         
 
@@ -83,6 +92,10 @@ namespace MeetingHelper
             UpdateButton();
             //  update WiFi
             Do_Update_WiFi = true;
+
+            //  Debug
+            Debug_Status = 0;
+            Debug("Page OnAppearing");
         }
 
         private void UpdateList()
@@ -219,7 +232,7 @@ namespace MeetingHelper
                 //  open door (start broadcast)
                 isDoorOpen = true;
                 Device.BeginInvokeOnMainThread(() => Door_BoxView.BackgroundColor = Color.FromHex("44FF44"));
-                app.myRoom.StartBroadcast(0, TimeUnit.Second);
+                app.myRoom.StartBroadcast(0, TimeUnit.Hour);
             }
         }
         private void Sound_Clicked(object sender, EventArgs e)
@@ -291,6 +304,66 @@ namespace MeetingHelper
             });
         }
         #endregion
+        
+        #region Debug
+        private void Debug(string message)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                if (DebugList.Count <= 0)
+                    DebugList.Add(new DebugInfo("x", 0));
+
+                if (DebugList[0].Debug == message)
+                {
+                    DebugList.Insert(0, new DebugInfo(DebugList[0].Debug, DebugList[0].Count+1));
+                    DebugList.RemoveAt(1);
+                }
+                else
+                    DebugList.Insert(0, new DebugInfo(message, 1));
+            });
+        }
+        private void Debug_Clicked(object sender, EventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                Debug_Status = (Debug_Status + 1) % 3;
+                switch (Debug_Status)
+                {
+                    case 1:
+                        Debug_Layout.IsVisible = true;
+                        Debug_Layout.InputTransparent = true;
+                        Debug_Layout.BackgroundColor = Color.FromHex("#77000000");
+                        break;
+                    case 2:
+                        Debug_Layout.IsVisible = true;
+                        Debug_Layout.InputTransparent = false;
+                        Debug_Layout.BackgroundColor = Color.FromHex("#000000");
+                        break;
+                    default:
+                        Debug_Layout.IsVisible = false;
+                        Debug_Layout.InputTransparent = true;
+                        break;
+                }
+            });
+        }
+        private void Debug_Action_Clicked(object sender, EventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                switch (Debug_Status)
+                {
+                    case 1:
+                        Debug($"Speaker: { app.user.RoomConfig.Speaker}\nHaveMic: {app.user.Config.HaveMic.ToString()}");
+                        break;
+                    case 2:
+                        DebugList.Clear();
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
+        #endregion
     }
 
     public class ianGuest : BindableObject
@@ -325,4 +398,20 @@ namespace MeetingHelper
             SideColor = "#FFA500";
         }
     }
+    public class DebugInfo : BindableObject
+    {
+        public string Debug { get; set; }
+        public string Debug_Count
+        {
+            get {return Count.ToString(); }
+            set { }
+        }
+        public int Count { get; set; }
+        public DebugInfo(string debug, int count)
+        {
+            Debug = debug;
+            Count = count;
+        }
+    }
+
 }
