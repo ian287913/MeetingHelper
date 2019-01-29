@@ -14,7 +14,10 @@ using System.Net;
 
 /// <summary>
 /// TODO: 防轉向、頂條、implementation
-/// ??host join failed but room exist??
+/// # host join failed but room exist
+/// # User.OnRoomListChanged() 很常被觸發
+/// # 進入房間失敗: Error - room doesn't exist
+/// 
 /// </summary>
 
 namespace MeetingHelper
@@ -102,8 +105,6 @@ namespace MeetingHelper
                     Rooms.Add(new ianRoom(room.Name, room.Host, room.CreatedAt.ToLocalTime().ToShortDateString(), room.Locked, room.Address.ToString()));
                 //  Update WiFi
                 Do_Update_WiFi = true;
-                //  Start Search room
-                app.user.StartListener();
                 //  init Entry
                 Create_Password_Entry.Text = "";
                 Create_RoomName_Entry.Text = "";
@@ -118,6 +119,8 @@ namespace MeetingHelper
                 show_Create = false;
                 show_Layout();
             });
+            //  Start Search room
+            app.user.StartListener();
         }
 
         //  Async - Update WiFi info
@@ -130,8 +133,12 @@ namespace MeetingHelper
                 {
                     if (app.mWifiController.currentStatus.State.Equals(WifiDetailedState.Connected))
                     {
+                        //  get current IP
+                        string strHostName = Dns.GetHostName();
+                        IPHostEntry iphostentry = Dns.GetHostEntry(strHostName);
+                        IPAddress ip = iphostentry.AddressList[0];
                         Label_WiFi_Name.Text = app.mWifiController.ConnectionInfo.SSID;
-                        Label_WiFi_Content.Text = $"BSSID: {app.mWifiController.ConnectionInfo.BSSID}\nLink Speed: {app.mWifiController.ConnectionInfo.LinkSpeed} Mbps";
+                        Label_WiFi_Content.Text = $"IP: {ip.ToString()}\nLink Speed: {app.mWifiController.ConnectionInfo.LinkSpeed} Mbps";
                     }
                     else
                     {
@@ -199,7 +206,7 @@ namespace MeetingHelper
                 //  Create a room
                 app.myRoom = new Room(targetRoom.Name, targetRoom.Password);
                 app.myRoom.Open();
-                app.myRoom.StartBroadcast(0, TimeUnit.Second);
+                app.myRoom.StartBroadcast(1, TimeUnit.Hour);
             });
             //  wait for 0.5sec
             await Task.Delay(1000);
@@ -291,7 +298,7 @@ namespace MeetingHelper
             //  get room list into listview
             Device.BeginInvokeOnMainThread(() =>
             {
-                Rooms.Clear();
+                //Rooms_Temp.Clear();
                 foreach (RoomInfo room in app.user.RoomList)
                 {
                     /// use new DJ's properties
@@ -412,8 +419,12 @@ namespace MeetingHelper
             {
                 if (e.State.Equals(WifiDetailedState.Connected))
                 {
+                    //  get current IP
+                    string strHostName = Dns.GetHostName();
+                    IPHostEntry iphostentry = Dns.GetHostEntry(strHostName);
+                    IPAddress ip = iphostentry.AddressList[0];
                     Label_WiFi_Name.Text = app.mWifiController.ConnectionInfo.SSID;
-                    Label_WiFi_Content.Text = $"BSSID: {app.mWifiController.ConnectionInfo.BSSID}\nLink Speed: {app.mWifiController.ConnectionInfo.LinkSpeed} Mbps";
+                    Label_WiFi_Content.Text = $"IP: {ip.ToString()}\nLink Speed: {app.mWifiController.ConnectionInfo.LinkSpeed} Mbps";
                 }
                 else
                 {

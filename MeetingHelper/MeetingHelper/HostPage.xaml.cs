@@ -15,14 +15,13 @@ using System.Collections.ObjectModel;
 /// <summary>
 /// ToDo:
 /// =Guest=
-/// End Speaking (return Mic to host)
-/// ??  re-ask?
-/// 
+/// Guest可以主動還回Mic嗎?
+/// Guest可以取消 Ask 嗎?
 /// =Host=
 /// ??  AcceptAsker("Unasked Guest")?
-/// take mic
-/// give mic
-/// OpenMic() -> Open() -> close...
+/// Host可以直接從Guest取回Mic嗎?
+/// Host可以 give mic 給沒有 Ask 的Guest嗎? - AcceptAsker("Unasked Guest")?
+/// 發現一個怪怪的function呼叫: OpenMic() -> Open() -> CloseMic()...
 /// </summary>
 namespace MeetingHelper
 {
@@ -59,7 +58,7 @@ namespace MeetingHelper
             isDoorOpen = true;
             isSoundOn = false;
             //  start broadcast
-            app.myRoom.StartBroadcast(0, TimeUnit.Second);
+            app.myRoom.StartBroadcast(1, TimeUnit.Hour);
 
             //  List Click Event
             ListView_Guests.ItemTapped += (sender, e) =>
