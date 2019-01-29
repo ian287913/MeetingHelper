@@ -191,9 +191,9 @@ namespace MeetingHelper
         }
 
         //  Create a Room (host)
-        async private void CreateRoom()
+        private void CreateRoom()
         {
-            Device.BeginInvokeOnMainThread(() =>
+            Device.BeginInvokeOnMainThread(async () =>
             {
                 isTargetRoomFine = true;
                 isHost = true;
@@ -207,11 +207,10 @@ namespace MeetingHelper
                 app.myRoom = new Room(targetRoom.Name, targetRoom.Password);
                 app.myRoom.Open();
                 app.myRoom.StartBroadcast(1, TimeUnit.Hour);
-            });
-            //  wait for 0.5sec
-            await Task.Delay(1000);
-            Device.BeginInvokeOnMainThread(() =>
-            {
+
+                //  wait for 0.5sec
+                await Task.Delay(3000);
+
                 //  validate room
                 if (isTargetRoomFine)
                 {
@@ -230,9 +229,9 @@ namespace MeetingHelper
         }
 
         //  Enter a Room (guest)
-        async private void EnterRoom()
+        private void EnterRoom()
         {
-            Device.BeginInvokeOnMainThread(() =>
+            Device.BeginInvokeOnMainThread(async () =>
             {
                 isTargetRoomFine = true;
                 isHost = false;
@@ -242,12 +241,11 @@ namespace MeetingHelper
                 Password_Error_Label.IsVisible = false;
 
                 //  check room
-                app.user.JoinRoom(app.UserName, Password_Entry.Text, targetRoom.Name);
-            });
-            //  wait for 0.5sec
-            await Task.Delay(1000);
-            Device.BeginInvokeOnMainThread(() =>
-            {
+                app.user.JoinRoom(app.UserName, Password_Entry.Text, $"{targetRoom.Name}({targetRoom.IpAddress})");
+
+                //  wait for 0.5sec
+                await Task.Delay(3000);
+
                 //  validate room
                 if (isTargetRoomFine)
                 {
@@ -287,10 +285,13 @@ namespace MeetingHelper
         #region User_Events
         private void User_OnEnterRoom(object sender, EventArgs e)
         {
-            Create_Label.Text = "entering...";
-            Password_Label.Text = "entering...";
-            // Go to Host page
-            NextPage();
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                Create_Label.Text = "entering...";
+                Password_Label.Text = "entering...";
+                // Go to Host page
+                NextPage();
+            });
         }
 
         private void User_OnRoomListChanged(object sender, EventArgs e)

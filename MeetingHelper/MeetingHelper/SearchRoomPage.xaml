@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-    <!--
+<!--
     About ListView highlight:
     https://stackoverflow.com/questions/25885238/xamarin-forms-listview-set-the-highlight-color-of-a-tapped-item
     -->
@@ -103,7 +103,7 @@
                             </ListView.ItemTemplate>
                         </ListView>
                     </StackLayout>
-                    
+
 
                     <!--Create Room-->
                     <!--<Grid HeightRequest="15" Margin="10,0,10,10" Padding="0" >
@@ -132,10 +132,10 @@
                         Margin="0,4,0,4"/>
                     </StackLayout>
                 </Grid>
-                
+
             </StackLayout>
-            
-            
+
+
             <!--Password request-->
             <StackLayout x:Name="Password_Layout" BackgroundColor="#AA000000" IsVisible="False">
                 <Grid VerticalOptions="Center" HorizontalOptions="CenterAndExpand" Padding="50,150,50,20">

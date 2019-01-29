@@ -11,18 +11,6 @@ using Controller;
 using Controller.Component;
 using System.Collections.ObjectModel;
 
-
-/// <summary>
-/// ToDo:
-/// =Guest=
-/// Guest可以主動還回Mic嗎?
-/// Guest可以取消 Ask 嗎?
-/// =Host=
-/// ??  AcceptAsker("Unasked Guest")?
-/// Host可以直接從Guest取回Mic嗎?
-/// Host可以 give mic 給沒有 Ask 的Guest嗎? - AcceptAsker("Unasked Guest")?
-/// 發現一個怪怪的function呼叫: OpenMic() -> Open() -> CloseMic()...
-/// </summary>
 namespace MeetingHelper
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
@@ -45,6 +33,10 @@ namespace MeetingHelper
             ListView_Guests.ItemsSource = Guests;
 
             //  bind events
+            app.user.OnMicCapture += User_OnMicCapture;
+            app.user.OnMicMissing += User_OnMicMissing;
+            app.user.OnUserJoin += User_OnUserJoin;
+            app.user.OnUserExit += User_OnUserExit;
             app.user.OnRoomListChanged += User_OnRoomListChanged;
             app.user.OnSpeakerChanged += User_OnSpeakerChanged;
             app.user.OnRequest += User_OnRequest;
@@ -74,6 +66,7 @@ namespace MeetingHelper
                 UpdateButton();
             };
         }
+        
 
         //  init page
         protected override void OnAppearing()
@@ -164,6 +157,26 @@ namespace MeetingHelper
         }
 
         #region User Events
+        private void User_OnUserExit(object sender, UserEventArgs e)
+        {
+            UpdateList();
+            UpdateButton();
+        }
+        private void User_OnUserJoin(object sender, UserEventArgs e)
+        {
+            UpdateList();
+            UpdateButton();
+        }
+        private void User_OnMicMissing(object sender, EventArgs e)
+        {
+            UpdateList();
+            UpdateButton();
+        }
+        private void User_OnMicCapture(object sender, EventArgs e)
+        {
+            UpdateList();
+            UpdateButton();
+        }
         private void User_OnRoomListChanged(object sender, EventArgs e)
         {
             UpdateList();

@@ -2,14 +2,14 @@
   "SearchRoomPage.xaml": [
     {
       "Name": "Room Alpha",
-      "Founder": "Alexander",
-      "Found_Time": "2019/1/21 19:35",
+      "Founder": "ian",
+      "Found_Time": "2019/1/28 19:35",
       "Password": "",
-      "IpAddress": "127.0.0.1"
+      "IpAddress": "192.168.137.13"
     },
     {
-      "Name": "BrovoHello",
-      "Founder": "ian's robot",
+      "Name": "Room B",
+      "Founder": "Another Host",
       "Found_Time": "1998/12/16 06:54",
       "Password": "",
       "IpAddress": "127.168.124.254"
@@ -24,25 +24,25 @@
   ],
   "HostPage.xaml": [
     {
-      "Name": "Room Alpha",
+      "Name": "Guest Speaking",
       "Founder": "Alexander",
       "Found_Time": "2019/1/21 19:35",
       "IsSpeaking": "true",
       "Color": "#88FFA922",
       "SideColor": "#FFA500",
-      "Host": "H"
+      "Host": ""
     },
     {
-      "Name": "BrovoHello",
+      "Name": "this is Host",
       "Founder": "ian's robot",
       "Found_Time": "1998/12/16 06:54",
       "IsSpeaking": "False",
       "Color": "#444444",
-      "SideColor": "#44FF44",
+      "SideColor": "#707070",
       "Host": "H"
     },
     {
-      "Name": "Ccc",
+      "Name": "Guest B",
       "Founder": "aa",
       "Found_Time": "2019/1/21 19:35",
       "IsSpeaking": "False",
@@ -51,7 +51,7 @@
       "Host": ""
     },
     {
-      "Name": "Room Alpha",
+      "Name": "Guest C",
       "Founder": "Alexander",
       "Found_Time": "2019/1/21 19:35",
       "IsSpeaking": "true",
@@ -60,23 +60,78 @@
       "Host": ""
     },
     {
-      "Name": "BrovoHello",
+      "Name": "Guest D",
       "Founder": "ian's robot",
       "Found_Time": "1998/12/16 06:54",
       "IsSpeaking": "False",
       "Color": "#444444",
-      "SideColor": "#44FF44",
+      "SideColor": "#707070",
       "Host": ""
     },
     {
-      "Name": "Ccc",
+      "Name": "Guest E",
       "Founder": "aa",
       "Found_Time": "2019/1/21 19:35",
       "IsSpeaking": "False",
       "Color": "#444444",
+      "SideColor": "#FFA500",
+      "Host": ""
+    }
+  ],
+  "GuestPage.xaml": [
+    {
+      "Name": "Guest Speaking",
+      "Founder": "Alexander",
+      "Found_Time": "2019/1/21 19:35",
+      "IsSpeaking": "true",
+      "Color": "#88FFA922",
+      "SideColor": "#FFA500",
+      "Host": ""
+    },
+    {
+      "Name": "Host Name",
+      "Founder": "ian's robot",
+      "Found_Time": "1998/12/16 06:54",
+      "IsSpeaking": "False",
+      "Color": "#444444",
       "SideColor": "#707070",
+      "Host": "H"
+    },
+    {
+      "Name": "Guest B",
+      "Founder": "aa",
+      "Found_Time": "2019/1/21 19:35",
+      "IsSpeaking": "False",
+      "Color": "#444444",
+      "SideColor": "#FFA500",
+      "Host": ""
+    },
+    {
+      "Name": "Guest C",
+      "Founder": "Alexander",
+      "Found_Time": "2019/1/21 19:35",
+      "IsSpeaking": "true",
+      "Color": "#444444",
+      "SideColor": "#707070",
+      "Host": ""
+    },
+    {
+      "Name": "Guest D",
+      "Founder": "ian's robot",
+      "Found_Time": "1998/12/16 06:54",
+      "IsSpeaking": "False",
+      "Color": "#444444",
+      "SideColor": "#707070",
+      "Host": ""
+    },
+    {
+      "Name": "Guest E",
+      "Founder": "aa",
+      "Found_Time": "2019/1/21 19:35",
+      "IsSpeaking": "False",
+      "Color": "#444444",
+      "SideColor": "#FFA500",
       "Host": ""
     }
   ]
-
 }
