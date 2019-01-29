@@ -338,7 +338,7 @@ namespace Controller.NetWork
 
         public void Send(byte[] data)
         {
-            if (m_Socket.Connected && m_Active)
+            if (m_Socket != null && m_Socket.Connected && m_Active)
             {
                 m_Socket.BeginSend(data, 0, data.Length, SocketFlags.None, SendCallBack, null);
             }
@@ -362,25 +362,15 @@ namespace Controller.NetWork
                 {
                     m_Active = false;
                     m_Socket.Shutdown(SocketShutdown.Both);
-                    m_Socket.BeginDisconnect(true, DisconnectCallBack, null);
+                    m_Socket.Dispose();
+                    m_Socket = null;
+                    _OnClose();
                 }
             }
             catch (Exception ex)
             {
                 if (!m_Active) _OnError(ex);
             }
-        }
-
-        private void DisconnectCallBack(IAsyncResult result)
-        {
-            try
-            {
-                m_Socket.EndDisconnect(result);
-            }
-            catch { };
-            m_Socket.Close();
-            m_Socket = null;
-            _OnClose();
         }
         #endregion
 
@@ -418,7 +408,7 @@ namespace Controller.NetWork
                 if (disposing)
                 {
                     Close();
-                    m_Socket.Dispose();
+                    m_Socket?.Dispose();
                 }
                 disposedValue = true;
             }

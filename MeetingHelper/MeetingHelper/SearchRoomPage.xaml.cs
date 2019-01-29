@@ -72,6 +72,8 @@ namespace MeetingHelper
             //  click event
             ListView_Rooms.ItemTapped += (sender, e) =>
             {
+                //  stop listener
+                app.user.StopListener();
                 //  get target room
                 targetRoom = e.Item as ianRoom;
 
@@ -400,6 +402,8 @@ namespace MeetingHelper
         {
             Device.BeginInvokeOnMainThread(() =>
             {
+                app.user.StartListener();
+
                 Password_Error_Label.IsVisible = false;
                 Password_Entry.Text = "";
                 Create_Label.IsVisible = false;
