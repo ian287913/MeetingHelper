@@ -298,7 +298,7 @@ namespace MeetingHelper
             //  get room list into listview
             Device.BeginInvokeOnMainThread(() =>
             {
-                //Rooms_Temp.Clear();
+                Rooms.Clear();
                 foreach (RoomInfo room in app.user.RoomList)
                 {
                     /// use new DJ's properties
