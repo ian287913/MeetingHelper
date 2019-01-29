@@ -334,7 +334,10 @@ namespace Controller.Component
                             var newSpeakerConn = NCMap[newSpeaker];
                             if (SpeakerConn != newSpeakerConn)
                             {
-                                SpeakerConn.Send(Helper.MessageWrapper(MessageType.MicMissing));
+                                if(SpeakerConn != null)
+                                {
+                                    SpeakerConn.Send(Helper.MessageWrapper(MessageType.MicMissing));
+                                }
                                 newSpeakerConn.Send(Helper.MessageWrapper(MessageType.MicCapture));
                                 SpeakerConn = newSpeakerConn;
                                 m_cmdSender.SendToAll(Helper.MessageWrapper(MessageType.MicOwner, newSpeaker));

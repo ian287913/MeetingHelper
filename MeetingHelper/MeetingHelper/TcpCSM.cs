@@ -115,9 +115,9 @@ namespace Controller.NetWork
 
         public void Stop()
         {
-            foreach (var conn in m_ConnList)
+            for (int i = m_ConnList.Count - 1; i >= 0; i--)
             {
-                conn.Close();
+                m_ConnList[i].Dispose();
             }
             m_ConnList.Clear();
             m_Socket?.Close();
@@ -221,7 +221,20 @@ namespace Controller.NetWork
         private bool m_Active = false;
         private byte[] receiveBuffer;
         private bool receiveFixedByte = false;
-        public IPAddress Address => new IPAddress(m_SocketEP.Address.GetAddressBytes());
+        public IPAddress Address
+        {
+            get
+            {
+                if (m_Socket.RemoteEndPoint == null)
+                {
+                    return IPAddress.Loopback;
+                }
+                else
+                {
+                    return new IPAddress(((IPEndPoint)m_Socket.RemoteEndPoint).Address.GetAddressBytes());
+                }
+            }
+        }
         internal int TTL { get; set; } = -1;
         public bool IsConnected { get; private set; }
         #endregion

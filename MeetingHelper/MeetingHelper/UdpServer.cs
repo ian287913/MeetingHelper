@@ -125,10 +125,9 @@ namespace Controller.NetWork
 
         private void SendCallBack(IAsyncResult result)
         {
-            EndPoint EP = new IPEndPoint(IPAddress.Any, 0);
             try
             {
-                m_Socket.EndReceiveFrom(result, ref EP);
+                m_Socket.EndSend(result);
             }
             catch { }
         }
