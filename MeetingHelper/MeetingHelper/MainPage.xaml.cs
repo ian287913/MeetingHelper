@@ -33,8 +33,8 @@ namespace MeetingHelper
                 Label_Debug.Text = "Username cannot be Unnamed.";
             else if (NameEntry.Text == "Unnamed")
                 Label_Debug.Text = "Username cannot be \"Unnamed\" ;)";
-            else if (NameEntry.Text.Length > 12)
-                Label_Debug.Text = "Name length must less than 12.";
+            else if (NameEntry.Text.Length > 9)
+                Label_Debug.Text = "Name length must less than 10.";
             else
             {
                 app.UserName = NameEntry.Text;

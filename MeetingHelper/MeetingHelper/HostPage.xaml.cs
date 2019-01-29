@@ -20,7 +20,8 @@ using System.Collections.ObjectModel;
 /// 
 /// =Host=
 /// ??  AcceptAsker("Unasked Guest")?
-/// take mic?
+/// take mic
+/// give mic
 /// OpenMic() -> Open() -> close...
 /// </summary>
 namespace MeetingHelper
@@ -67,13 +68,11 @@ namespace MeetingHelper
                 ianGuest target = e.Item as ianGuest;
                 
                 ((ListView)sender).SelectedItem = null;
-                if (app.user.RoomConfig.AskerList.Contains(target.Name))
-                {
-                    //  give Mic to target
-                    app.user.AcceptAsker(target.Name);
-                    /// debug
-                }
-                /// else debug
+                //  give Mic to target
+                app.user.AcceptAsker(target.Name);
+                /// debug
+                UpdateList();
+                UpdateButton();
             };
         }
 
@@ -115,20 +114,32 @@ namespace MeetingHelper
         {
             Device.BeginInvokeOnMainThread(() =>
             {
-                if (app.user.Config.Name != app.user.RoomConfig.Speaker)
+                //  Guest Speaking
+                if (!app.user.Config.HaveMic)
                 {
                     Action_Button.Text = "Take Mic";
+                    Action_Button.BackgroundColor = Color.FromHex("#555555");
+                    Action_BoxView_L.BackgroundColor = Color.FromHex("#808080");
+                    Action_BoxView_R.BackgroundColor = Color.FromHex("#808080");
                     Action_Button.IsEnabled = true;
                 }
+                //  Guest Requested
                 else if (app.user.RoomConfig.AskerList.Length != 0)
                 {
-                    Action_Button.Text = $"\"{app.user.RoomConfig.AskerList[0]}\"";
+                    Action_Button.Text = $"[{app.user.RoomConfig.AskerList[0]}]";
+                    Action_Button.BackgroundColor = Color.FromHex("#88FFA922");
+                    Action_BoxView_L.BackgroundColor = Color.FromHex("#44FF44");
+                    Action_BoxView_R.BackgroundColor = Color.FromHex("#44FF44");
                     Action_Button.IsEnabled = true;
                 }
+                //  No Guest Requested
                 else
                 {
                     Action_Button.Text = "Speaking...";
-                    Action_Button.IsEnabled = false;
+                    Action_Button.BackgroundColor = Color.FromHex("#88FFA922");
+                    Action_BoxView_L.BackgroundColor = Color.FromHex("#FFA500");
+                    Action_BoxView_R.BackgroundColor = Color.FromHex("#FFA500");
+                    Action_Button.IsEnabled = true;
                 }
             });
         }
@@ -227,31 +238,24 @@ namespace MeetingHelper
         }
         private void Action_Clicked(object sender, EventArgs e)
         {
-            /// Guest
-            //if(app.user.Config.HaveMic)
-            //{
-            //    /// return mic
-            //    /// ...
-            //}
-            //else
-            //{
-            //    //  send request
-            //    app.user.WantMic();
-            //}
-            /// Guest
-
-            /// Host
-            if (app.user.Config.Name != app.user.RoomConfig.Speaker)
+            //  Guest Speaking
+            if (!app.user.Config.HaveMic)
             {
                 //  Take Mic
                 ///...
             }
-            else
+            //  Guest Requested
+            else if (app.user.RoomConfig.AskerList.Length != 0)
             {
                 //  Give Mic to the first name in the AskList
                 app.user.AcceptAsker(app.user.RoomConfig.AskerList[0]);
             }
-            /// Host
+            //  No Guest Requested
+            else
+            {
+                /// do nothing...
+            }
+            UpdateButton();
         }
         #endregion
 
