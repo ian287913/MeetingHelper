@@ -303,8 +303,9 @@ namespace Controller.Component
                                 SpeakerConn.Send(Helper.MessageWrapper(MessageType.MicMissing));
                             }
                             SpeakerConn = HostConn;
-                            HostConn.Send(Helper.MessageWrapper(MessageType.MicCapture, NCMap.GetKey(HostConn)));
-                            m_cmdSender.SendToAll(Helper.MessageWrapper(MessageType.MicOwner, NCMap.GetKey(HostConn)));
+                            string HostName = NCMap.GetKey(HostConn);
+                            HostConn.Send(Helper.MessageWrapper(MessageType.MicCapture, HostName));
+                            m_cmdSender.SendToAll(Helper.MessageWrapper(MessageType.MicOwner, HostName));
                         }
                         else
                         {
@@ -312,6 +313,18 @@ namespace Controller.Component
                             HostConn.Send(Helper.MessageWrapper(MessageType.Request, cmd.Data[0]));
                             Config.AddAsker(cmd.Data[0]);
                         }
+                    }
+                    break;
+                #endregion
+                #region MicMissing
+                case MessageType.MicMissing:
+                    if (conn == SpeakerConn)
+                    {
+                        SpeakerConn.Send(Helper.MessageWrapper(MessageType.MicMissing));
+                        SpeakerConn = HostConn;
+                        string HostName = NCMap.GetKey(HostConn);
+                        HostConn.Send(Helper.MessageWrapper(MessageType.MicCapture, NCMap.GetKey(HostConn)));
+                        m_cmdSender.SendToAll(Helper.MessageWrapper(MessageType.MicOwner, HostName));
                     }
                     break;
                 #endregion
@@ -334,7 +347,7 @@ namespace Controller.Component
                             var newSpeakerConn = NCMap[newSpeaker];
                             if (SpeakerConn != newSpeakerConn)
                             {
-                                if(SpeakerConn != null)
+                                if (SpeakerConn != null)
                                 {
                                     SpeakerConn.Send(Helper.MessageWrapper(MessageType.MicMissing));
                                 }
@@ -379,6 +392,13 @@ namespace Controller.Component
             if (NCMap.TryGetKey(conn, out string UserName))
             {
                 m_cmdSender.SendToAll(Helper.MessageWrapper(MessageType.SbLeave, UserName));
+                if (conn == SpeakerConn && conn != HostConn)
+                {
+                    SpeakerConn = HostConn;
+                    string HostName = NCMap.GetKey(HostConn);
+                    HostConn.Send(Helper.MessageWrapper(MessageType.MicCapture, NCMap.GetKey(HostConn)));
+                    m_cmdSender.SendToAll(Helper.MessageWrapper(MessageType.MicOwner, HostName));
+                }
                 NCMap.RemoveByKey(UserName);
                 Config.RemoveUser(UserName);
                 Config.RemoveAsker(UserName);

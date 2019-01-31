@@ -246,6 +246,17 @@ namespace Controller.Component
         }
 
         /// <summary>
+        /// 返回發言權。
+        /// </summary>
+        public void BackMic()
+        {
+            if (Config.HaveMic && Config.IsInRoom)
+            {
+                m_cmdReceiver.Send(Helper.MessageWrapper(MessageType.MicMissing));
+            }
+        }
+
+        /// <summary>
         /// 成為主席。
         /// </summary>
         /// <param name="RoomName">房間名稱</param>
