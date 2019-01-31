@@ -372,11 +372,6 @@ namespace MeetingHelper
         public string Color { get; set; }
         public string SideColor { get; set; }
         public string Host { get; set; }
-        /// <summary>
-        /// NSR { 0:normal 1:speaking 2:request }
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="isSpeaking"></param>
         public ianGuest(string name)
         {
             Name = name;

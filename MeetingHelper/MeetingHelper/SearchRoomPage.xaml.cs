@@ -55,14 +55,6 @@ namespace MeetingHelper
             //  init Room ItemSource
             Rooms = new ObservableCollection<ianRoom>();
             ListView_Rooms.ItemsSource = Rooms;
-            /// FAKE DATA
-            //Rooms.Add(new ianRoom("Alpha Room", "Ian287913", "2019/1/21 19:35", ""));
-            //Rooms.Add(new ianRoom("Bravo", "Founder", "2018/1/1 19:08", "ABCD"));
-            //Rooms.Add(new ianRoom("Charlie", "someone", "1998/12/16 07:32", "1234"));
-            //Rooms.Add(new ianRoom("Charlie", "someone", "1998/12/16 07:32", "1234"));
-            //Rooms.Add(new ianRoom("Charlie", "someone", "1998/12/16 07:32", "1234"));
-            //Rooms.Add(new ianRoom("Charlie", "someone", "1998/12/16 07:32", "1234"));
-            /// FAKE DATA
 
             //  init WiFi
             app.mWifiController.OnNetworkChanged += OnStatusChanged;

@@ -70,7 +70,6 @@
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="4"/>
                                                 </Grid.ColumnDefinitions>
-
                                                 <BoxView Grid.Column="0" BackgroundColor="{Binding SideColor}" WidthRequest="4" HorizontalOptions="Fill" ></BoxView>
                                                 <StackLayout Grid.Column="1" Spacing="0" Padding="10,8,0,11" Margin="5,0,5,0" BackgroundColor="{Binding Color}">
                                                     <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="Large" TextColor="White" VerticalOptions="Center" Margin="10,0,0,0"/>
@@ -79,15 +78,10 @@
                                                     <Label Text="{Binding Host}" FontAttributes="Bold" FontSize="Large" TextColor="#BBBBBB" VerticalOptions="Center" Margin="10,0,20,0" HorizontalOptions="End"/>
                                                 </StackLayout>
                                                 <BoxView Grid.Column="2" BackgroundColor="{Binding SideColor}" WidthRequest="4" HorizontalOptions="Fill" ></BoxView>
-                                                <!--<StackLayout Grid.Column="3" Padding="0,13,0,11" Margin="5,1,5,1" BackgroundColor="#555555">
-                                                    <Label IsVisible="True" Text="Host" FontAttributes="Bold" FontSize="16"  TextColor="#EEEEEE" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
-                                                </StackLayout>-->
                                             </Grid>
-
                                         </StackLayout>
                                     </StackLayout>
                                 </StackLayout>
-
                             </ViewCell>
                         </DataTemplate>
                     </ListView.ItemTemplate>

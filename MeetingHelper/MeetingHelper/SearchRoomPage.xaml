@@ -8,12 +8,7 @@
              x:Class="MeetingHelper.SearchRoomPage">
     <ContentPage.Content>
         <Grid>
-            <!--Background image-->
-            <!--<Image Opacity="0.5"
-				   x:Name="img"
-				   Source="bridge_bg.png"
-				   Scale="1.5"
-				   Aspect="AspectFill"/>-->
+            <!--Background-->
             <BoxView BackgroundColor="#282828"></BoxView>
 
             <StackLayout x:Name="Main_Layout" Padding="10,10,10,5">
@@ -23,7 +18,6 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="90"/>
                     </Grid.RowDefinitions>
-
 
                     <Grid Grid.Row="0" RowSpacing="0" VerticalOptions="Start">
                         <StackLayout VerticalOptions="Start">
@@ -35,7 +29,6 @@
                                 <Label x:Name="Label_WiFi_Content" Text="---" TextColor="White" FontSize="20" HorizontalOptions="Center"/>
                             </Grid>
                         </StackLayout>
-
                     </Grid>
 
                     <StackLayout Spacing="0" Grid.Row="1">
@@ -67,8 +60,6 @@
                                                             <ColumnDefinition Width="*"/>
                                                             <ColumnDefinition Width="5"/>
                                                         </Grid.ColumnDefinitions>
-
-                                                        <!--<Image Grid.Column="0" Source="{Binding Photo}"/>-->
                                                         <StackLayout Grid.Column="0" Spacing="0" Padding="10,10,0,10">
                                                             <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="Large" TextColor="#FFFFFF"/>
                                                         </StackLayout>
@@ -76,46 +67,28 @@
                                                             <Label Text="{Binding IpAddress}" TextColor="#AAAAAA"/>
                                                         </StackLayout>
                                                     </Grid>
-
                                                     <BoxView BackgroundColor="DarkOrange" HeightRequest="3"></BoxView>
-
                                                     <Grid>
                                                         <StackLayout Margin="10" HeightRequest="50">
                                                             <StackLayout Spacing="0" Orientation="Horizontal">
                                                                 <Label Text="found by " FontSize="20" VerticalOptions="Center" TextColor="#999999"/>
                                                                 <Label Text="{Binding Founder}" FontSize="Large"/>
-                                                                <!--<Label Text="{Binding Founder}" FontSize="Large"/>-->
                                                             </StackLayout>
                                                             <StackLayout Spacing="0" Orientation="Horizontal" HorizontalOptions="End">
                                                                 <Label Text="at  " VerticalOptions="Center" TextColor="#999999"/>
                                                                 <Label Text="{Binding Found_Time}" HorizontalTextAlignment="End"/>
-                                                                <!--<Label Text="{Binding Found_Time}" HorizontalTextAlignment="End"/>-->
                                                             </StackLayout>
                                                         </StackLayout>
                                                     </Grid>
-
                                                 </StackLayout>
                                             </StackLayout>
                                         </StackLayout>
-
                                     </ViewCell>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
                     </StackLayout>
 
-
-                    <!--Create Room-->
-                    <!--<Grid HeightRequest="15" Margin="10,0,10,10" Padding="0" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="5"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="5"/>
-                    </Grid.ColumnDefinitions>
-                    <BoxView Grid.Column="1" BackgroundColor="Orange" HeightRequest="3" Opacity="0.7" VerticalOptions="Center"></BoxView>
-                    <BoxView Grid.Column="0" BackgroundColor="White" HeightRequest="5" WidthRequest="5" Opacity="1" VerticalOptions="Center" HorizontalOptions="Start"></BoxView>
-                    <BoxView Grid.Column="2" BackgroundColor="White" HeightRequest="5" WidthRequest="5" Opacity="1" VerticalOptions="Center" HorizontalOptions="End"></BoxView>
-                </Grid>-->
                     <StackLayout Grid.Row="2" Spacing="0" Margin="0,5,0,20" VerticalOptions="End">
                         <BoxView BackgroundColor="DarkOrange" WidthRequest="200" HeightRequest="3" VerticalOptions="Center" HorizontalOptions="Center"></BoxView>
                         <Button
@@ -132,9 +105,7 @@
                         Margin="0,4,0,4"/>
                     </StackLayout>
                 </Grid>
-
             </StackLayout>
-
 
             <!--Password request-->
             <StackLayout x:Name="Password_Layout" BackgroundColor="#AA000000" IsVisible="False">
