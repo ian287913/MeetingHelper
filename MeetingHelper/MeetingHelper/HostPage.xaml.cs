@@ -218,6 +218,12 @@ namespace MeetingHelper
         #endregion
 
         #region Button Clicks
+        //  disable BackButton
+        protected override bool OnBackButtonPressed()
+        {
+            return true;
+        }
+
         private void Door_Clicked(object sender, EventArgs e)
         {
             if (isDoorOpen)

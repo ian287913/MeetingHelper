@@ -191,6 +191,12 @@ namespace MeetingHelper
         #endregion
 
         #region Button Clicks
+        //  disable BackButton
+        protected override bool OnBackButtonPressed()
+        {
+            return true;
+        }
+
         private void Exit_Clicked(object sender, EventArgs e)
         {
             //  close room
@@ -203,8 +209,8 @@ namespace MeetingHelper
             //  Speaking
             if (app.user.Config.HaveMic)
             {
-                /// return mic
-                /// app.user.AcceptAsker("HOST?");
+                // return mic
+                app.user.BackMic();
             }
             //  Requested
             else if (app.user.RoomConfig.AskerList.Contains(app.user.Config.Name))
@@ -216,7 +222,7 @@ namespace MeetingHelper
                 //  send request
                 app.user.WantMic();
             }
-            /// This may not works
+            /// This may not works because the data iss updated by the host(room)
             UpdateButton();
         }
         #endregion

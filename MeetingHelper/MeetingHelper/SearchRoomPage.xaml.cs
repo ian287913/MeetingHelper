@@ -30,6 +30,9 @@ namespace MeetingHelper
         
         //  Rooms ItemSource
         ObservableCollection<ianRoom> Rooms;
+        //  Debug
+        ObservableCollection<DebugInfo> DebugList;
+        int Debug_Status;
         //  Layout control
         bool show_Warning;
         bool show_Password;
@@ -52,9 +55,11 @@ namespace MeetingHelper
             app.user.OnForbid += User_OnForbid;
             app.user.OnError += User_OnError;
 
-            //  init Room ItemSource
+            //  init ItemSource
             Rooms = new ObservableCollection<ianRoom>();
             ListView_Rooms.ItemsSource = Rooms;
+            DebugList = new ObservableCollection<DebugInfo>();
+            Debug_ListView.ItemsSource = DebugList;
 
             //  init WiFi
             app.mWifiController.OnNetworkChanged += OnStatusChanged;
@@ -82,6 +87,10 @@ namespace MeetingHelper
                     show_Password = true;
                     show_Layout();
                 });
+            };
+            Debug_ListView.ItemTapped += (sender, e) =>
+            {
+                ((ListView)sender).SelectedItem = null;
             };
         }
         
@@ -113,6 +122,9 @@ namespace MeetingHelper
                 show_Create = false;
                 show_Layout();
             });
+            //  Debug
+            Debug_Status = 0;
+            Debug("Page OnAppearing");
             //  Start Search room
             app.user.StartListener();
         }
@@ -283,6 +295,7 @@ namespace MeetingHelper
             {
                 Create_Label.Text = "entering...";
                 Password_Label.Text = "entering...";
+                Debug("[OnEnterRoom]");
                 // Go to Host page
                 NextPage();
             });
@@ -290,6 +303,7 @@ namespace MeetingHelper
 
         private void User_OnRoomListChanged(object sender, EventArgs e)
         {
+            Debug($"RoomLength:{app.user.RoomList.Count}\n{app.user.RoomList.ToString()}");
             //  get room list into listview
             Device.BeginInvokeOnMainThread(() =>
             {
@@ -340,6 +354,7 @@ namespace MeetingHelper
         private void User_OnError(object sender, ErrorEventArgs e)
         {
             Warning("Error_01", e.Exception.Message);
+            Debug($"[ERROR from user]\n{e.Exception.Message}");
         }
         #endregion
 
@@ -451,6 +466,66 @@ namespace MeetingHelper
         }
 
         #endregion
+
+        #region Debug
+        private void Debug(string message)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                if (DebugList.Count <= 0)
+                    DebugList.Add(new DebugInfo("x", 0));
+
+                if (DebugList[0].Debug == message)
+                {
+                    DebugList.Insert(0, new DebugInfo(DebugList[0].Debug, DebugList[0].Count + 1));
+                    DebugList.RemoveAt(1);
+                }
+                else
+                    DebugList.Insert(0, new DebugInfo(message, 1));
+            });
+        }
+        private void Debug_Clicked(object sender, EventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                Debug_Status = (Debug_Status + 1) % 3;
+                switch (Debug_Status)
+                {
+                    case 1:
+                        Debug_Layout.IsVisible = true;
+                        Debug_Layout.InputTransparent = true;
+                        Debug_Layout.BackgroundColor = Color.FromHex("#77000000");
+                        break;
+                    case 2:
+                        Debug_Layout.IsVisible = true;
+                        Debug_Layout.InputTransparent = false;
+                        Debug_Layout.BackgroundColor = Color.FromHex("#000000");
+                        break;
+                    default:
+                        Debug_Layout.IsVisible = false;
+                        Debug_Layout.InputTransparent = true;
+                        break;
+                }
+            });
+        }
+        private void Debug_Action_Clicked(object sender, EventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                switch (Debug_Status)
+                {
+                    case 1:
+                        Debug($"Speaker: { app.user.RoomConfig.Speaker}\nHaveMic: {app.user.Config.HaveMic.ToString()}");
+                        break;
+                    case 2:
+                        DebugList.Clear();
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
+        #endregion
     }
 
     public class ianRoom : BindableObject
@@ -461,16 +536,6 @@ namespace MeetingHelper
         public string IpAddress { get; set; }
         public bool IsLocked { get; set; }
         public string Password { get; set; }
-        //private bool _isSelected;
-        //public bool IsSelected
-        //{
-        //    get { return _isSelected; }
-        //    set
-        //    {
-        //        _isSelected = value;
-        //        OnPropertyChanged("IsSelected");
-        //    }
-        //}
 
         public ianRoom(string name, string founder, string foundTime, bool isLocked, string ipAddress)
         {
@@ -479,7 +544,6 @@ namespace MeetingHelper
             Found_Time = foundTime;
             IsLocked = isLocked;
             IpAddress = ipAddress;
-            //_isSelected = false;
             Password = "unknown";
         }
         public ianRoom(string name, string founder, string foundTime, string password, string ipAddress)
