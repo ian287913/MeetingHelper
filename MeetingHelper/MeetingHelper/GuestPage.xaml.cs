@@ -19,20 +19,17 @@ namespace MeetingHelper
         App app = Application.Current as App;
 
         ObservableCollection<ianGuest> Guests;
-        ObservableCollection<DebugInfo> DebugList;
-        int Debug_Status;
 
         bool Do_Update_WiFi = false;
 
         public GuestPage ()
 		{
 			InitializeComponent ();
-
+            
             //  init list
             Guests = new ObservableCollection<ianGuest>();
             ListView_Guests.ItemsSource = Guests;
-            DebugList = new ObservableCollection<DebugInfo>();
-            Debug_ListView.ItemsSource = DebugList;
+            Debug_ListView.ItemsSource = app.DebugList;
 
             //  bind events
             app.user.OnMicCapture += User_OnMicCapture;
@@ -77,8 +74,8 @@ namespace MeetingHelper
             Do_Update_WiFi = true;
 
             //  Debug
-            Debug_Status = 0;
             Debug("Page OnAppearing");
+            Switch_Debug(false);
         }
 
         private void UpdateList()
@@ -247,30 +244,35 @@ namespace MeetingHelper
             });
         }
         #endregion
-
+        
         #region Debug
         private void Debug(string message)
         {
             Device.BeginInvokeOnMainThread(() =>
             {
-                if (DebugList.Count <= 0)
-                    DebugList.Add(new DebugInfo("x", 0));
+                if (app.DebugList.Count <= 0)
+                    app.DebugList.Add(new DebugInfo("---", 0));
 
-                if (DebugList[0].Debug == message)
+                if (app.DebugList[0].Debug == message)
                 {
-                    DebugList.Insert(0, new DebugInfo(DebugList[0].Debug, DebugList[0].Count + 1));
-                    DebugList.RemoveAt(1);
+                    app.DebugList.Insert(0, new DebugInfo(app.DebugList[0].Debug, app.DebugList[0].Count + 1));
+                    app.DebugList.RemoveAt(1);
                 }
                 else
-                    DebugList.Insert(0, new DebugInfo(message, 1));
+                    app.DebugList.Insert(0, new DebugInfo(message, 1));
             });
         }
         private void Debug_Clicked(object sender, EventArgs e)
         {
+            Switch_Debug(true);
+        }
+        private void Switch_Debug(bool next)
+        {
             Device.BeginInvokeOnMainThread(() =>
             {
-                Debug_Status = (Debug_Status + 1) % 3;
-                switch (Debug_Status)
+                if (next)
+                    app.Debug_Status = (app.Debug_Status + 1) % 3;
+                switch (app.Debug_Status)
                 {
                     case 1:
                         Debug_Layout.IsVisible = true;
@@ -293,13 +295,13 @@ namespace MeetingHelper
         {
             Device.BeginInvokeOnMainThread(() =>
             {
-                switch (Debug_Status)
+                switch (app.Debug_Status)
                 {
                     case 1:
                         Debug($"Speaker: { app.user.RoomConfig.Speaker}\nHaveMic: {app.user.Config.HaveMic.ToString()}");
                         break;
                     case 2:
-                        DebugList.Clear();
+                        app.DebugList.Clear();
                         break;
                     default:
                         break;

@@ -2,9 +2,10 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:MeetingHelper"
-             x:Class="MeetingHelper.MainPage">
-    <Grid>
-        <StackLayout Padding="20" BackgroundColor="#282828">
+             x:Class="MeetingHelper.MainPage"
+             >
+    <Grid BackgroundColor="#282828">
+        <StackLayout Padding="0,35,0,0" >
             <StackLayout VerticalOptions="CenterAndExpand">
                 <Label 
                 x:Name="Label1"

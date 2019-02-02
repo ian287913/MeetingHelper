@@ -10,7 +10,7 @@
   <Import Project="MeetingHelper.projitems" Label="Shared" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties DesignTimeData_1json__JSONSchema="http://json.schemastore.org/appsscript" />
+      <UserProperties />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

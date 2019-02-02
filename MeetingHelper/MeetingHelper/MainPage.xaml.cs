@@ -39,7 +39,7 @@ namespace MeetingHelper
             {
                 app.UserName = NameEntry.Text;
                 // Next page
-                Navigation.PushModalAsync(new SearchRoomPage());
+                Navigation.PushModalAsync(new SearchRoomPage(), false);
             }
         }
         

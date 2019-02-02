@@ -58,11 +58,11 @@ namespace MeetingHelper
             //  init ItemSource
             Rooms = new ObservableCollection<ianRoom>();
             ListView_Rooms.ItemsSource = Rooms;
-            DebugList = new ObservableCollection<DebugInfo>();
-            Debug_ListView.ItemsSource = DebugList;
+            Debug_ListView.ItemsSource = app.DebugList;
 
             //  init WiFi
             app.mWifiController.OnNetworkChanged += OnStatusChanged;
+            
             //  Update WiFi
             Update_WiFi();
             
@@ -123,8 +123,8 @@ namespace MeetingHelper
                 show_Layout();
             });
             //  Debug
-            Debug_Status = 0;
             Debug("Page OnAppearing");
+            Switch_Debug(false);
             //  Start Search room
             app.user.StartListener();
         }
@@ -145,11 +145,16 @@ namespace MeetingHelper
                         IPAddress ip = iphostentry.AddressList[0];
                         Label_WiFi_Name.Text = app.mWifiController.ConnectionInfo.SSID;
                         Label_WiFi_Content.Text = $"IP: {ip.ToString()}\nLink Speed: {app.mWifiController.ConnectionInfo.LinkSpeed} Mbps";
+                        if (Rooms.Count == 0)
+                            ActivityIndicator.IsVisible = true;
+                        else
+                            ActivityIndicator.IsVisible = false;
                     }
                     else
                     {
                         Label_WiFi_Name.Text = app.mWifiController.currentStatus.State.ToString();
                         Label_WiFi_Content.Text = "Please connect to any WiFi to join or create a room.";
+                        ActivityIndicator.IsVisible = false;
                     }
                 });
                 await Task.Delay(500);
@@ -278,11 +283,11 @@ namespace MeetingHelper
                 /// there should be some way to check...
                 if (isHost)
                 {
-                    Navigation.PushModalAsync(new HostPage());
+                    Navigation.PushModalAsync(new HostPage(), false);
                 }
                 else
                 {
-                    Navigation.PushModalAsync(new GuestPage());
+                    Navigation.PushModalAsync(new GuestPage(), false);
                 }
             });
         }
@@ -303,7 +308,7 @@ namespace MeetingHelper
 
         private void User_OnRoomListChanged(object sender, EventArgs e)
         {
-            Debug($"RoomLength:{app.user.RoomList.Count}\n{app.user.RoomList.ToString()}");
+            Debug($"RoomLength:{app.user.RoomList.Count}");
             //  get room list into listview
             Device.BeginInvokeOnMainThread(() =>
             {
@@ -472,24 +477,29 @@ namespace MeetingHelper
         {
             Device.BeginInvokeOnMainThread(() =>
             {
-                if (DebugList.Count <= 0)
-                    DebugList.Add(new DebugInfo("x", 0));
+                if (app.DebugList.Count <= 0)
+                    app.DebugList.Add(new DebugInfo("---", 0));
 
-                if (DebugList[0].Debug == message)
+                if (app.DebugList[0].Debug == message)
                 {
-                    DebugList.Insert(0, new DebugInfo(DebugList[0].Debug, DebugList[0].Count + 1));
-                    DebugList.RemoveAt(1);
+                    app.DebugList.Insert(0, new DebugInfo(app.DebugList[0].Debug, app.DebugList[0].Count + 1));
+                    app.DebugList.RemoveAt(1);
                 }
                 else
-                    DebugList.Insert(0, new DebugInfo(message, 1));
+                    app.DebugList.Insert(0, new DebugInfo(message, 1));
             });
         }
         private void Debug_Clicked(object sender, EventArgs e)
         {
+            Switch_Debug(true);
+        }
+        private void Switch_Debug(bool next)
+        {
             Device.BeginInvokeOnMainThread(() =>
             {
-                Debug_Status = (Debug_Status + 1) % 3;
-                switch (Debug_Status)
+                if (next)
+                    app.Debug_Status = (app.Debug_Status + 1) % 3;
+                switch (app.Debug_Status)
                 {
                     case 1:
                         Debug_Layout.IsVisible = true;
@@ -512,13 +522,13 @@ namespace MeetingHelper
         {
             Device.BeginInvokeOnMainThread(() =>
             {
-                switch (Debug_Status)
+                switch (app.Debug_Status)
                 {
                     case 1:
                         Debug($"Speaker: { app.user.RoomConfig.Speaker}\nHaveMic: {app.user.Config.HaveMic.ToString()}");
                         break;
                     case 2:
-                        DebugList.Clear();
+                        app.DebugList.Clear();
                         break;
                     default:
                         break;

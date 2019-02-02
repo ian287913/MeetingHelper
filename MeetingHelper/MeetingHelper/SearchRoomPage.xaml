@@ -7,11 +7,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MeetingHelper.SearchRoomPage">
     <ContentPage.Content>
-        <Grid>
-            <!--Background-->
-            <BoxView BackgroundColor="#282828"></BoxView>
-
-            <StackLayout x:Name="Main_Layout" Padding="10,10,10,5">
+        <Grid BackgroundColor="#282828">
+            <StackLayout x:Name="Main_Layout" Padding="10,35,10,5">
                 <Grid VerticalOptions="FillAndExpand">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="155"/>
@@ -33,6 +30,8 @@
 
                     <StackLayout Spacing="0" Grid.Row="1">
                         <Label Text="Choose A Room:" FontAttributes="None" FontSize="Large" HorizontalOptions="Center"/>
+                        <!--if ListView.length == 0-->
+                        <ActivityIndicator x:Name="ActivityIndicator" Margin="0,20,0,0" IsVisible="False" IsRunning="True" Color="#CCFFFFFF"/>
                         <!--Room List-->
                         <ListView
                             IsVisible="True"

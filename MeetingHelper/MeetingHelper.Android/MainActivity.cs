@@ -13,7 +13,7 @@ using Android.Support.V4.Content;
 
 namespace MeetingHelper.Droid
 {
-    [Activity(Label = "MeetingHelper", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [Activity(Label = "MeetingHelper", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         public static MainActivity MA;  /// For XamarinForms
@@ -22,8 +22,13 @@ namespace MeetingHelper.Droid
         {
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
-
+            
             base.OnCreate(bundle);
+
+            //  hide status bar and navigation bar
+            Window.DecorView.SystemUiVisibility = (StatusBarVisibility)SystemUiFlags.HideNavigation | (StatusBarVisibility)SystemUiFlags.Fullscreen | (StatusBarVisibility)SystemUiFlags.ImmersiveSticky;
+            Window.SetStatusBarColor(Android.Graphics.Color.ParseColor("#282828"));
+
 
             MA = this;
             /// Permissions

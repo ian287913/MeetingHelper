@@ -4,6 +4,7 @@ using Xamarin.Forms.Xaml;
 
 using Controller;
 using Controller.Component;
+using System.Collections.ObjectModel;
 
 [assembly: XamlCompilation (XamlCompilationOptions.Compile)]
 namespace MeetingHelper
@@ -14,6 +15,9 @@ namespace MeetingHelper
         public User user;
         public Room myRoom;
 
+        //  Debug
+        public ObservableCollection<DebugInfo> DebugList;
+        public int Debug_Status;
         //  WiFi
         public WifiController mWifiController;
         //  Save & Load for Username
@@ -26,9 +30,13 @@ namespace MeetingHelper
         public App ()
 		{
 			InitializeComponent();
-
+            
             //  init User
             user = new User();
+
+            //  init debug list
+            DebugList = new ObservableCollection<DebugInfo>();
+            Debug_Status = 0;
 
             //  init WiFi
             mWifiController = new WifiController();
@@ -45,7 +53,7 @@ namespace MeetingHelper
                 UserName = "Unnamed";
 
             MainPage = new MainPage();
-		}
+        }
 
         protected override void OnStart ()
 		{
@@ -67,4 +75,19 @@ namespace MeetingHelper
 			// Handle when your app resumes
 		}
 	}
+    public class DebugInfo : BindableObject
+    {
+        public string Debug { get; set; }
+        public string Debug_Count
+        {
+            get { return Count.ToString(); }
+            set { }
+        }
+        public int Count { get; set; }
+        public DebugInfo(string debug, int count)
+        {
+            Debug = debug;
+            Count = count;
+        }
+    }
 }
