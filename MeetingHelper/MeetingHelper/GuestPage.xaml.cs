@@ -74,7 +74,7 @@ namespace MeetingHelper
             Do_Update_WiFi = true;
 
             //  Debug
-            Debug("Page OnAppearing");
+            Debug("GuestPage OnAppearing");
             Switch_Debug(false);
         }
 

@@ -91,7 +91,7 @@ namespace MeetingHelper
             Do_Update_WiFi = true;
 
             //  Debug
-            Debug("Page OnAppearing");
+            Debug("HostPage OnAppearing");
             Switch_Debug(false);
         }
 

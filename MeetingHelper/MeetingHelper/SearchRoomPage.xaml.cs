@@ -123,7 +123,7 @@ namespace MeetingHelper
                 show_Layout();
             });
             //  Debug
-            Debug("Page OnAppearing");
+            Debug("SearchRoomPage OnAppearing");
             Switch_Debug(false);
             //  Start Search room
             app.user.StartListener();
