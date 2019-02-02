@@ -28,7 +28,7 @@ namespace MeetingHelper
         public HostPage ()
 		{
 			InitializeComponent ();
-
+            
             //  init list
             Guests = new ObservableCollection<ianGuest>();
             ListView_Guests.ItemsSource = Guests;
@@ -72,7 +72,6 @@ namespace MeetingHelper
                 ((ListView)sender).SelectedItem = null;
             };
         }
-        
 
         //  init page
         protected override void OnAppearing()

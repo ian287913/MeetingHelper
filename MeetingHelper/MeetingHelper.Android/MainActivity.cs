@@ -17,6 +17,7 @@ namespace MeetingHelper.Droid
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         public static MainActivity MA;  /// For XamarinForms
+        private UiChangeListener mUiChangeListener;
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -24,11 +25,12 @@ namespace MeetingHelper.Droid
             ToolbarResource = Resource.Layout.Toolbar;
             
             base.OnCreate(bundle);
-
+            
             //  hide status bar and navigation bar
-            Window.DecorView.SystemUiVisibility = (StatusBarVisibility)SystemUiFlags.HideNavigation | (StatusBarVisibility)SystemUiFlags.Fullscreen | (StatusBarVisibility)SystemUiFlags.ImmersiveSticky;
+            Window.DecorView.SystemUiVisibility = (StatusBarVisibility)SystemUiFlags.HideNavigation | (StatusBarVisibility)SystemUiFlags.Fullscreen | (StatusBarVisibility)SystemUiFlags.ImmersiveSticky | (StatusBarVisibility)SystemUiFlags.LayoutHideNavigation | (StatusBarVisibility)SystemUiFlags.LayoutStable;
             Window.SetStatusBarColor(Android.Graphics.Color.ParseColor("#282828"));
-
+            mUiChangeListener = new UiChangeListener(Window);
+            Window.DecorView.SetOnSystemUiVisibilityChangeListener(mUiChangeListener);
 
             MA = this;
             /// Permissions
@@ -54,5 +56,18 @@ namespace MeetingHelper.Droid
             LoadApplication(new App());
         }
     }
+    public class UiChangeListener : Java.Lang.Object, View.IOnSystemUiVisibilityChangeListener
+    {
+        private Window mWindow;
+        public UiChangeListener(Window window) : base()
+        {
+            mWindow = window;
+        }
+        public void OnSystemUiVisibilityChange([GeneratedEnum] StatusBarVisibility visibility)
+        {
+            mWindow.DecorView.SystemUiVisibility = (StatusBarVisibility)SystemUiFlags.HideNavigation | (StatusBarVisibility)SystemUiFlags.Fullscreen | (StatusBarVisibility)SystemUiFlags.ImmersiveSticky | (StatusBarVisibility)SystemUiFlags.LayoutHideNavigation | (StatusBarVisibility)SystemUiFlags.LayoutStable;
+        }
+    }
+
 }
 

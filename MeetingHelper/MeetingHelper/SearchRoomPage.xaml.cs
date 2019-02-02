@@ -373,7 +373,7 @@ namespace MeetingHelper
         //  (B) Create Confirm (Validation)
         private void Create_Confirm_Clicked(object sender, EventArgs e)
         {
-            if(Create_RoomName_Entry.Text.Length > 12)
+            if (Create_RoomName_Entry.Text.Length > 12)
             {
                 Create_Label.TextColor = Color.FromHex("FF4444");
                 Create_Label.Text = "the length of Room-Name should less than 12.";
