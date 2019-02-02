@@ -219,8 +219,8 @@ namespace MeetingHelper
                 app.myRoom.Open();
                 app.myRoom.StartBroadcast(1, TimeUnit.Hour);
 
-                //  wait for 0.5sec
-                await Task.Delay(3000);
+                //  wait for 1.5sec
+                await Task.Delay(1500);
 
                 //  validate room
                 if (isTargetRoomFine)
