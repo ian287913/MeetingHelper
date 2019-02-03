@@ -14,6 +14,8 @@ namespace MeetingHelper
         /// DJ
         public User user;
         public Room myRoom;
+        //  Audio
+        public AudioControl audioControl;
 
         //  Debug
         public ObservableCollection<DebugInfo> DebugList;
@@ -30,16 +32,13 @@ namespace MeetingHelper
         public App ()
 		{
 			InitializeComponent();
-            
-            //  init User
-            user = new User();
+
+            //  init User, WiFi and Audio
+            //  done by SearchRoomPage
 
             //  init debug list
             DebugList = new ObservableCollection<DebugInfo>();
             Debug_Status = 0;
-
-            //  init WiFi
-            mWifiController = new WifiController();
 
             //  Debug_LastSleep
             if (Properties.ContainsKey(Property_LastSleep))

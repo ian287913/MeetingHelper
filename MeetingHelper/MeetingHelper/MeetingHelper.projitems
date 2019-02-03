@@ -16,6 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)AudioControl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Broadcast.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configure.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GuestPage.xaml.cs">

@@ -33,17 +33,6 @@ namespace MeetingHelper
             Guests = new ObservableCollection<ianGuest>();
             ListView_Guests.ItemsSource = Guests;
             Debug_ListView.ItemsSource = app.DebugList;
-            
-            //  bind events
-            app.user.OnMicCapture += User_OnMicCapture;
-            app.user.OnMicMissing += User_OnMicMissing;
-            app.user.OnUserJoin += User_OnUserJoin;
-            app.user.OnUserExit += User_OnUserExit;
-            app.user.OnRoomListChanged += User_OnRoomListChanged;
-            app.user.OnSpeakerChanged += User_OnSpeakerChanged;
-            app.user.OnRequest += User_OnRequest;
-            app.user.OnForbid += User_OnForbid;
-            app.user.OnError += User_OnError;
 
             //  start update WiFi
             Update_WiFi();
@@ -52,7 +41,7 @@ namespace MeetingHelper
             isDoorOpen = true;
             isSoundOn = false;
             //  start broadcast
-            app.myRoom.StartBroadcast(1, TimeUnit.Hour);
+            app.myRoom.StartBroadcast(-1, TimeUnit.Hour);
 
             //  List Click Event
             ListView_Guests.ItemTapped += (sender, e) =>
@@ -88,6 +77,24 @@ namespace MeetingHelper
             UpdateButton();
             //  update WiFi
             Do_Update_WiFi = true;
+            //  Hook Events - User
+            app.user.ClearEvents();
+            app.user.OnMicCapture += User_OnMicCapture;
+            app.user.OnMicMissing += User_OnMicMissing;
+            app.user.OnUserJoin += User_OnUserJoin;
+            app.user.OnUserExit += User_OnUserExit;
+            app.user.OnRoomListChanged += User_OnRoomListChanged;
+            app.user.OnSpeakerChanged += User_OnSpeakerChanged;
+            app.user.OnRequest += User_OnRequest;
+            app.user.OnForbid += User_OnForbid;
+            User.OnError += User_OnError;
+            //  Hook Events - WiFi
+            app.mWifiController.ClearEvents();
+            WifiController.OnException += MWifiController_OnException;
+            //  Hook Events - Audio
+            app.audioControl.ClearEvents();
+            app.audioControl.OnSendAudio += AudioControl_OnSendAudio;
+            AudioControl.OnException += AudioControl_OnException;
 
             //  Debug
             Debug("HostPage OnAppearing");
@@ -209,7 +216,28 @@ namespace MeetingHelper
         }
         private void User_OnError(object sender, ErrorEventArgs e)
         {
-            Warning("Error", e.Exception.Message);
+            Warning("User_Error", e.Exception.Message);
+            Debug($"User_Error:\n{e.Exception.Message}");
+        }
+        #endregion
+
+        #region WiFi Events
+        private void MWifiController_OnException(string message)
+        {
+            Warning("WiFi_Error", message);
+            Debug($"WiFi_Error:\n{message}");
+        }
+        #endregion
+
+        #region Audio Events
+        private void AudioControl_OnSendAudio(short[] buffer, int bufferReadResult)
+        {
+            ///
+        }
+        private void AudioControl_OnException(string message)
+        {
+            Warning("Audio_Error", message);
+            Debug($"Audio_Error:\n{message}");
         }
         #endregion
 

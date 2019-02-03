@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using DetailedState = Android.Net.NetworkInfo.DetailedState;
-namespace Controller
+namespace Controller.Component
 {
     public enum WifiDetailedState
     {
@@ -97,6 +97,7 @@ namespace Controller
         }
     }
 
+    public delegate void ExceptionEventHandler(string message);
     public delegate void NetworkChangedEventHandler(object sender, NetworkChangedEventArgs e);
     public class WifiController : IDisposable
     {
@@ -105,8 +106,13 @@ namespace Controller
         private readonly WifiReceiverStatus wifiStatus = new WifiReceiverStatus();
         private readonly WifiReceiver wifiReceiver = new WifiReceiver();
         private readonly Context ctx = null;
-        public Action<string> myException;
+        public static event ExceptionEventHandler OnException;
         public event NetworkChangedEventHandler OnNetworkChanged;
+        public void ClearEvents()
+        {
+            OnNetworkChanged = null;
+            OnException = null;
+        }
         public NetworkChangedEventArgs currentStatus = new NetworkChangedEventArgs(DetailedState.Idle);
         public bool Enable
         {
@@ -135,7 +141,7 @@ namespace Controller
             }
             catch (Exception e)
             {
-                myException?.Invoke("[Wifi Init Failed] : " + e.Message);
+                OnException?.Invoke("[Wifi Init Failed] : " + e.Message);
             }
         }
         private void OnDataReceive(Context context, Intent intent)
@@ -191,7 +197,7 @@ namespace Controller
             }
             catch (Exception e)
             {
-                myException?.Invoke("[Wifi Connect Failed] : " + e.Message);
+                OnException?.Invoke("[Wifi Connect Failed] : " + e.Message);
             }
         }
         public int CalculateLevel(string Ssid)

@@ -75,6 +75,25 @@ namespace Controller.Component
 
         #region Event
         /// <summary>
+        /// 清空外部綁定的事件
+        /// </summary>
+        public void ClearEvents()
+        {
+            OnRoomListChanged = null;
+            OnWrongPassword = null;
+            OnDuplicateName = null;
+            OnEnterRoom = null;
+            OnMicCapture = null;
+            OnMicMissing = null;
+            OnHostRefused = null;
+            OnRequest = null;
+            OnUserJoin = null;
+            OnUserExit = null;
+            OnSpeakerChanged = null;
+            OnError = null;
+            OnForbid = null;
+        }
+        /// <summary>
         /// 房間列表變更時觸發。
         /// </summary>
         public event EventHandler OnRoomListChanged;
@@ -121,7 +140,7 @@ namespace Controller.Component
         /// <summary>
         /// 有錯誤發生時觸發。
         /// </summary>
-        public event ErrorEventHandler OnError;
+        public static event ErrorEventHandler OnError;
         /// <summary>
         /// 發送了無權限的要求時觸發，需要重新加入房間。
         /// </summary>

@@ -27,12 +27,9 @@ namespace MeetingHelper
 	{
         //  Include WiFi, User, Room...
         App app = Application.Current as App;
-        
+
         //  Rooms ItemSource
         ObservableCollection<ianRoom> Rooms;
-        //  Debug
-        ObservableCollection<DebugInfo> DebugList;
-        int Debug_Status;
         //  Layout control
         bool show_Warning;
         bool show_Password;
@@ -47,21 +44,19 @@ namespace MeetingHelper
         public SearchRoomPage ()
 		{
 			InitializeComponent ();
-            ///  init DJ
-            app.user.OnEnterRoom += User_OnEnterRoom;
-            app.user.OnRoomListChanged += User_OnRoomListChanged;
-            app.user.OnDuplicateName += User_OnDuplicateName;
-            app.user.OnWrongPassword += User_OnWrongPassword;
-            app.user.OnForbid += User_OnForbid;
-            app.user.OnError += User_OnError;
+            
+            //  init User, WiFi and Audio
+            User.OnError += User_OnError;
+            app.user = new User();
+            WifiController.OnException += WifiController_OnException;
+            app.mWifiController = new WifiController();
+            AudioControl.OnException += AudioControl_OnException;
+            app.audioControl = new AudioControl();
 
             //  init ItemSource
             Rooms = new ObservableCollection<ianRoom>();
             ListView_Rooms.ItemsSource = Rooms;
             Debug_ListView.ItemsSource = app.DebugList;
-
-            //  init WiFi
-            app.mWifiController.OnNetworkChanged += OnStatusChanged;
             
             //  Update WiFi
             Update_WiFi();
@@ -101,13 +96,10 @@ namespace MeetingHelper
             
             Device.BeginInvokeOnMainThread(() =>
             {
-                //  updata room
+                //  update rooms
                 Rooms.Clear();
-                /// use new DJ's properties
                 foreach (RoomInfo room in app.user.RoomList)
                     Rooms.Add(new ianRoom(room.Name, room.Host, room.CreatedAt.ToLocalTime().ToShortDateString(), room.Locked, room.Address.ToString()));
-                //  Update WiFi
-                Do_Update_WiFi = true;
                 //  init Entry
                 Create_Password_Entry.Text = "";
                 Create_RoomName_Entry.Text = "";
@@ -117,14 +109,34 @@ namespace MeetingHelper
                 Create_Error_Label.Text = "";
                 Create_Error_Label.IsVisible = false;
                 //  init Visibility
-                show_Warning = false;
+                //show_Warning = false;
                 show_Password = false;
                 show_Create = false;
                 show_Layout();
+
+                //  Hook Events - User
+                app.user.ClearEvents();
+                app.user.OnEnterRoom += User_OnEnterRoom;
+                app.user.OnRoomListChanged += User_OnRoomListChanged;
+                app.user.OnDuplicateName += User_OnDuplicateName;
+                app.user.OnWrongPassword += User_OnWrongPassword;
+                app.user.OnForbid += User_OnForbid;
+                User.OnError += User_OnError;
+                //  Hook Events - WiFi
+                app.mWifiController.ClearEvents();
+                app.mWifiController.OnNetworkChanged += WifiController_OnStatusChanged;
+                WifiController.OnException += WifiController_OnException;
+                //  Hook Events - Audio
+                app.audioControl.ClearEvents();
+                AudioControl.OnException += AudioControl_OnException;
+                
+                //  Update WiFi
+                Do_Update_WiFi = true;
             });
             //  Debug
             Debug("SearchRoomPage OnAppearing");
             Switch_Debug(false);
+            
             //  Start Search room
             app.user.StartListener();
         }
@@ -358,8 +370,44 @@ namespace MeetingHelper
 
         private void User_OnError(object sender, ErrorEventArgs e)
         {
-            Warning("Error_01", e.Exception.Message);
+            Warning("User_Error", e.Exception.Message);
             Debug($"[ERROR from user]\n{e.Exception.Message}");
+        }
+        #endregion
+
+        #region WiFi Events
+        private void WifiController_OnException(string message)
+        {
+            Warning("WiFi_Error", message);
+            Debug($"WiFi_Error:\n{message}");
+        }
+        private void WifiController_OnStatusChanged(object sender, NetworkChangedEventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                if (e.State.Equals(WifiDetailedState.Connected))
+                {
+                    //  get current IP
+                    string strHostName = Dns.GetHostName();
+                    IPHostEntry iphostentry = Dns.GetHostEntry(strHostName);
+                    IPAddress ip = iphostentry.AddressList[0];
+                    Label_WiFi_Name.Text = app.mWifiController.ConnectionInfo.SSID;
+                    Label_WiFi_Content.Text = $"IP: {ip.ToString()}\nLink Speed: {app.mWifiController.ConnectionInfo.LinkSpeed} Mbps";
+                }
+                else
+                {
+                    Label_WiFi_Name.Text = e.State.ToString();
+                    Label_WiFi_Content.Text = "Please connect to any WiFi to join or create a room.";
+                }
+            });
+        }
+        #endregion
+
+        #region Audio Events
+        private void AudioControl_OnException(string message)
+        {
+            Warning("Audio_Error", message);
+            Debug($"Audio_Error:\n{message}");
         }
         #endregion
 
@@ -426,28 +474,6 @@ namespace MeetingHelper
                 show_Create = false;
                 show_Password = false;
                 show_Layout();
-            });
-        }
-
-        //  (W) WiFi status changed
-        private void OnStatusChanged(object sender, NetworkChangedEventArgs e)
-        {
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                if (e.State.Equals(WifiDetailedState.Connected))
-                {
-                    //  get current IP
-                    string strHostName = Dns.GetHostName();
-                    IPHostEntry iphostentry = Dns.GetHostEntry(strHostName);
-                    IPAddress ip = iphostentry.AddressList[0];
-                    Label_WiFi_Name.Text = app.mWifiController.ConnectionInfo.SSID;
-                    Label_WiFi_Content.Text = $"IP: {ip.ToString()}\nLink Speed: {app.mWifiController.ConnectionInfo.LinkSpeed} Mbps";
-                }
-                else
-                {
-                    Label_WiFi_Name.Text = e.State.ToString();
-                    Label_WiFi_Content.Text = "Please connect to any WiFi to join or create a room.";
-                }
             });
         }
         
