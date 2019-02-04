@@ -13,24 +13,24 @@ using System.Collections.ObjectModel;
 
 namespace MeetingHelper
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class GuestPage : ContentPage
-	{
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class GuestPage : ContentPage
+    {
         App app = Application.Current as App;
 
         ObservableCollection<ianGuest> Guests;
 
         bool Do_Update_WiFi = false;
 
-        public GuestPage ()
-		{
-			InitializeComponent ();
-            
+        public GuestPage()
+        {
+            InitializeComponent();
+
             //  init list
             Guests = new ObservableCollection<ianGuest>();
             ListView_Guests.ItemsSource = Guests;
             Debug_ListView.ItemsSource = app.DebugList;
-            
+
             //  start update WiFi
             Update_WiFi();
 
@@ -101,6 +101,7 @@ namespace MeetingHelper
                 Guests.Add(tempGuest);
             }
         }
+
         private void UpdateButton()
         {
             Device.BeginInvokeOnMainThread(() =>
@@ -115,7 +116,7 @@ namespace MeetingHelper
                     Action_Button.IsEnabled = true;
                 }
                 //  Requested
-                else if(app.user.RoomConfig.AskerList.Contains(app.user.Config.Name))   
+                else if (app.user.RoomConfig.AskerList.Contains(app.user.Config.Name))
                 {
                     Action_Button.Text = "Requested";
                     Action_Button.BackgroundColor = Color.FromHex("#555555");
@@ -144,10 +145,12 @@ namespace MeetingHelper
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     if (app.mWifiController.currentStatus.State.Equals(WifiDetailedState.Connected))
+                    {
                         SSID_Label.Text = app.mWifiController.ConnectionInfo.SSID;
+                    }
                     else
                     {
-                        SSID_Label.Text = $"({app.mWifiController.currentStatus.State.ToString()})";
+                        SSID_Label.Text = $"({app.mWifiController.currentStatus.State})";
                         /// debug : warning
                     }
                 });
@@ -237,8 +240,11 @@ namespace MeetingHelper
                 app.user.BackMic();
             }
             //  Requested
-            else if (app.user.RoomConfig.AskerList.Contains(app.user.Config.Name))
+            else if (app.user.RoomConfig.ContainsAsker(app.user.Config.Name))
             {
+                /// 原本是 app.user.RoomConfig.AskerList.Contains(app.user.Config.Name)
+                /// 可替代為 app.user.RoomConfig.ContainsAsker(app.user.Config.Name);
+                /// 但一般使用者的AskerList不會有東西，所以不會觸發。
                 /// Disable Request
             }
             else
@@ -271,7 +277,7 @@ namespace MeetingHelper
             });
         }
         #endregion
-        
+
         #region Debug
         private void Debug(string message)
         {
@@ -337,5 +343,4 @@ namespace MeetingHelper
         }
         #endregion
     }
-
 }

@@ -13,9 +13,9 @@ using System.Collections.ObjectModel;
 
 namespace MeetingHelper
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class HostPage : ContentPage
-	{
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class HostPage : ContentPage
+    {
         App app = Application.Current as App;
 
         ObservableCollection<ianGuest> Guests;
@@ -25,10 +25,10 @@ namespace MeetingHelper
         bool isDoorOpen;
         bool isSoundOn;
 
-        public HostPage ()
-		{
-			InitializeComponent ();
-            
+        public HostPage()
+        {
+            InitializeComponent();
+
             //  init list
             Guests = new ObservableCollection<ianGuest>();
             ListView_Guests.ItemsSource = Guests;
@@ -48,7 +48,7 @@ namespace MeetingHelper
             {
                 //  get target guest
                 ianGuest target = e.Item as ianGuest;
-                
+
                 ((ListView)sender).SelectedItem = null;
                 //  give Mic to target
                 app.user.AcceptAsker(target.Name);
@@ -254,7 +254,7 @@ namespace MeetingHelper
             {
                 //  close door (stop broadcast)
                 isDoorOpen = false;
-                Device.BeginInvokeOnMainThread(()=> Door_BoxView.BackgroundColor = Color.FromHex("FF4444"));
+                Device.BeginInvokeOnMainThread(() => Door_BoxView.BackgroundColor = Color.FromHex("FF4444"));
                 app.myRoom.StopBroadcast();
             }
             else

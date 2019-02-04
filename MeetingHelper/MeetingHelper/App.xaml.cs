@@ -6,11 +6,11 @@ using Controller;
 using Controller.Component;
 using System.Collections.ObjectModel;
 
-[assembly: XamlCompilation (XamlCompilationOptions.Compile)]
+[assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace MeetingHelper
 {
-	public partial class App : Application
-	{
+    public partial class App : Application
+    {
         /// DJ
         public User user;
         public Room myRoom;
@@ -28,10 +28,10 @@ namespace MeetingHelper
         //  Save & Load for Debug_LastSleep
         const string Property_LastSleep = "LastSleep";
         public bool LastSleep { set; get; }
-        
-        public App ()
-		{
-			InitializeComponent();
+
+        public App()
+        {
+            InitializeComponent();
 
             //  init User, WiFi and Audio
             //  done by SearchRoomPage
@@ -54,13 +54,13 @@ namespace MeetingHelper
             MainPage = new MainPage();
         }
 
-        protected override void OnStart ()
-		{
-			// Handle when your app starts
-		}
+        protected override void OnStart()
+        {
+            // Handle when your app starts
+        }
 
-		protected override void OnSleep ()
-		{
+        protected override void OnSleep()
+        {
             // Handle when your app sleeps
 
             // Debug_LastSleep
@@ -69,11 +69,11 @@ namespace MeetingHelper
             Properties[Property_Username] = UserName;
         }
 
-		protected override void OnResume ()
-		{
-			// Handle when your app resumes
-		}
-	}
+        protected override void OnResume()
+        {
+            // Handle when your app resumes
+        }
+    }
     public class DebugInfo : BindableObject
     {
         public string Debug { get; set; }
