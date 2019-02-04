@@ -115,7 +115,7 @@ namespace MeetingHelper
                 show_Layout();
 
                 //  Hook Events - User
-                app.user.ClearEvents();
+                app.user.RemoveAllEventHandlers();
                 app.user.OnEnterRoom += User_OnEnterRoom;
                 app.user.OnRoomListChanged += User_OnRoomListChanged;
                 app.user.OnDuplicateName += User_OnDuplicateName;

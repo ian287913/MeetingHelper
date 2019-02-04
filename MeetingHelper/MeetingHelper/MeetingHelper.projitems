@@ -16,14 +16,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)AudioControl.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Broadcast.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Configure.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller\AudioControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller\Broadcast.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller\Configure.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GuestPage.xaml.cs">
       <DependentUpon>GuestPage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Helper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller\Helper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HostPage.xaml.cs">
       <DependentUpon>HostPage.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -32,16 +32,16 @@
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)MessageType.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)NetWorkEvent.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Room.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller\MessageType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller\NetWorkEvent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller\Room.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SearchRoomPage.xaml.cs">
       <DependentUpon>SearchRoomPage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)TcpCSM.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UdpServer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)User.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller\TcpCSM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller\UdpServer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller\User.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WifiController.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -64,5 +64,8 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Controller\" />
   </ItemGroup>
 </Project>

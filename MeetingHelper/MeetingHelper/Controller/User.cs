@@ -3,6 +3,7 @@ using Controller.NetWork;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Reflection;
 
 namespace Controller.Component
 {
@@ -75,25 +76,6 @@ namespace Controller.Component
 
         #region Event
         /// <summary>
-        /// 清空外部綁定的事件
-        /// </summary>
-        public void ClearEvents()
-        {
-            OnRoomListChanged = null;
-            OnWrongPassword = null;
-            OnDuplicateName = null;
-            OnEnterRoom = null;
-            OnMicCapture = null;
-            OnMicMissing = null;
-            OnHostRefused = null;
-            OnRequest = null;
-            OnUserJoin = null;
-            OnUserExit = null;
-            OnSpeakerChanged = null;
-            OnError = null;
-            OnForbid = null;
-        }
-        /// <summary>
         /// 房間列表變更時觸發。
         /// </summary>
         public event EventHandler OnRoomListChanged;
@@ -140,7 +122,7 @@ namespace Controller.Component
         /// <summary>
         /// 有錯誤發生時觸發。
         /// </summary>
-        public static event ErrorEventHandler OnError;
+        public event ErrorEventHandler OnError;
         /// <summary>
         /// 發送了無權限的要求時觸發，需要重新加入房間。
         /// </summary>
@@ -299,11 +281,7 @@ namespace Controller.Component
             if (id != -1)
             {
                 string temp = RoomInfo.Substring(id + 1).Replace(")", "");
-                try
-                {
-                    return IPAddress.Parse(temp);
-                }
-                catch { }
+                if (IPAddress.TryParse(temp, out IPAddress addr)) return addr;
             }
             return IPAddress.Loopback;
         }
@@ -350,6 +328,26 @@ namespace Controller.Component
             RoomConfig.RemoveAsker(UserName);
             m_cmdReceiver.Send(Helper.MessageWrapper(MessageType.Refuse, UserName));
         }
+
+        /// <summary>
+        /// 清空外部綁定的事件
+        /// </summary>
+        public void RemoveAllEventHandlers()
+        {
+            BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+            Type type = GetType();
+            EventInfo[] eventInfo = type.GetEvents(bindingFlags);
+            foreach (EventInfo info in eventInfo)
+            {
+                if (type.GetField(info.Name, bindingFlags).GetValue(this) is Delegate del)
+                {
+                    foreach (Delegate invocation in del.GetInvocationList())
+                    {
+                        info.RemoveEventHandler(this, invocation);
+                    }
+                }
+            }
+        }
         #endregion
 
         #region EventCaller
@@ -362,10 +360,7 @@ namespace Controller.Component
         {
             SimpleTcpClient NameGetter = new SimpleTcpClient(Helper.ChangePort(e.RemoteEndPoint, NetWorkPort.Broadcast));
             NameGetter.OnMessage += OnInfoReceive;
-            NameGetter.OnConnect += (sender2, e2) =>
-            {
-                NameGetter.Send(e.Data);
-            };
+            NameGetter.OnConnect += (sender2, e2) => NameGetter.Send(e.Data);
             NameGetter.Connect();
         }
 

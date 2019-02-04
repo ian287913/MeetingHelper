@@ -78,7 +78,7 @@ namespace MeetingHelper
             //  update WiFi
             Do_Update_WiFi = true;
             //  Hook Events - User
-            app.user.ClearEvents();
+            app.user.RemoveAllEventHandlers();
             app.user.OnMicCapture += User_OnMicCapture;
             app.user.OnMicMissing += User_OnMicMissing;
             app.user.OnUserJoin += User_OnUserJoin;
