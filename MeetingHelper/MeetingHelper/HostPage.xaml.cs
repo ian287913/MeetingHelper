@@ -55,8 +55,14 @@ namespace MeetingHelper
                 ianGuest target = e.Item as ianGuest;
 
                 ((ListView)sender).SelectedItem = null;
+
+                //  give Mic to self
+                if (target.Host == "H")
+                    app.user.WantMic();
                 //  give Mic to target
-                app.user.AcceptAsker(target.Name);
+                else
+                    app.user.AcceptAsker(target.Name);
+                
                 /// debug
                 UpdateList();
                 UpdateButton();

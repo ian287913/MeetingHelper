@@ -46,8 +46,8 @@ namespace MeetingHelper
 			InitializeComponent ();
             
             //  init User, WiFi and Audio
-            User.OnError += User_OnError;
             app.user = new User();
+            app.user.OnError += User_OnError;
             WifiController.OnException += WifiController_OnException;
             app.mWifiController = new WifiController();
             AudioControl.OnException += AudioControl_OnException;
@@ -121,7 +121,7 @@ namespace MeetingHelper
                 app.user.OnDuplicateName += User_OnDuplicateName;
                 app.user.OnWrongPassword += User_OnWrongPassword;
                 app.user.OnForbid += User_OnForbid;
-                User.OnError += User_OnError;
+                app.user.OnError += User_OnError;
                 //  Hook Events - WiFi
                 app.mWifiController.ClearEvents();
                 app.mWifiController.OnNetworkChanged += WifiController_OnStatusChanged;
