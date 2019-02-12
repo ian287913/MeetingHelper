@@ -310,7 +310,7 @@ namespace Controller.Component
                         else
                         {
                             /// 新增進要求列表。
-                            HostConn.Send(Helper.MessageWrapper(MessageType.Request, cmd.Data[0]));
+                            m_cmdSender.SendToAll(Helper.MessageWrapper(MessageType.Request, cmd.Data[0]));
                             Config.AddAsker(cmd.Data[0]);
                         }
                     }
