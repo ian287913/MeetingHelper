@@ -215,11 +215,13 @@ namespace MeetingHelper
         {
             UpdateList();
             UpdateButton();
+            Debug($"user [{e.Name}] exited.");
         }
         private void User_OnUserJoin(object sender, UserEventArgs e)
         {
             UpdateList();
             UpdateButton();
+            Debug($"user [{e.Name}] joined.");
         }
         private void User_OnMicMissing(object sender, EventArgs e)
         {
@@ -331,7 +333,6 @@ namespace MeetingHelper
                 isSoundOn = true;
                 Device.BeginInvokeOnMainThread(() => Sound_BoxView.BackgroundColor = Color.FromHex("44FF44"));
                 app.myRoom.OpenMic();
-                app.myRoom.CloseMic();
                 /// Audio - StartTrack
                 Debug("(StartTrack)");
                 if (!(app.audioControl.isTracking))
