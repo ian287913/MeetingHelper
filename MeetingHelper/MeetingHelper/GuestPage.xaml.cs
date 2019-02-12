@@ -71,7 +71,7 @@ namespace MeetingHelper
             app.user.OnSpeakerChanged += User_OnSpeakerChanged;
             app.user.OnRequest += User_OnRequest;
             app.user.OnForbid += User_OnForbid;
-            User.OnError += User_OnError;
+            app.user.OnError += User_OnError;
             //  Hook Events - WiFi
             app.mWifiController.ClearEvents();
             WifiController.OnException += MWifiController_OnException;
@@ -163,11 +163,20 @@ namespace MeetingHelper
         {
             UpdateList();
             UpdateButton();
+            /// Stop record audio
+            Debug("Stop recording...");
+            if (app.audioControl.isRecording)
+                app.audioControl.StopRecord();
         }
         private void User_OnMicCapture(object sender, EventArgs e)
         {
             UpdateList();
             UpdateButton();
+            /// Start record audio
+            Debug("Start recording...");
+            if (app.audioControl.isRecording)
+                app.audioControl.StopRecord();
+            app.audioControl.StartRecord();
         }
         private void User_OnRoomListChanged(object sender, EventArgs e)
         {
@@ -208,7 +217,27 @@ namespace MeetingHelper
         #region Audio Events
         private void AudioControl_OnSendAudio(short[] buffer, int bufferReadResult)
         {
-            ///
+            /// if(has mic)...
+            //  Convert Data To Bytes (ref int result, ref short[] Sarray, out byte[] Barray)
+            byte[] Barray;
+
+            int num = 0, Snum = 0;
+            Barray = new byte[buffer.Length * 2 + 4];
+            byte[] itmp = BitConverter.GetBytes(bufferReadResult);
+            for (num = 0; num < 4; num++)
+                Barray[num] = itmp[num];
+            while (Snum < (buffer.Length))
+            {
+                byte[] tmp = new byte[2];
+                tmp = BitConverter.GetBytes(buffer[Snum]);
+                Barray[num] = tmp[0];
+                num++;
+                Barray[num] = tmp[1];
+                num++;
+                Snum++;
+            }
+            //  Send audio(bytep[]) to guest's "Room"
+            app.user.SendAudio(Barray);
         }
         private void AudioControl_OnException(string message)
         {
@@ -252,6 +281,7 @@ namespace MeetingHelper
                 //  send request
                 app.user.WantMic();
             }
+
             /// This may not works because the data iss updated by the host(room)
             UpdateButton();
         }

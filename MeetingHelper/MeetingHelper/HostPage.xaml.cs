@@ -40,6 +40,11 @@ namespace MeetingHelper
             //  Button(switch) status
             isDoorOpen = true;
             isSoundOn = false;
+            /// Audio - StopTrack
+            Debug("(init - StopTrack)");
+            if (app.audioControl.isTracking)
+                app.audioControl.StopTrack();
+
             //  start broadcast
             app.myRoom.StartBroadcast(-1, TimeUnit.Hour);
 
@@ -87,10 +92,12 @@ namespace MeetingHelper
             app.user.OnSpeakerChanged += User_OnSpeakerChanged;
             app.user.OnRequest += User_OnRequest;
             app.user.OnForbid += User_OnForbid;
-            User.OnError += User_OnError;
+            app.user.OnError += User_OnError;
             //  Hook Events - WiFi
             app.mWifiController.ClearEvents();
             WifiController.OnException += MWifiController_OnException;
+            //  Hook Events - Room
+            app.myRoom.OnAudioReceive += MyRoom_OnAudioReceive;
             //  Hook Events - Audio
             app.audioControl.ClearEvents();
             app.audioControl.OnSendAudio += AudioControl_OnSendAudio;
@@ -99,6 +106,29 @@ namespace MeetingHelper
             //  Debug
             Debug("HostPage OnAppearing");
             Switch_Debug(false);
+        }
+
+        /// 收音(from guest) -> 播出
+        private void MyRoom_OnAudioReceive(object sender, UdpMessageEventArgs e)
+        {
+            //  Convert Bytes To Data
+            short[] Sarray;
+            int num = 0, Snum = 0;
+            Sarray = new short[(e.Data.Length - 4) / 2];
+            byte[] B32 = new byte[4] { e.Data[0], e.Data[1], e.Data[2], e.Data[3] };
+            int result = BitConverter.ToInt32(B32, 0);
+            num = 4;
+            while (num < e.Data.Length)
+            {
+                byte[] B16 = new byte[2];
+                B16[0] = e.Data[num];
+                num++;
+                B16[1] = e.Data[num];
+                num++;
+                Sarray[Snum] = BitConverter.ToInt16(B16, 0);
+                Snum++;
+            }
+            app.audioControl.AudioWrite(Sarray, result);
         }
 
         private void UpdateList()
@@ -187,11 +217,20 @@ namespace MeetingHelper
         {
             UpdateList();
             UpdateButton();
+            /// Stop record audio
+            Debug("Stop recording...");
+            if (app.audioControl.isRecording)
+                app.audioControl.StopRecord();
         }
         private void User_OnMicCapture(object sender, EventArgs e)
         {
             UpdateList();
             UpdateButton();
+            /// Start record audio
+            Debug("Start recording...");
+            if (app.audioControl.isRecording)
+                app.audioControl.StopRecord();
+            app.audioControl.StartRecord();
         }
         private void User_OnRoomListChanged(object sender, EventArgs e)
         {
@@ -233,6 +272,7 @@ namespace MeetingHelper
         private void AudioControl_OnSendAudio(short[] buffer, int bufferReadResult)
         {
             ///
+            Debug("Error: Host should not send out audio (call ian)");
         }
         private void AudioControl_OnException(string message)
         {
@@ -273,6 +313,10 @@ namespace MeetingHelper
                 isSoundOn = false;
                 Device.BeginInvokeOnMainThread(() => Sound_BoxView.BackgroundColor = Color.FromHex("FF4444"));
                 app.myRoom.CloseMic();
+                /// Audio - StopTrack
+                Debug("(StopTrack)");
+                if (app.audioControl.isTracking)
+                    app.audioControl.StopTrack();
             }
             else
             {
@@ -280,6 +324,11 @@ namespace MeetingHelper
                 isSoundOn = true;
                 Device.BeginInvokeOnMainThread(() => Sound_BoxView.BackgroundColor = Color.FromHex("44FF44"));
                 app.myRoom.OpenMic();
+                app.myRoom.CloseMic();
+                /// Audio - StartTrack
+                Debug("(StartTrack)");
+                if (!(app.audioControl.isTracking))
+                    app.audioControl.StartTrack();
             }
         }
         private void Exit_Clicked(object sender, EventArgs e)
