@@ -57,15 +57,17 @@ namespace MeetingHelper
                 ((ListView)sender).SelectedItem = null;
 
                 //  give Mic to self
-                if (target.Host == "H")
+                ///
+                Debug($"HostName: {app.user.Config.Name}");
+                if (target.Name == app.user.Config.Name)
                     app.user.WantMic();
                 //  give Mic to target
                 else
                     app.user.AcceptAsker(target.Name);
                 
                 /// debug
-                UpdateList();
-                UpdateButton();
+                //UpdateList();
+                //UpdateButton();
             };
             Debug_ListView.ItemTapped += (sender, e) =>
             {
@@ -106,7 +108,7 @@ namespace MeetingHelper
             app.myRoom.OnAudioReceive += MyRoom_OnAudioReceive;
             //  Hook Events - Audio
             app.audioControl.ClearEvents();
-            app.audioControl.OnSendAudio += AudioControl_OnSendAudio;
+            ///app.audioControl.OnSendAudio += AudioControl_OnSendAudio;
             AudioControl.OnException += AudioControl_OnException;
 
             //  Debug
@@ -145,7 +147,7 @@ namespace MeetingHelper
             foreach (string guest in app.user.RoomConfig.UserList)
             {
                 tempGuest = new ianGuest(guest);
-                if (guest == app.user.RoomConfig.Host)
+                if (guest == app.user.Config.Name)
                     tempGuest.BeHost();
                 if (guest == app.user.RoomConfig.Speaker)
                     tempGuest.BeSpeaker();
@@ -277,7 +279,6 @@ namespace MeetingHelper
         #region Audio Events
         private void AudioControl_OnSendAudio(short[] buffer, int bufferReadResult)
         {
-            ///
             Debug("Error: Host should not send out audio (call ian)");
         }
         private void AudioControl_OnException(string message)
@@ -352,7 +353,9 @@ namespace MeetingHelper
             if (!app.user.Config.HaveMic)
             {
                 //  Take Mic
-                ///...
+                app.user.WantMic();
+                ///
+                Debug("(action-take mic)");
             }
             //  Guest Requested
             else if (app.user.RoomConfig.AskerList.Length != 0)
