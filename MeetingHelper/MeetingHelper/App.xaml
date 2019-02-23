@@ -2,9 +2,11 @@
 <Application xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MeetingHelper.App">
-	<Application.Resources>
+    <Application.Resources>
         <!--font suggested: Montserrat-->
         <ResourceDictionary>
+            <x:String x:Key="FontAwesomeSolid">fa-solid-900.ttf#Font Awesome 5 Free Regular</x:String>
+            
             <Style TargetType="Label">
                 <Setter Property="TextColor" Value="#CCCCCC" />
             </Style>
