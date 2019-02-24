@@ -74,6 +74,7 @@ namespace MeetingHelper
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     Password_Title_Label.Text = targetRoom.Name;
+                    Password_Entry.IsVisible = targetRoom.IsLocked;
                     Password_Entry.Text = "";
                     Password_Label.IsVisible = false;
                     Password_Error_Label.IsVisible = false;
@@ -136,7 +137,9 @@ namespace MeetingHelper
             //  Debug
             Debug("SearchRoomPage OnAppearing");
             Switch_Debug(false);
-            
+
+            //  Show Searching indicator
+            ShowIndicator();
             //  Start Search room
             app.user.StartListener();
         }
@@ -157,20 +160,35 @@ namespace MeetingHelper
                         IPAddress ip = iphostentry.AddressList[0];
                         Label_WiFi_Name.Text = app.mWifiController.ConnectionInfo.SSID;
                         Label_WiFi_Content.Text = $"IP: {ip.ToString()}\nLink Speed: {app.mWifiController.ConnectionInfo.LinkSpeed} Mbps";
-                        if (Rooms.Count == 0)
-                            ActivityIndicator.IsVisible = true;
-                        else
-                            ActivityIndicator.IsVisible = false;
                     }
                     else
                     {
                         Label_WiFi_Name.Text = app.mWifiController.currentStatus.State.ToString();
-                        Label_WiFi_Content.Text = "Please connect to any WiFi to join or create a room.";
-                        ActivityIndicator.IsVisible = false;
+                        Label_WiFi_Content.Text = "請連上任意WiFi以加入或建立房間";
+                        StackLayout_Searching.IsVisible = false;
                     }
                 });
                 await Task.Delay(500);
             }
+        }
+        async void ShowIndicator()
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                StackLayout_Searching.IsVisible = true;
+                ActivityIndicator.IsRunning = true;
+                Label_Searching.Text = "";
+            });
+            await Task.Delay(3000);
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                if (StackLayout_Searching.IsVisible == true)
+                {
+                    ActivityIndicator.IsRunning = false;
+                    if (Rooms.Count == 0)
+                        Label_Searching.Text = "目前網域中沒有任何房間。\n請\"建立新房間\"以讓其他使用者加入您的房間";
+                }
+            });
         }
         
         //  update Layouts' visibility
@@ -222,11 +240,12 @@ namespace MeetingHelper
                 isHost = true;
                 //  notification
                 Create_Label.TextColor = Color.FromHex("44FF44");
-                Create_Label.Text = "establishing...";
+                Create_Label.Text = "建立中...";
                 Create_Label.IsVisible = true;
                 Create_Error_Label.Text = "";
 
                 //  Create a room
+                if(app.myRoom == null)
                 app.myRoom = new Room(targetRoom.Name, targetRoom.Password);
                 app.myRoom.Open();
                 app.myRoom.StartBroadcast(1, TimeUnit.Hour);
@@ -237,7 +256,7 @@ namespace MeetingHelper
                 //  validate room
                 if (isTargetRoomFine)
                 {
-                    Create_Label.Text = "trying to enter...";
+                    Create_Label.Text = "進入房間...";
                     //  get into the room
                     app.user.BecomeHost(targetRoom.Name, targetRoom.Password, app.UserName, IPAddress.Parse(targetRoom.IpAddress));
                     //  wait for enter event...
@@ -245,7 +264,7 @@ namespace MeetingHelper
                 else
                 {
                     //  create room failed
-                    Create_Error_Label.Text = "[create failed]";
+                    Create_Error_Label.Text = "[建立失敗]";
                     Create_Error_Label.IsVisible = true;
                 }
             });
@@ -259,7 +278,7 @@ namespace MeetingHelper
                 isTargetRoomFine = true;
                 isHost = false;
                 //  notification
-                Password_Label.Text = "verifying...";
+                Password_Label.Text = "認證中...";
                 Password_Label.IsVisible = true;
                 Password_Error_Label.IsVisible = false;
 
@@ -272,7 +291,7 @@ namespace MeetingHelper
                 //  validate room
                 if (isTargetRoomFine)
                 {
-                    Password_Label.Text = "trying to enter...";
+                    Password_Label.Text = "進入房間...";
                     //  wait for enter event...
                 }
                 else
@@ -310,8 +329,8 @@ namespace MeetingHelper
         {
             Device.BeginInvokeOnMainThread(() =>
             {
-                Create_Label.Text = "entering...";
-                Password_Label.Text = "entering...";
+                Create_Label.Text = "進入中...";
+                Password_Label.Text = "進入中...";
                 Debug("[OnEnterRoom]");
                 // Go to Host page
                 NextPage();
@@ -331,6 +350,10 @@ namespace MeetingHelper
                     Rooms.Add(new ianRoom(room.Name, room.Host, room.CreatedAt.ToLocalTime().ToShortDateString(), room.Locked, room.Address.ToString()));
                 }
             });
+            if (Rooms.Count == 0 && StackLayout_Searching.IsVisible == false)
+                ShowIndicator();
+            else
+                StackLayout_Searching.IsVisible = false;
         }
 
         private void User_OnDuplicateName(object sender, EventArgs e)
@@ -350,7 +373,7 @@ namespace MeetingHelper
             {
                 isTargetRoomFine = false;
                 //  notification
-                Password_Error_Label.Text = $"wrong password ({e.RemainingTimes})";
+                Password_Error_Label.Text = $"密碼錯誤 ({e.RemainingTimes})";
                 Password_Error_Label.IsVisible = true;
             });
         }
@@ -397,7 +420,7 @@ namespace MeetingHelper
                 else
                 {
                     Label_WiFi_Name.Text = e.State.ToString();
-                    Label_WiFi_Content.Text = "Please connect to any WiFi to join or create a room.";
+                    Label_WiFi_Content.Text = "請連上任意WiFi以加入或建立房間";
                 }
             });
         }
@@ -424,19 +447,19 @@ namespace MeetingHelper
             if (Create_RoomName_Entry.Text.Length > 12)
             {
                 Create_Label.TextColor = Color.FromHex("FF4444");
-                Create_Label.Text = "the length of Room-Name should less than 12.";
+                Create_Label.Text = "房間名稱長度必須小於12位";
                 Create_Label.IsVisible = true;
             }
             else if (Create_RoomName_Entry.Text == "")
             {
                 Create_Label.TextColor = Color.FromHex("FF4444");
-                Create_Label.Text = "Room-Name can not be unnamed.";
+                Create_Label.Text = "請輸入房間名稱";
                 Create_Label.IsVisible = true;
             }
             else if(Create_Password_Entry.Text.Length > 8)
             {
                 Create_Label.TextColor = Color.FromHex("FF4444");
-                Create_Label.Text = "the length of Password should less than 8.";
+                Create_Label.Text = "密碼長度不可超過8位";
                 Create_Label.IsVisible = true;
             }
             else

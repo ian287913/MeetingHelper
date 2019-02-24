@@ -163,7 +163,7 @@ namespace MeetingHelper
                 //  Guest Speaking
                 if (!app.user.Config.HaveMic)
                 {
-                    Action_Button.Text = "Take Mic";
+                    Action_Button.Text = "取回發言權";
                     Action_Button.BackgroundColor = Color.FromHex("#555555");
                     Action_BoxView_L.BackgroundColor = Color.FromHex("#808080");
                     Action_BoxView_R.BackgroundColor = Color.FromHex("#808080");
@@ -181,7 +181,7 @@ namespace MeetingHelper
                 //  No Guest Requested
                 else
                 {
-                    Action_Button.Text = "Speaking...";
+                    Action_Button.Text = "發言中...";
                     Action_Button.BackgroundColor = Color.FromHex("#88FFA922");
                     Action_BoxView_L.BackgroundColor = Color.FromHex("#FFA500");
                     Action_BoxView_R.BackgroundColor = Color.FromHex("#FFA500");
@@ -465,11 +465,11 @@ namespace MeetingHelper
         public string Name { get; set; }
         public string Color { get; set; }
         public string SideColor { get; set; }
-        public string Host { get; set; }
+        public string Icon { get; set; }
         public ianGuest(string name)
         {
             Name = name;
-            Host = "";
+            Icon = "";
             SideColor = "#707070";
             Color = "#444444";
         }
@@ -477,14 +477,16 @@ namespace MeetingHelper
         {
             SideColor = "#FFA500";
             Color = "#88FFA922";
+            Icon = "\uf0a1";
         }
         public void BeHost()
         {
-            Host = "H";
+            Icon = "\uf521";
         }
         public void BeRequested()
         {
             SideColor = "#FFA500";
+            Icon = "\uf256";
         }
     }
 }

@@ -26,7 +26,7 @@
                                 </Grid.RowDefinitions>
                                 <BoxView x:Name="Door_BoxView" Grid.Row="0" BackgroundColor="#44FF44"></BoxView>
                                 <Button Clicked="Door_Clicked" Grid.Row="2" Text=""></Button>
-                                <Label Grid.Row="2" Text="DOOR" FontSize="16" TextColor="White" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True"/>
+                                <Label Grid.Row="2" Text="房門" FontSize="16" TextColor="White" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True"/>
                             </Grid>
                             <Grid RowSpacing="0">
                                 <Grid.RowDefinitions>
@@ -36,7 +36,7 @@
                                 </Grid.RowDefinitions>
                                 <BoxView x:Name="Sound_BoxView" Grid.Row="0" BackgroundColor="#FF4444"></BoxView>
                                 <Button Clicked="Sound_Clicked" Grid.Row="2" Text=""></Button>
-                                <Label Grid.Row="2" Text="SOUND" FontSize="16" TextColor="White" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True"/>
+                                <Label Grid.Row="2" Text="聲音輸出" FontSize="16" TextColor="White" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True"/>
                             </Grid>
                             <Grid RowSpacing="0" WidthRequest="50">
                                 <Grid.RowDefinitions>
@@ -46,7 +46,7 @@
                                 </Grid.RowDefinitions>
                                 <BoxView x:Name="Exit_BoxView" Grid.Row="0" BackgroundColor="#FF4444" HeightRequest="1"></BoxView>
                                 <Button Clicked="Exit_Clicked" Grid.Row="2" Text=""></Button>
-                                <Label Grid.Row="2" Text="EXIT" FontSize="16" TextColor="White" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True"/>
+                                <Label Grid.Row="2" Text="離開" FontSize="16" TextColor="White" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True"/>
                             </Grid>
                         </StackLayout>
                     </Grid>
@@ -59,7 +59,7 @@
                 </StackLayout>
 
                 <!--Members-->
-                <Label Text="Members:" FontAttributes="None" FontSize="Large" HorizontalOptions="Center"/>
+                <Label Text="房間成員:" FontAttributes="None" FontSize="Large" HorizontalOptions="Center"/>
                 <ListView 
                     x:Name="ListView_Guests"
                     ItemsSource="{Binding .}"
@@ -90,13 +90,10 @@
                                                 <StackLayout Grid.Column="1" Spacing="0" Padding="10,8,0,11" Margin="5,0,5,0" BackgroundColor="{Binding Color}">
                                                     <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="Large" TextColor="White" VerticalOptions="Center" Margin="10,0,0,0"/>
                                                 </StackLayout>
-                                                <StackLayout Grid.Column="1" Spacing="0" Padding="10,8,0,11" Margin="5,0,5,0">
-                                                    <Label Text="{Binding Host}" FontAttributes="Bold" FontSize="Large" TextColor="#BBBBBB" VerticalOptions="Center" Margin="10,0,20,0" HorizontalOptions="End"/>
+                                                <StackLayout Grid.Column="1" Spacing="0" Padding="0" Margin="5,0,5,0" VerticalOptions="Center">
+                                                    <Label Text="{Binding Icon}" FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Large" TextColor="#BBBBBB" VerticalOptions="Center" Margin="10,0,20,0" HorizontalOptions="End"/>
                                                 </StackLayout>
                                                 <BoxView Grid.Column="2" BackgroundColor="{Binding SideColor}" WidthRequest="4" HorizontalOptions="Fill" ></BoxView>
-                                                <!--<StackLayout Grid.Column="3" Padding="0,13,0,11" Margin="5,1,5,1" BackgroundColor="#555555">
-                                                    <Label IsVisible="True" Text="Host" FontAttributes="Bold" FontSize="16"  TextColor="#EEEEEE" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
-                                                </StackLayout>-->
                                             </Grid>
 
                                         </StackLayout>
@@ -116,7 +113,7 @@
                         <ColumnDefinition Width="5"/>
                     </Grid.ColumnDefinitions>
                     <BoxView x:Name="Action_BoxView_L" Grid.Column="0" BackgroundColor="#808080" WidthRequest="4" HorizontalOptions="Fill" ></BoxView>
-                    <Button x:Name="Action_Button" Clicked="Action_Clicked" Grid.Column="1" Text="Take Mic" FontSize="35" FontAttributes="Bold"></Button>
+                    <Button x:Name="Action_Button" Clicked="Action_Clicked" Grid.Column="1" Text="取回發言權" FontSize="35" FontAttributes="Bold"></Button>
                     <BoxView x:Name="Action_BoxView_R" Grid.Column="2" BackgroundColor="#808080" WidthRequest="4" HorizontalOptions="Fill" ></BoxView>
                 </Grid>
                 

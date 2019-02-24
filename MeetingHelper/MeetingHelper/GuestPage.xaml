@@ -24,7 +24,7 @@
                                 </Grid.RowDefinitions>
                                 <BoxView x:Name="Exit_BoxView" Grid.Row="0" BackgroundColor="#FF4444" HeightRequest="1"></BoxView>
                                 <Button Clicked="Exit_Clicked" Grid.Row="2" Text=""></Button>
-                                <Label Grid.Row="2" Text="EXIT" FontSize="16" TextColor="White" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True"/>
+                                <Label Grid.Row="2" Text="離開" FontSize="16" TextColor="White" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True"/>
                             </Grid>
                         </StackLayout>
                     </Grid>
@@ -36,13 +36,8 @@
                     <BoxView BackgroundColor="#CCCCCC" HeightRequest="4" WidthRequest="4" Margin="5,0,0,0"></BoxView>
                 </StackLayout>
 
-                <StackLayout IsVisible="False">
-                    <Label x:Name="Debug_Label" Text="debug" FontSize="Large" HorizontalOptions="Center" Margin="10"/>
-                    <Label x:Name="Debug_Label2" Text="debug2" FontSize="Large" HorizontalOptions="Center" Margin="10"/>
-                </StackLayout>
-
                 <!--Members-->
-                <Label Text="Members:" FontAttributes="None" FontSize="Large" HorizontalOptions="Center"/>
+                <Label Text="房間成員:" FontAttributes="None" FontSize="Large" HorizontalOptions="Center"/>
                 <ListView 
                     x:Name="ListView_Guests"
                     ItemsSource="{Binding .}" 
@@ -72,8 +67,8 @@
                                                 <StackLayout Grid.Column="1" Spacing="0" Padding="10,8,0,11" Margin="5,0,5,0" BackgroundColor="{Binding Color}">
                                                     <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="Large" TextColor="White" VerticalOptions="Center" Margin="10,0,0,0"/>
                                                 </StackLayout>
-                                                <StackLayout Grid.Column="1" Spacing="0" Padding="10,8,0,11" Margin="5,0,5,0">
-                                                    <Label Text="{Binding Host}" FontAttributes="Bold" FontSize="Large" TextColor="#BBBBBB" VerticalOptions="Center" Margin="10,0,20,0" HorizontalOptions="End"/>
+                                                <StackLayout Grid.Column="1" Spacing="0" Padding="0" Margin="5,0,5,0" VerticalOptions="Center">
+                                                    <Label Text="{Binding Icon}" FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Large" TextColor="#BBBBBB" VerticalOptions="Center" Margin="10,0,20,0" HorizontalOptions="End"/>
                                                 </StackLayout>
                                                 <BoxView Grid.Column="2" BackgroundColor="{Binding SideColor}" WidthRequest="4" HorizontalOptions="Fill" ></BoxView>
                                             </Grid>

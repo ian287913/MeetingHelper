@@ -109,7 +109,7 @@ namespace MeetingHelper
                 //  Speaking
                 if (app.user.Config.HaveMic)
                 {
-                    Action_Button.Text = "Speaking...";
+                    Action_Button.Text = "發言中...";
                     Action_Button.BackgroundColor = Color.FromHex("#88FFA922");
                     Action_BoxView_L.BackgroundColor = Color.FromHex("#FFA500");
                     Action_BoxView_R.BackgroundColor = Color.FromHex("#FFA500");
@@ -118,7 +118,7 @@ namespace MeetingHelper
                 //  Requested
                 else if (app.user.RoomConfig.AskerList.Contains(app.user.Config.Name))
                 {
-                    Action_Button.Text = "Requested";
+                    Action_Button.Text = "已請求";
                     Action_Button.BackgroundColor = Color.FromHex("#555555");
                     Action_BoxView_L.BackgroundColor = Color.FromHex("#FFA500");
                     Action_BoxView_R.BackgroundColor = Color.FromHex("#FFA500");
@@ -127,7 +127,7 @@ namespace MeetingHelper
                 //  IrRequested
                 else
                 {
-                    Action_Button.Text = "Request";
+                    Action_Button.Text = "請求發言";
                     Action_Button.BackgroundColor = Color.FromHex("#555555");
                     Action_BoxView_L.BackgroundColor = Color.FromHex("#808080");
                     Action_BoxView_R.BackgroundColor = Color.FromHex("#808080");

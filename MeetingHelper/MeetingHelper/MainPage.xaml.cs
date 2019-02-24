@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 
 //  [SOLID]
-//  Crown:  521
-//  Hand:   256
+//  Crown:  521 *
+//  Hand:   256 *
 //  info:   129
 //  bell:   0f3
 //  volume: 028
-//  bullhorn:   0a1
+//  bullhorn:   0a1 *
 //  comment:    075
 //  lightbulb:  0eb
 //  comment-alt:    27a
@@ -28,12 +28,12 @@ namespace MeetingHelper
 			InitializeComponent();
             
             /// Test fa
-            Label2.FontFamily = "fa-solid-900.ttf#Font Awesome 5 Free Regular";
-            Label3.FontFamily = "fa-solid-900.ttf#Font Awesome 5 Free Regular";
-            Label5.FontFamily = "fa-solid-900.ttf#Font Awesome 5 Free Regular";
-            Label2.Text = "\uf521";
-            Label3.Text = "\uf256";
-            Label5.Text = "\uf521 \uf256 \uf129 \uf0f3 \uf028 \uf0a1 \uf075 \uf0eb \uf27a \uf06a";
+            //Label2.FontFamily = "fa-solid-900.ttf#Font Awesome 5 Free Regular";
+            //Label3.FontFamily = "fa-solid-900.ttf#Font Awesome 5 Free Regular";
+            //Label5.FontFamily = "fa-solid-900.ttf#Font Awesome 5 Free Regular";
+            //Label2.Text = "\uf521";
+            //Label3.Text = "\uf256";
+            //Label5.Text = "\uf521 \uf256 \uf129 \uf0f3 \uf028 \uf0a1 \uf075 \uf0eb \uf27a \uf06a";
             ///
 
             Label_Debug.Text = $"LastSleep: {app.LastSleep}";

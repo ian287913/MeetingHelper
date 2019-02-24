@@ -117,7 +117,7 @@ namespace Controller.NetWork
         {
             for (int i = m_ConnList.Count - 1; i >= 0; i--)
             {
-                m_ConnList[i].Dispose();
+                m_ConnList[i]?.Dispose();
             }
             m_ConnList.Clear();
             m_Socket?.Close();
@@ -374,8 +374,8 @@ namespace Controller.NetWork
                 if (m_Active)
                 {
                     m_Active = false;
-                    m_Socket.Shutdown(SocketShutdown.Both);
-                    m_Socket.Dispose();
+                    m_Socket?.Shutdown(SocketShutdown.Both);
+                    m_Socket?.Dispose();
                     m_Socket = null;
                     _OnClose();
                 }
