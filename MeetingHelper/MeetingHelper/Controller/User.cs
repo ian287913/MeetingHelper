@@ -72,9 +72,11 @@ namespace Controller.Component
         /// 目前加入的房間資訊。
         /// </summary>
         public RoomConfigure RoomConfig { get; private set; }
+
+        private bool isUpdateUL = false;
         #endregion
 
-        #region Event
+        #region Events
         /// <summary>
         /// 房間列表變更時觸發。
         /// </summary>
@@ -127,6 +129,14 @@ namespace Controller.Component
         /// 發送了無權限的要求時觸發，需要重新加入房間。
         /// </summary>
         public event EventHandler OnForbid;
+        /// <summary>
+        /// 失去與Room的連線時觸發。
+        /// </summary>
+        public event EventHandler OnDisconnect;
+        /// <summary>
+        /// 使用者列表強制更新成功時觸發。
+        /// </summary>
+        public event EventHandler OnUpdate;
         #endregion
 
         #region Constructor
@@ -186,7 +196,7 @@ namespace Controller.Component
                 caller.Cancel();
                 Config.Name = Name;
                 RoomConfig.Password = Password;
-                if (m_cmdReceiver != null && !(m_cmdReceiver.Address.Equals(RoomAddr) && m_cmdReceiver.IsConnected))
+                if (m_cmdReceiver != null && !(m_cmdReceiver.IsConnected && m_cmdReceiver.Address.Equals(RoomAddr)))
                 {
                     m_cmdReceiver.Dispose();
                     m_cmdReceiver = null;
@@ -196,6 +206,7 @@ namespace Controller.Component
                     m_cmdReceiver = new SimpleTcpClient(new IPEndPoint(RoomAddr, NetWorkPort.Commuting));
                     m_cmdReceiver.OnConnect += OnRoomConnect;
                     m_cmdReceiver.OnMessage += OnReceiveCommand;
+                    m_cmdReceiver.OnClose += OnReceiverDisconnect;
                     m_cmdReceiver.OnError += OnReceiverError;
                     m_cmdReceiver.Connect();
                 }
@@ -254,6 +265,18 @@ namespace Controller.Component
             if (Config.HaveMic && Config.IsInRoom)
             {
                 m_cmdReceiver.Send(Helper.MessageWrapper(MessageType.MicMissing));
+            }
+        }
+
+        /// <summary>
+        /// 強制刷新使用者列表。
+        /// </summary>
+        public void UpdateUserList()
+        {
+            if (m_cmdReceiver != null && m_cmdReceiver.IsConnected)
+            {
+                isUpdateUL = true;
+                m_cmdReceiver.Send(Helper.MessageWrapper(MessageType.UserList));
             }
         }
 
@@ -387,6 +410,21 @@ namespace Controller.Component
         }
 
         /// <summary>
+        /// Receiver連線中斷。
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnReceiverDisconnect(object sender, EventArgs e)
+        {
+            if (Config.IsInRoom)
+            {
+                OnDisconnect?.Invoke(this, EventArgs.Empty);
+                Config = new UserConfigure();
+                RoomConfig = new RoomConfigure();
+            }
+        }
+
+        /// <summary>
         /// TCP連線出現問題。
         /// </summary>
         /// <param name="sender"></param>
@@ -454,8 +492,18 @@ namespace Controller.Component
                 #endregion
                 #region UserList
                 case MessageType.UserList:
-                    RoomConfig.AddUsers(cmd.Data);
-                    OnEnterRoom?.Invoke(this, EventArgs.Empty);
+                    if (isUpdateUL)
+                    {
+                        isUpdateUL = false;
+                        RoomConfig.ClearUserList();
+                        RoomConfig.AddUsers(cmd.Data);
+                        OnUpdate?.Invoke(this, EventArgs.Empty);
+                    }
+                    else
+                    {
+                        RoomConfig.AddUsers(cmd.Data);
+                        OnEnterRoom?.Invoke(this, EventArgs.Empty);
+                    }
                     break;
                 #endregion
                 #region MicCapture

@@ -34,7 +34,7 @@ namespace Controller.NetWork
         #region Constructor
         public SimpleTcpServer(IPEndPoint localEP)
         {
-            m_SocketEP = new IPEndPoint(new IPAddress(localEP.Address.GetAddressBytes()), localEP.Port); ;
+            m_SocketEP = new IPEndPoint(new IPAddress(localEP.Address.GetAddressBytes()), localEP.Port);
             m_Socket = new Socket(m_SocketEP.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
         }
 
@@ -225,7 +225,7 @@ namespace Controller.NetWork
         {
             get
             {
-                if (m_Socket.RemoteEndPoint == null)
+                if (m_Socket == null || m_Socket.RemoteEndPoint == null)
                 {
                     return IPAddress.Loopback;
                 }
