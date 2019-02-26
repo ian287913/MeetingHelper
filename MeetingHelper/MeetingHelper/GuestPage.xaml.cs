@@ -72,8 +72,8 @@ namespace MeetingHelper
             app.user.OnRequest += User_OnRequest;
             app.user.OnForbid += User_OnForbid;
             app.user.OnError += User_OnError;
-            app.user.OnUserJoin += User_OnUserJoin;
-            app.user.OnUserExit += User_OnUserExit;
+            app.user.OnUpdate += User_OnUpdate;
+            app.user.OnDisconnect += User_OnDisconnect;
             //  Hook Events - WiFi
             app.mWifiController.ClearEvents();
             WifiController.OnException += MWifiController_OnException;
@@ -195,24 +195,19 @@ namespace MeetingHelper
             UpdateList();
             UpdateButton();
         }
-        private void User_OnUserExit(object sender, UserEventArgs e)
+        private void User_OnDisconnect(object sender, EventArgs e)
         {
-            UpdateList();
-            UpdateButton();
-            if(app.user.RoomConfig.Host == e.Name)
-            {
-                //  room closed -> exit
-                Do_Update_WiFi = false;
-                //  Exit Room
-                app.user.ExitRoom();
-                //  Exit page
-                /// Should be: Show Warning -> press OK -> PopPage.
-                Navigation.PopModalAsync();
-            }
-            Warning("UserExit", e.Name);
-            Debug($"User_Exit: {e.Name}");
+            Warning("Disconnected", "The current room have been closed.");
+            Debug("Disconnected: leave room");
+            //  room closed -> exit
+            Do_Update_WiFi = false;
+            //  Exit Room
+            app.user.ExitRoom();
+            //  Exit page
+            /// Should be: Show Warning -> press OK -> PopPage.
+            Navigation.PopModalAsync();
         }
-        private void User_OnUserJoin(object sender, UserEventArgs e)
+        private void User_OnUpdate(object sender, EventArgs e)
         {
             UpdateList();
             UpdateButton();

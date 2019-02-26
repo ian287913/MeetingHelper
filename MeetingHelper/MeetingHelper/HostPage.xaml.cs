@@ -215,18 +215,21 @@ namespace MeetingHelper
         {
             UpdateList();
             UpdateButton();
+            app.user.UpdateUserList();
             Debug($"user [{e.Name}] exited.");
         }
         private void User_OnUserJoin(object sender, UserEventArgs e)
         {
             UpdateList();
             UpdateButton();
+            app.user.UpdateUserList();
             Debug($"user [{e.Name}] joined.");
         }
         private void User_OnMicMissing(object sender, EventArgs e)
         {
             UpdateList();
             UpdateButton();
+            app.user.UpdateUserList();
             /// Stop record audio
             Debug("Stop recording...");
             if (app.audioControl.isRecording)
@@ -236,6 +239,7 @@ namespace MeetingHelper
         {
             UpdateList();
             UpdateButton();
+            app.user.UpdateUserList();
             /// Start record audio
             Debug("Start recording...");
             if (app.audioControl.isRecording)
@@ -246,16 +250,19 @@ namespace MeetingHelper
         {
             UpdateList();
             UpdateButton();
+            app.user.UpdateUserList();
         }
         private void User_OnSpeakerChanged(object sender, UserEventArgs e)
         {
             UpdateList();
             UpdateButton();
+            app.user.UpdateUserList();
         }
         private void User_OnRequest(object sender, UserEventArgs e)
         {
             UpdateList();
             UpdateButton();
+            app.user.UpdateUserList();
         }
         private void User_OnForbid(object sender, EventArgs e)
         {
