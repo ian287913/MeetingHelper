@@ -116,7 +116,7 @@
                     <StackLayout BackgroundColor="#444444" Padding="10" Spacing="0">
                         <Label x:Name="Password_Title_Label" Text="加入房間" FontSize="22" TextColor="#FFFFFF" HorizontalOptions="Center" Margin="0,10,0,0"/>
                         <Entry x:Name="Password_Entry" Placeholder="房間密碼" FontSize="22" TextColor="White" PlaceholderColor="#BBBBBB" FontAttributes="Bold" HorizontalTextAlignment="Center"></Entry>
-                        <Button Clicked="Password_Clicked" Text="加入" FontSize="16" FontAttributes="Bold" BackgroundColor="Orange" TextColor="Black"></Button>
+                        <Button Clicked="Password_Clicked" Text="加入" FontSize="16" FontAttributes="Bold" BackgroundColor="Orange" TextColor="Black" Margin="0,15,0,0"></Button>
                         <Label x:Name="Password_Label" IsVisible="False" Text="" FontAttributes="Bold" FontSize="15" TextColor="#44FF44" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
                         <Label x:Name="Password_Error_Label" IsVisible="False" Text="" FontAttributes="Bold" FontSize="15" TextColor="#FF4444" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
                     </StackLayout>
