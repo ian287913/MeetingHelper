@@ -173,22 +173,22 @@ namespace MeetingHelper
         }
         async void ShowIndicator()
         {
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                StackLayout_Searching.IsVisible = true;
-                ActivityIndicator.IsRunning = true;
-                Label_Searching.Text = "";
-            });
-            await Task.Delay(3000);
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                if (StackLayout_Searching.IsVisible == true)
-                {
-                    ActivityIndicator.IsRunning = false;
-                    if (Rooms.Count == 0)
-                        Label_Searching.Text = "目前網域中沒有任何房間。\n請\"建立新房間\"以讓其他使用者加入您的房間";
-                }
-            });
+            //Device.BeginInvokeOnMainThread(() =>
+            //{
+            //    StackLayout_Searching.IsVisible = true;
+            //    ActivityIndicator.IsRunning = true;
+            //    Label_Searching.Text = "";
+            //});
+            //await Task.Delay(3000);
+            //Device.BeginInvokeOnMainThread(() =>
+            //{
+            //    if (StackLayout_Searching.IsVisible == true)
+            //    {
+            //        ActivityIndicator.IsRunning = false;
+            //        if (Rooms.Count == 0)
+            //            Label_Searching.Text = "目前網域中沒有任何房間。\n請\"建立新房間\"以讓其他使用者加入您的房間";
+            //    }
+            //});
         }
         
         //  update Layouts' visibility

@@ -342,7 +342,6 @@ namespace MeetingHelper
         private void Exit_Clicked(object sender, EventArgs e)
         {
             //  close room
-            //...
             Do_Update_WiFi = false;
             app.myRoom.Close();
             //  Exit page
