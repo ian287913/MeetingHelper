@@ -110,7 +110,7 @@ namespace MeetingHelper
             app.audioControl.ClearEvents();
             ///app.audioControl.OnSendAudio += AudioControl_OnSendAudio;
             AudioControl.OnException += AudioControl_OnException;
-
+            
             //  Debug
             Debug("HostPage OnAppearing");
             Switch_Debug(false);

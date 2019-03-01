@@ -97,6 +97,7 @@ namespace MeetingHelper
             
             Device.BeginInvokeOnMainThread(() =>
             {
+                ClearMyRoom();
                 //  update rooms
                 Rooms.Clear();
                 foreach (RoomInfo room in app.user.RoomList)
@@ -142,6 +143,15 @@ namespace MeetingHelper
             ShowIndicator();
             //  Start Search room
             app.user.StartListener();
+        }
+
+        private void ClearMyRoom()
+        {
+            if (app.myRoom != null)
+            {
+                app.myRoom.Dispose();
+                app.myRoom = null;
+            }
         }
 
         //  Async - Update WiFi info
@@ -245,7 +255,7 @@ namespace MeetingHelper
                 Create_Error_Label.Text = "";
 
                 //  Create a room
-                if(app.myRoom == null)
+                ClearMyRoom();
                 app.myRoom = new Room(targetRoom.Name, targetRoom.Password);
                 app.myRoom.Open();
                 app.myRoom.StartBroadcast(1, TimeUnit.Hour);
