@@ -128,8 +128,8 @@
                     <BoxView BackgroundColor="#BBFFFFFF" HeightRequest="1.5" VerticalOptions="End"></BoxView>
                 </Grid>
             </StackLayout>
-            <Button Clicked="Debug_Clicked" Text="" HorizontalOptions="Start" VerticalOptions="Start" InputTransparent="False" WidthRequest="35" HeightRequest="35" BackgroundColor="#BBCCCCFF"></Button>
-            <Button Clicked="Debug_Action_Clicked" Text="" HorizontalOptions="Start" VerticalOptions="Start" InputTransparent="False" WidthRequest="35" HeightRequest="35" Margin="0,40,0,0" BackgroundColor="#BBCCFFCC"></Button>
+            <Button IsVisible="False" Clicked="Debug_Clicked" Text="" HorizontalOptions="Start" VerticalOptions="Start" InputTransparent="False" WidthRequest="35" HeightRequest="35" BackgroundColor="#BBCCCCFF"></Button>
+            <Button IsVisible="False" Clicked="Debug_Action_Clicked" Text="" HorizontalOptions="Start" VerticalOptions="Start" InputTransparent="False" WidthRequest="35" HeightRequest="35" Margin="0,40,0,0" BackgroundColor="#BBCCFFCC"></Button>
 
         </Grid>
     </ContentPage.Content>

@@ -13,10 +13,7 @@ using Controller.Component;
 using System.Net;
 
 /// <summary>
-/// TODO: 防轉向、頂條、implementation
-/// # host join failed but room exist
 /// # User.OnRoomListChanged() 很常被觸發
-/// # 進入房間失敗: Error - room doesn't exist
 /// 
 /// </summary>
 
