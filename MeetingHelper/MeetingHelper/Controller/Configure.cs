@@ -19,6 +19,10 @@ namespace Controller
         /// 傳送音訊用通訊埠。
         /// </summary>
         public static int Talking = 9120;
+        /// <summary>
+        /// 簽到用通訊埠。
+        /// </summary>
+        public static int Signing = 2930;
     }
 
     public class RoomConfigure

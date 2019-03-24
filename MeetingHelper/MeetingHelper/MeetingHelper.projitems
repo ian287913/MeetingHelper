@@ -16,6 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controller\AttendenceSheet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller\AudioControl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller\Broadcast.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller\Configure.cs" />
@@ -64,8 +65,5 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Controller\" />
   </ItemGroup>
 </Project>

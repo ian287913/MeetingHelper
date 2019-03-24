@@ -116,7 +116,7 @@ namespace Controller.Component
         /// </summary>
         public void AudioWrite(short[] buffer, int bufferReadResult)
         {
-            if (isTracking)  //  如果本物件正在同時收音與播音(可能發生在chairnam)
+            if (isTracking)  //  如果本物件正在同時收音與播音(可能發生在chairman)
             {   //  自己播放
                 AudioTracker.Write(buffer, 0, bufferReadResult);
                 //  Record to file
