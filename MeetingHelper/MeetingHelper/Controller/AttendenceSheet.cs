@@ -25,6 +25,7 @@ namespace Controller
             roomName = name + "_" + string.Format("{0:d}", DateTime.Now);
             server = new SimpleTcpServer(NetWorkPort.Signing);
             server.OnMessage += SignIn;
+            signedList = new List<Attendant>();
             signedList.Clear();
         }
         #endregion
