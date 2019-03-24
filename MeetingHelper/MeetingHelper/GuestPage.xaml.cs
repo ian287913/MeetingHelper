@@ -21,6 +21,9 @@ namespace MeetingHelper
         ObservableCollection<ianGuest> Guests;
 
         bool Do_Update_WiFi = false;
+        //  Attendance
+        bool Sign_In_Sent = false;
+        bool Sign_In_Recording = false;
 
         public GuestPage()
         {
@@ -272,6 +275,74 @@ namespace MeetingHelper
             return true;
         }
 
+        //  Attendance - Show
+        private void Attendance_Clicked(object sender, EventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                if (!Sign_In_Sent)
+                {
+                    Attendance_Content.Text = "點擊麥克風開始錄製簽到語音";
+                    Attendance_Mic_Image.Source = "Mic_cion.png";
+                    Attendance_Completed_Grid.IsVisible = false;
+                }
+                else
+                {
+                    Attendance_Content.Text = "簽到完成!\n音檔已傳送至主席";
+                    Attendance_Mic_Image.Source = "Mic_Completed_cion.png";
+                    Attendance_Completed_Grid.IsVisible = true;
+                }
+                //  Show attendance window
+                Attendance_Layout.IsVisible = true;
+            });
+        }
+        //  Attendance - Mic
+        private void Attendance_Mic_Clicked(object sender, EventArgs e)
+        {
+            if (!Sign_In_Sent)
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    if (!Sign_In_Recording)
+                    {   //  Start Recording
+                        Sign_In_Recording = true;
+
+                        ///
+                        /// Start Recording
+                        Attendance_Mic_Button.BorderColor = Color.FromHex("#A5FF00");
+                        Attendance_Content.Text = "錄音中...再次點擊麥克風以結束錄音";
+                        Attendance_Mic_Image.Source = "Mic_cion.png";
+                    }
+                    else
+                    {   //  Stop Recording
+                        Sign_In_Sent = true;
+                        ///  main
+                        Attendance_Mic_Button.BorderColor = Color.FromHex("#66A5FF00");
+                        Attendance_Content.Text = "簽到完成!\n音檔已傳送至主席";
+                        Attendance_Mic_Image.Source = "Mic_Completed_cion.png";
+                        Attendance_Completed_Grid.IsVisible = true;
+                        Attendance_Button.Source = "Attendance_Completed_icon.png";
+                    }
+                });
+            }
+            else
+            {
+                /// Attendance had been sent. No need to record again...
+            }
+        }
+        //  Attendance - Dismiss
+        private void Attendance_Dismiss_Clicked(object sender, EventArgs e)
+        {
+            if (Sign_In_Sent)
+            {
+                //  Close window
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    Attendance_Layout.IsVisible = false;
+                });
+            }
+        }
+
         private void Exit_Clicked(object sender, EventArgs e)
         {
             //  close room
@@ -281,6 +352,7 @@ namespace MeetingHelper
             //  Exit page
             Navigation.PopModalAsync();
         }
+
         private void Action_Clicked(object sender, EventArgs e)
         {
             //  Speaking

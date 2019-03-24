@@ -19,6 +19,7 @@ namespace MeetingHelper
         App app = Application.Current as App;
 
         ObservableCollection<ianGuest> Guests;
+        ObservableCollection<ianAttendant> Attendants;
 
         bool Do_Update_WiFi = false;
         //  Button(switch) status
@@ -31,7 +32,9 @@ namespace MeetingHelper
 
             //  init list
             Guests = new ObservableCollection<ianGuest>();
+            Attendants = new ObservableCollection<ianAttendant>();
             ListView_Guests.ItemsSource = Guests;
+            Listview_Attendants.ItemsSource = Attendants;
             Debug_ListView.ItemsSource = app.DebugList;
 
             //  start update WiFi
@@ -304,6 +307,38 @@ namespace MeetingHelper
             return true;
         }
 
+        //  Attendance - Show
+        private void Attendance_Clicked(object sender, EventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                //  Update Attendants list
+                ///Will
+                ianAttendant tempAttendant;
+                Attendants.Clear();
+                for(int i = 0; i < 10; i++)
+                {
+                    tempAttendant = new ianAttendant($"Name_{i}");
+                    if (i < 4)
+                        tempAttendant.Signed();
+                    Attendants.Add(tempAttendant);
+                }
+
+                //  Show attendance window
+                Attendance_Layout.IsVisible = true;
+            });
+        }
+        //  Attendance - Dismiss
+        private void Attendance_Dismiss_Clicked(object sender, EventArgs e)
+        {
+            //  Close window
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                Attendance_Layout.IsVisible = false;
+            });
+        }
+
+
         private void Door_Clicked(object sender, EventArgs e)
         {
             if (isDoorOpen)
@@ -493,6 +528,24 @@ namespace MeetingHelper
         {
             SideColor = "#FFA500";
             Icon = "\uf256";
+        }
+    }
+    public class ianAttendant : BindableObject
+    {
+        public string Name { get; set; }
+        public string Status { get; set; }
+        public ianAttendant(string name)
+        {
+            Name = name;
+            Status = "";
+        }
+        public void Signed()
+        {
+            Status = "已簽到";
+        }
+        public void UnSigned()
+        {
+            Status = "";
         }
     }
 }

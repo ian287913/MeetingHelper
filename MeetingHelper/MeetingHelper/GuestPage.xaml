@@ -15,7 +15,7 @@
                         </Grid.RowDefinitions>
                         <Label x:Name="RoomName_Label" Grid.Row="1" Text="RoomName" TextColor="White" FontAttributes="Bold" FontSize="35"  HorizontalTextAlignment="Start" Margin="30,0,10,0"/>
                         <Label x:Name="SSID_Label" Grid.Row="2" Text="WiFi SSID" TextColor="Orange" FontAttributes="Bold" FontSize="25"  HorizontalTextAlignment="Start" Margin="35,0,10,0"/>
-                        <StackLayout Grid.Row="1" Orientation="Horizontal" HorizontalOptions="End" Padding="5,0,15,0" HeightRequest="30" VerticalOptions="Center">
+                        <StackLayout Grid.Row="2" Orientation="Horizontal" HorizontalOptions="End" Padding="5,0,15,0" HeightRequest="30" VerticalOptions="Center">
                             <Grid RowSpacing="0" WidthRequest="50">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="4"/>
@@ -68,7 +68,8 @@
                                                     <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="Large" TextColor="White" VerticalOptions="Center" Margin="10,0,0,0"/>
                                                 </StackLayout>
                                                 <StackLayout Grid.Column="1" Spacing="0" Padding="0" Margin="5,0,5,0" VerticalOptions="Center">
-                                                    <Label Text="{Binding Icon}" FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Large" TextColor="#BBBBBB" VerticalOptions="Center" Margin="10,0,20,0" HorizontalOptions="End"/>
+                                                    <Label Text="{Binding Icon}" FontSize="Large" TextColor="#BBBBBB" VerticalOptions="Center" Margin="10,0,20,0" HorizontalOptions="End"/>
+                                                    <!--<Label Text="{Binding Icon}" FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Large" TextColor="#BBBBBB" VerticalOptions="Center" Margin="10,0,20,0" HorizontalOptions="End"/>-->
                                                 </StackLayout>
                                                 <BoxView Grid.Column="2" BackgroundColor="{Binding SideColor}" WidthRequest="4" HorizontalOptions="Fill" ></BoxView>
                                             </Grid>
@@ -92,6 +93,57 @@
 
             </StackLayout>
 
+            <!--Attendance Button-->
+            <Button Clicked="Attendance_Clicked" Text=""
+                    HorizontalOptions="End"
+                    VerticalOptions="Start"
+                    InputTransparent="False"
+                    Margin="0,10,20,0"
+                    WidthRequest="60"
+                    HeightRequest="55"
+                    BackgroundColor="#00000000"/>
+            <Image
+                x:Name="Attendance_Button"
+                Source="Attendance_icon.png"
+                Margin="0,6,20,0"
+                HeightRequest="60"
+                WidthRequest="60"
+                HorizontalOptions="End"
+                VerticalOptions="Start"
+                BackgroundColor="Transparent"
+                InputTransparent="True">
+            </Image>
+            <!--Attendance Screen-->
+            <StackLayout x:Name="Attendance_Layout" BackgroundColor="#BB000000" IsVisible="False">
+                <Grid VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Padding="50">
+                    <StackLayout BackgroundColor="#CC000000" Padding="10" Margin="2,1,2,1" Spacing="0">
+                        <Label x:Name="Attendance_Title" Text="語音簽到" FontAttributes="Bold" FontSize="22" TextColor="White" HorizontalOptions="Start" Margin="0,5,0,5"/>
+                        <BoxView BackgroundColor="#A5FF00" HeightRequest="3"></BoxView>
+                        <Label x:Name="Attendance_Content" Text="點擊麥克風開始錄製簽到語音" FontSize="20" TextColor="#AAAAAA" HorizontalOptions="Center" HorizontalTextAlignment="Center" Margin="0,10,0,10"/>
+                        <Grid x:Name="Attendance_Record_Grid" IsVisible="True" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Margin="0,0,0,10">
+                            <Button x:Name="Attendance_Mic_Button" Clicked="Attendance_Mic_Clicked" BackgroundColor="#00A5FF00" BorderRadius="50" BorderWidth="3" BorderColor="#66A5FF00"  Text="" HeightRequest="60" WidthRequest="60" HorizontalOptions="Center" VerticalOptions="Center"></Button>
+                            <Image
+                                x:Name="Attendance_Mic_Image"
+                                Source="Mic_cion.png"
+                                HeightRequest="40"
+                                WidthRequest="40"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"
+                                BackgroundColor="Transparent"
+                                InputTransparent="True"/>
+                            <Label IsVisible="False" Text="錄" FontAttributes="Bold" FontSize="18" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center"></Label>
+                        </Grid>
+                        <Grid x:Name="Attendance_Completed_Grid" IsVisible="False" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Margin="5">
+                            <Button x:Name="Attendance_Dismiss_Button" Clicked="Attendance_Dismiss_Clicked" Text="" HorizontalOptions="Center" VerticalOptions="Center" HeightRequest="35"/>
+                            <Label Text="Close" FontSize="16" TextColor="White" FontAttributes="None" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True"/>
+                        </Grid>
+                        
+                    </StackLayout>
+                    <BoxView BackgroundColor="#BBFFFFFF" HeightRequest="1.5" VerticalOptions="Start"/>
+                    <BoxView BackgroundColor="#BBFFFFFF" HeightRequest="1.5" VerticalOptions="End"/>
+                </Grid>
+            </StackLayout>
+            
             <!--Warning Screen (Error & Debugging)-->
             <StackLayout x:Name="Warning_Layout" BackgroundColor="#77000000" IsVisible="False">
                 <Grid VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Padding="50">

@@ -30,7 +30,7 @@
       "IsSpeaking": "true",
       "Color": "#88FFA922",
       "SideColor": "#FFA500",
-      "Host": "",
+      "Icon": "",
       "Debug": "You've probably miss-typed something above that bit of code.",
       "Debug_Count": "1"
 
@@ -42,7 +42,7 @@
       "IsSpeaking": "False",
       "Color": "#444444",
       "SideColor": "#707070",
-      "Host": "H",
+      "Icon": "H",
       "Debug": "You've probably miss-typed something.",
       "Debug_Count": "1"
     },
@@ -53,7 +53,7 @@
       "IsSpeaking": "False",
       "Color": "#444444",
       "SideColor": "#FFA500",
-      "Host": "",
+      "Icon": "",
       "Debug": "You've probably miss-typed something above that bit of code or created your own class called IPAddress.",
       "Debug_Count": "1"
     },
@@ -64,7 +64,7 @@
       "IsSpeaking": "true",
       "Color": "#444444",
       "SideColor": "#707070",
-      "Host": "",
+      "Icon": "",
       "Debug": "You've probably miss-typed something above that bit of code.",
       "Debug_Count": "1"
     },
@@ -75,7 +75,7 @@
       "IsSpeaking": "False",
       "Color": "#444444",
       "SideColor": "#707070",
-      "Host": "",
+      "Icon": "",
       "Debug": "You've probably miss-typed something above that bit of code or created your own class called IPAddress.",
       "Debug_Count": "1"
     },
@@ -86,7 +86,7 @@
       "IsSpeaking": "False",
       "Color": "#444444",
       "SideColor": "#FFA500",
-      "Host": "",
+      "Icon": "",
       "Debug": "You've probably miss-typed something above that bit of code.",
       "Debug_Count": "1"
     }
@@ -99,7 +99,7 @@
       "IsSpeaking": "true",
       "Color": "#88FFA922",
       "SideColor": "#FFA500",
-      "Host": ""
+      "Icon": ""
     },
     {
       "Name": "Host Name",
@@ -108,7 +108,7 @@
       "IsSpeaking": "False",
       "Color": "#444444",
       "SideColor": "#707070",
-      "Host": "H"
+      "Icon": "H"
     },
     {
       "Name": "Guest B",
@@ -117,7 +117,7 @@
       "IsSpeaking": "False",
       "Color": "#444444",
       "SideColor": "#FFA500",
-      "Host": ""
+      "Icon": ""
     },
     {
       "Name": "Guest C",
@@ -126,7 +126,7 @@
       "IsSpeaking": "true",
       "Color": "#444444",
       "SideColor": "#707070",
-      "Host": ""
+      "Icon": ""
     },
     {
       "Name": "Guest D",
@@ -135,7 +135,7 @@
       "IsSpeaking": "False",
       "Color": "#444444",
       "SideColor": "#707070",
-      "Host": ""
+      "Icon": ""
     },
     {
       "Name": "Guest E",
@@ -144,7 +144,7 @@
       "IsSpeaking": "False",
       "Color": "#444444",
       "SideColor": "#FFA500",
-      "Host": ""
+      "Icon": ""
     }
   ]
 }
