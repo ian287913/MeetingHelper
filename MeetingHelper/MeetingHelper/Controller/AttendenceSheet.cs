@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Controller;
 using Controller.NetWork;
 using System.Linq;
 using System.Net;
 
-namespace MeetingHelper.Controller
+namespace Controller
 {
-
     /// <summary>
     /// 用於主席收集所有人的簽名(錄音)
     /// </summary>
@@ -119,6 +117,11 @@ namespace MeetingHelper.Controller
         public void Sign(byte[] audioData)
         {
             client.Send(packageWarp(audioData));
+        }
+
+        public void Close()
+        {
+            client.Close();
         }
         #endregion
 
