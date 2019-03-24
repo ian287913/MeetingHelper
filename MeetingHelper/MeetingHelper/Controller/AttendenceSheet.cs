@@ -27,6 +27,7 @@ namespace Controller
             server.OnMessage += SignIn;
             signedList = new List<Attendant>();
             signedList.Clear();
+            StartSigning();
         }
         #endregion
 
@@ -46,6 +47,8 @@ namespace Controller
         {
             server.Stop();
         }
+
+
 
         /// <summary>
         /// 得到要簽名的人(IP)與音訊

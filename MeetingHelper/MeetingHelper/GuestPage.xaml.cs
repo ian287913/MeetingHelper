@@ -296,7 +296,6 @@ namespace MeetingHelper
                     Attendance_Content.Text = "簽到完成!\n音檔已傳送至主席";
                     Attendance_Mic_Image.Source = "Mic_Completed_cion.png";
                     Attendance_Completed_Grid.IsVisible = true;
-                    Attendant.Sign(new byte[] {0});
                 }
                 //  Show attendance window
                 Attendance_Layout.IsVisible = true;
@@ -323,6 +322,7 @@ namespace MeetingHelper
                     {   //  Stop Recording
                         Sign_In_Sent = true;
                         ///  main
+                        Attendant.Sign(new byte[] {0});
                         Attendance_Mic_Button.BorderColor = Color.FromHex("#66A5FF00");
                         Attendance_Content.Text = "簽到完成!\n音檔已傳送至主席";
                         Attendance_Mic_Image.Source = "Mic_Completed_cion.png";
