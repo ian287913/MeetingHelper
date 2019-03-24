@@ -19,7 +19,9 @@ namespace MeetingHelper
         App app = Application.Current as App;
         AttendenceSheet AttendenceSheet;
 
-        ObservableCollection<ianGuest> Guests;
+        //  This will be "locked"
+        private static object Gueses_Lock = new object();
+        private static ObservableCollection<ianGuest> Guests;
         ObservableCollection<ianAttendant> Attendants;
 
         bool Do_Update_WiFi = false;
@@ -146,21 +148,24 @@ namespace MeetingHelper
             app.audioControl.AudioWrite(Sarray, result);
         }
 
-        private void UpdateList()
+        private static void UpdateList()
         {
-            //  update list
-            ianGuest tempGuest;
-            Guests.Clear();
-            foreach (string guest in app.user.RoomConfig.UserList)
+            lock(Gueses_Lock)
             {
-                tempGuest = new ianGuest(guest);
-                if (guest == app.user.Config.Name)
-                    tempGuest.BeHost();
-                if (guest == app.user.RoomConfig.Speaker)
-                    tempGuest.BeSpeaker();
-                if (app.user.RoomConfig.AskerList.Contains(guest))
-                    tempGuest.BeRequested();
-                Guests.Add(tempGuest);
+                //  update list
+                ianGuest tempGuest;
+                Guests.Clear();
+                foreach (string guest in app.user.RoomConfig.UserList)
+                {
+                    tempGuest = new ianGuest(guest);
+                    if (guest == app.user.Config.Name)
+                        tempGuest.BeHost();
+                    if (guest == app.user.RoomConfig.Speaker)
+                        tempGuest.BeSpeaker();
+                    if (app.user.RoomConfig.AskerList.Contains(guest))
+                        tempGuest.BeRequested();
+                    Guests.Add(tempGuest);
+                }
             }
         }
         private void UpdateButton()

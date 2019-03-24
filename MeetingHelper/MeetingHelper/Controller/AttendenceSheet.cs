@@ -27,6 +27,7 @@ namespace Controller
             server.OnMessage += SignIn;
             signedList = new List<Attendant>();
             signedList.Clear();
+            server.Start();
         }
         #endregion
 
