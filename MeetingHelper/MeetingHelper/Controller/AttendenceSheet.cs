@@ -7,7 +7,7 @@ using Controller.NetWork;
 using System.Linq;
 using System.Net;
 
-namespace MeetingHelper.Controller
+namespace Controller.Component
 {
 
     /// <summary>
@@ -22,7 +22,7 @@ namespace MeetingHelper.Controller
         #endregion
 
         #region constructors
-        AttendenceSheet(string name)
+        public AttendenceSheet(string name)
         {
             roomName = name + "_" + string.Format("{0:d}", DateTime.Now);
             server = new SimpleTcpServer(NetWorkPort.Signing);

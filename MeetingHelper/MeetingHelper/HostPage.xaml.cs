@@ -17,6 +17,7 @@ namespace MeetingHelper
     public partial class HostPage : ContentPage
     {
         App app = Application.Current as App;
+        AttendenceSheet AttendenceSheet;
 
         ObservableCollection<ianGuest> Guests;
         ObservableCollection<ianAttendant> Attendants;
@@ -29,6 +30,9 @@ namespace MeetingHelper
         public HostPage()
         {
             InitializeComponent();
+
+            //  init AttendancsSheet
+            AttendenceSheet = new AttendenceSheet(app.myRoom.Config.Name);
 
             //  init list
             Guests = new ObservableCollection<ianGuest>();
@@ -313,14 +317,11 @@ namespace MeetingHelper
             Device.BeginInvokeOnMainThread(() =>
             {
                 //  Update Attendants list
-                ///Will
                 ianAttendant tempAttendant;
                 Attendants.Clear();
-                for(int i = 0; i < 10; i++)
+                foreach (Attendant att in AttendenceSheet.signedList)
                 {
-                    tempAttendant = new ianAttendant($"Name_{i}");
-                    if (i < 4)
-                        tempAttendant.Signed();
+                    tempAttendant = new ianAttendant(att.name);
                     Attendants.Add(tempAttendant);
                 }
 

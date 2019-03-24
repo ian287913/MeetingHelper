@@ -10,6 +10,7 @@ using Xamarin.Forms.Xaml;
 using Controller;
 using Controller.Component;
 using System.Collections.ObjectModel;
+using System.Net;
 
 namespace MeetingHelper
 {
@@ -17,7 +18,7 @@ namespace MeetingHelper
     public partial class GuestPage : ContentPage
     {
         App app = Application.Current as App;
-
+        Attendant Attendant;
         ObservableCollection<ianGuest> Guests;
 
         bool Do_Update_WiFi = false;
@@ -28,6 +29,10 @@ namespace MeetingHelper
         public GuestPage()
         {
             InitializeComponent();
+
+            //  init Attendant
+            IPEndPoint ipe = new IPEndPoint(app.myRoom.Config.Address, NetWorkPort.Signing);
+            Attendant = new Attendant(app.UserName, ipe);
 
             //  init list
             Guests = new ObservableCollection<ianGuest>();
@@ -291,6 +296,7 @@ namespace MeetingHelper
                     Attendance_Content.Text = "簽到完成!\n音檔已傳送至主席";
                     Attendance_Mic_Image.Source = "Mic_Completed_cion.png";
                     Attendance_Completed_Grid.IsVisible = true;
+                    Attendant.Sign(new byte[] {0});
                 }
                 //  Show attendance window
                 Attendance_Layout.IsVisible = true;
