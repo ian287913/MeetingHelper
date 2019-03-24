@@ -17,6 +17,7 @@ namespace Controller
         string roomName;
         SimpleTcpServer server;
         public List<Attendant> signedList { get; private set; }
+        bool isSigning;
         #endregion
 
         #region constructors
@@ -39,6 +40,7 @@ namespace Controller
         public void StartSigning()
         {
             server.Start();
+            isSigning = true;
         }
         /// <summary>
         /// 停止簽到
@@ -46,9 +48,10 @@ namespace Controller
         public void StopSigning()
         {
             server.Stop();
+            isSigning = false;
         }
 
-
+        //(發現無法invoke TCPServer的 OnMessage)
 
         /// <summary>
         /// 得到要簽名的人(IP)與音訊
