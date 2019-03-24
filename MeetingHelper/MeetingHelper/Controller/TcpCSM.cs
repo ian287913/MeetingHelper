@@ -152,6 +152,10 @@ namespace Controller.NetWork
             conn.OnError += _OnClientError;
             conn.Receive();
         }
+
+        // Will's changes
+        // 需在此新增: 會觸發OnMessage
+        // Will's changes
         #endregion
 
         #region InternalEvent
