@@ -31,7 +31,7 @@ namespace MeetingHelper
             InitializeComponent();
 
             //  init Attendant
-            IPEndPoint ipe = new IPEndPoint(app.myRoom.Config.Address, NetWorkPort.Signing);
+            IPEndPoint ipe = new IPEndPoint(app.user.RoomConfig.Address, NetWorkPort.Signing);
             Attendant = new Attendant(app.UserName, ipe);
 
             //  init list
