@@ -193,7 +193,7 @@ namespace Controller.Component
         {
             BufferSizeTrack = AudioTrack.GetMinBufferSize(frequence, ChannelOut.Mono, audioEncoding);
             
-            if(TrackerType == "System")
+            if(TrackerType == TrackerType.System)
                 AudioTracker = new AudioTrack(Android.Media.Stream.System, frequence, ChannelOut.Mono, audioEncoding, BufferSizeTrack, AudioTrackMode.Stream);
             else
                 AudioTracker = new AudioTrack(Android.Media.Stream.Music, frequence, ChannelOut.Mono, audioEncoding, BufferSizeTrack, AudioTrackMode.Stream);
@@ -203,10 +203,10 @@ namespace Controller.Component
     }
     public enum TrackerType
     {
-        System,
-        Music,
-        VoiceCall,
-        Alarm
+        System = 0,
+        Music = 1,
+        VoiceCall = 2,
+        Alarm = 3
     }
 }
 

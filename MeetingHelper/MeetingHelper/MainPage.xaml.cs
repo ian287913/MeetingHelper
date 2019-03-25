@@ -63,7 +63,13 @@ namespace MeetingHelper
                 Navigation.PushModalAsync(new SearchRoomPage(), false);
             }
         }
-        
+
+        public void Mode_Clicked(object sender, EventArgs args)
+        {
+
+        }
+
+
         protected override bool OnBackButtonPressed()
         {
             Warning("Quit?", "There's no way out.");
