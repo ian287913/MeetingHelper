@@ -93,8 +93,8 @@
                                                     <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="Large" TextColor="White" VerticalOptions="Center" Margin="10,0,0,0"/>
                                                 </StackLayout>
                                                 <StackLayout Grid.Column="1" Spacing="0" Padding="0" Margin="5,0,5,0" VerticalOptions="Center">
-                                                    <Label Text="{Binding Icon}" FontSize="Large" TextColor="#BBBBBB" VerticalOptions="Center" Margin="10,0,20,0" HorizontalOptions="End"/>
-                                                    <!--<Label Text="{Binding Icon}" FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Large" TextColor="#BBBBBB" VerticalOptions="Center" Margin="10,0,20,0" HorizontalOptions="End"/>-->
+                                                    <!--<Label Text="{Binding Icon}" FontSize="Large" TextColor="#BBBBBB" VerticalOptions="Center" Margin="10,0,20,0" HorizontalOptions="End"/>-->
+                                                    <Label Text="{Binding Icon}" FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Large" TextColor="#BBBBBB" VerticalOptions="Center" Margin="10,0,20,0" HorizontalOptions="End"/>
                                                 </StackLayout>
                                                 <BoxView Grid.Column="2" BackgroundColor="{Binding SideColor}" WidthRequest="4" HorizontalOptions="Fill" ></BoxView>
                                             </Grid>
