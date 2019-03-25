@@ -18,6 +18,9 @@ namespace Controller.Component
         //  Tracker
         AudioTrack AudioTracker = null;
         public int BufferSizeTrack { get; private set; }
+        /// Define the type of tracker
+        public string TrackerType = "System";
+
         //  Recorder
         AudioRecord AudioRecorder = null;
         short[] buffer;
@@ -188,8 +191,19 @@ namespace Controller.Component
         private void CreateTracker()
         {
             BufferSizeTrack = AudioTrack.GetMinBufferSize(frequence, ChannelOut.Mono, audioEncoding);
-            AudioTracker = new AudioTrack(Android.Media.Stream.VoiceCall, frequence, ChannelOut.Mono, audioEncoding, BufferSizeTrack, AudioTrackMode.Stream);
+
+            if(TrackerType == "System")
+                AudioTracker = new AudioTrack(Android.Media.Stream.System, frequence, ChannelOut.Mono, audioEncoding, BufferSizeTrack, AudioTrackMode.Stream);
+            else
+                AudioTracker = new AudioTrack(Android.Media.Stream.Music, frequence, ChannelOut.Mono, audioEncoding, BufferSizeTrack, AudioTrackMode.Stream);
+
+            //AudioTracker.SetVolume(1);
         }
+    }
+    public enum TrackerType
+    {
+        System,
+        Music
     }
 }
 

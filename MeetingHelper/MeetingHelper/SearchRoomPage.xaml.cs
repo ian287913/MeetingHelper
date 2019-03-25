@@ -48,6 +48,7 @@ namespace MeetingHelper
             WifiController.OnException += WifiController_OnException;
             app.mWifiController = new WifiController();
             AudioControl.OnException += AudioControl_OnException;
+            ///
             app.audioControl = new AudioControl();
 
             //  init ItemSource
