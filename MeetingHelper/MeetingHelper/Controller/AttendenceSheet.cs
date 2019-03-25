@@ -51,7 +51,7 @@ namespace Controller
             isSigning = false;
         }
 
-        //(發現無法invoke TCPServer的 OnMessage)
+        
 
         /// <summary>
         /// 得到要簽名的人(IP)與音訊
@@ -73,13 +73,14 @@ namespace Controller
 
         #region Events
         /// <summary>
-        /// 在進入房間時存取名字((暫無功能))
+        /// 在進入房間時存取名字
         /// </summary>
         /// <param name="conn"></param>
         /// <param name="e"></param>
         private void OnAccept(object conn, EventArgs e)
         {
             SimpleTcpClient client = (SimpleTcpClient)conn;
+            server.KeepAlive(client);
         }
         #endregion
 
