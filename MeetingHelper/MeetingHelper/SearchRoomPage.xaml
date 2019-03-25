@@ -125,7 +125,7 @@
             </StackLayout>
 
             <!--Create Room -->
-            <StackLayout x:Name="Create_Layout" BackgroundColor="#AA000000" IsVisible="True">
+            <StackLayout x:Name="Create_Layout" BackgroundColor="#AA000000" IsVisible="False">
                 <Grid VerticalOptions="Center" HorizontalOptions="CenterAndExpand" Padding="50,150,50,20">
                     <StackLayout BackgroundColor="#444444" Padding="10" Spacing="0">
                         <Entry x:Name="Create_RoomName_Entry" Placeholder="輸入房間名稱" FontSize="22" TextColor="White" PlaceholderColor="#DDDDDD" FontAttributes="Bold" HorizontalTextAlignment="Center"></Entry>
