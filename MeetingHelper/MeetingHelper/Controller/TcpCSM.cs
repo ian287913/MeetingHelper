@@ -203,7 +203,7 @@ namespace Controller.NetWork
                 if (disposing)
                 {
                     Stop();
-                    m_Socket.Dispose();
+                    m_Socket?.Dispose();
                 }
                 disposedValue = true;
             }

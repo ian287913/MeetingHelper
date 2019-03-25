@@ -16,7 +16,7 @@ namespace MeetingHelper
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class HostPage : ContentPage
     {
-        App app = Application.Current as App;
+        static App app = Application.Current as App;
         AttendenceSheet AttendenceSheet;
 
         //  This will be "locked"

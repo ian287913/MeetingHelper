@@ -301,13 +301,22 @@ namespace MeetingHelper
                 Attendance_Layout.IsVisible = true;
             });
         }
+
+        private async void AnimationTest()
+        {
+            await Attendance_Mic_Image.ScaleTo(1.5, 600, Easing.CubicOut);
+            await Attendance_Mic_Image.ScaleTo(1.0, 600, Easing.SpringOut);
+        }
         //  Attendance - Mic
         private void Attendance_Mic_Clicked(object sender, EventArgs e)
         {
             if (!Sign_In_Sent)
             {
+                /// TEST
+                AnimationTest();
+                ///
                 Device.BeginInvokeOnMainThread(() =>
-                {
+                {        
                     if (!Sign_In_Recording)
                     {   //  Start Recording
                         Sign_In_Recording = true;
