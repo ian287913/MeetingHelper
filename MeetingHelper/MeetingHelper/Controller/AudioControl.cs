@@ -19,7 +19,7 @@ namespace Controller.Component
         AudioTrack AudioTracker = null;
         public int BufferSizeTrack { get; private set; }
         /// Define the type of tracker
-        public TrackerType TrackerType = TrackerType.System;
+        public TrackerType trackerType = TrackerType.System;
 
         //  Recorder
         AudioRecord AudioRecorder = null;
@@ -35,10 +35,11 @@ namespace Controller.Component
         /// <summary>
         /// Constructor
         /// </summary>
-        public AudioControl(TrackerType TrackType)
+        public AudioControl(int TrackType)
         {
-            TrackerType = TrackType;
+            trackerType = (TrackerType)TrackType;
             RecordAsync();
+           
         }
         /// <summary>
         /// Activate AudioRecorder
@@ -192,12 +193,25 @@ namespace Controller.Component
         private void CreateTracker()
         {
             BufferSizeTrack = AudioTrack.GetMinBufferSize(frequence, ChannelOut.Mono, audioEncoding);
-            
-            if(TrackerType == TrackerType.System)
-                AudioTracker = new AudioTrack(Android.Media.Stream.System, frequence, ChannelOut.Mono, audioEncoding, BufferSizeTrack, AudioTrackMode.Stream);
-            else
-                AudioTracker = new AudioTrack(Android.Media.Stream.Music, frequence, ChannelOut.Mono, audioEncoding, BufferSizeTrack, AudioTrackMode.Stream);
 
+            switch (trackerType)
+            {
+                case TrackerType.System:
+                    AudioTracker = new AudioTrack(Android.Media.Stream.System, frequence, ChannelOut.Mono, audioEncoding, BufferSizeTrack, AudioTrackMode.Stream);
+                    break;
+                case TrackerType.Music:
+                    AudioTracker = new AudioTrack(Android.Media.Stream.Music, frequence, ChannelOut.Mono, audioEncoding, BufferSizeTrack, AudioTrackMode.Stream);
+                    break;
+                case TrackerType.VoiceCall:
+                    AudioTracker = new AudioTrack(Android.Media.Stream.VoiceCall, frequence, ChannelOut.Mono, audioEncoding, BufferSizeTrack, AudioTrackMode.Stream);
+                    break;
+                case TrackerType.Alarm:
+                    AudioTracker = new AudioTrack(Android.Media.Stream.Alarm, frequence, ChannelOut.Mono, audioEncoding, BufferSizeTrack, AudioTrackMode.Stream);
+                    break;
+                default:
+                    AudioTracker = new AudioTrack(Android.Media.Stream.Notification, frequence, ChannelOut.Mono, audioEncoding, BufferSizeTrack, AudioTrackMode.Stream);
+                    break;
+            }
             //AudioTracker.SetVolume(1);
         }
     }

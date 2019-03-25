@@ -327,6 +327,7 @@ namespace MeetingHelper
                 foreach (Attendant att in AttendenceSheet.signedList)
                 {
                     tempAttendant = new ianAttendant(att.name);
+                    tempAttendant.Signed();
                     Attendants.Add(tempAttendant);
                 }
 

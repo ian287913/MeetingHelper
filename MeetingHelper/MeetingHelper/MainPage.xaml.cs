@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using Controller.Component;
 
 //  [SOLID]
 //  Crown:  521 *
@@ -66,7 +67,11 @@ namespace MeetingHelper
 
         public void Mode_Clicked(object sender, EventArgs args)
         {
-
+            app.TrackerType = (app.TrackerType + 1) % 4;
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                Mode_Button.Text = Enum.GetName(typeof(TrackerType), app.TrackerType);
+            });
         }
 
 

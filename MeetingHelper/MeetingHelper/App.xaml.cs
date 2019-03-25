@@ -17,7 +17,6 @@ namespace MeetingHelper
         //  Audio
         public AudioControl audioControl;
         public int TrackerType = 0;
-
         //  Debug
         public ObservableCollection<DebugInfo> DebugList;
         public int Debug_Status;
