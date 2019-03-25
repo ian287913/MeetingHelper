@@ -62,7 +62,7 @@ namespace Controller
         private void SignIn(object conn, TcpMessageEventArgs e)
         {
             SimpleTcpClient client = (SimpleTcpClient)conn;
-            int nameL = BitConverter.ToInt32(e.Data,0);
+            int nameL = BitConverter.ToInt32(e.Data,4);
             string clientName = Encoding.UTF8.GetString(e.Data, 4, nameL);
             Attendant signedUser = new Attendant(client, clientName);
             string filename = client.Address.ToString();
@@ -140,7 +140,7 @@ namespace Controller
             byte[] output;
             using (MemoryStream ms = new MemoryStream())
             {
-                ms.WriteByte((byte)name.Length);
+                ms.Write(BitConverter.GetBytes(name.Length), 0, 4);
                 byte[] bytes = Encoding.UTF8.GetBytes(name);
                 ms.Write(bytes, 0, bytes.Length);
                 ms.Write(audioData, 0, audioData.Length);
