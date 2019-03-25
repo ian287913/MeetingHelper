@@ -63,7 +63,7 @@ namespace Controller
         {
             SimpleTcpClient client = (SimpleTcpClient)conn;
             int nameL = BitConverter.ToInt32(e.Data,0);
-            string clientName = BitConverter.ToString(e.Data, 4, nameL);
+            string clientName = Encoding.UTF8.GetString(e.Data, 4, nameL);
             Attendant signedUser = new Attendant(client, clientName);
             string filename = client.Address.ToString();
 
