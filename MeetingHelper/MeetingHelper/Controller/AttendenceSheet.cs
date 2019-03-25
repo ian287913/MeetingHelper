@@ -26,6 +26,7 @@ namespace Controller
             roomName = name + "_" + string.Format("{0:d}", DateTime.Now);
             server = new SimpleTcpServer(NetWorkPort.Signing);
             server.OnMessage += SignIn;
+            server.OnAccept += OnAccept;
             signedList = new List<Attendant>();
             signedList.Clear();
             StartSigning();
