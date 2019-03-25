@@ -16,6 +16,7 @@ namespace MeetingHelper
         public Room myRoom;
         //  Audio
         public AudioControl audioControl;
+        public int TrackerType = 0;
 
         //  Debug
         public ObservableCollection<DebugInfo> DebugList;

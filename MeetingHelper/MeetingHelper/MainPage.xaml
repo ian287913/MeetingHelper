@@ -50,6 +50,7 @@
             TextColor="Gray"
             VerticalOptions="End"
             HorizontalOptions="Center"/>
+            <Button x:Name="Mode_Button" Clicked="Mode_Clicked" Text="System" VerticalOptions="End" HorizontalOptions="Center"/>
         </StackLayout>
 
         <!--Warning Screen (Error & Debugging)-->

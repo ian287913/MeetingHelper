@@ -19,7 +19,7 @@ namespace Controller.Component
         AudioTrack AudioTracker = null;
         public int BufferSizeTrack { get; private set; }
         /// Define the type of tracker
-        public string TrackerType = "System";
+        public TrackerType TrackerType = TrackerType.System;
 
         //  Recorder
         AudioRecord AudioRecorder = null;
@@ -35,8 +35,9 @@ namespace Controller.Component
         /// <summary>
         /// Constructor
         /// </summary>
-        public AudioControl()
+        public AudioControl(TrackerType TrackType)
         {
+            TrackerType = TrackType;
             RecordAsync();
         }
         /// <summary>
@@ -191,8 +192,8 @@ namespace Controller.Component
         private void CreateTracker()
         {
             BufferSizeTrack = AudioTrack.GetMinBufferSize(frequence, ChannelOut.Mono, audioEncoding);
-
-            if(TrackerType == "System")
+            
+            if(TrackerType == TrackerType.System)
                 AudioTracker = new AudioTrack(Android.Media.Stream.System, frequence, ChannelOut.Mono, audioEncoding, BufferSizeTrack, AudioTrackMode.Stream);
             else
                 AudioTracker = new AudioTrack(Android.Media.Stream.Music, frequence, ChannelOut.Mono, audioEncoding, BufferSizeTrack, AudioTrackMode.Stream);
@@ -202,8 +203,10 @@ namespace Controller.Component
     }
     public enum TrackerType
     {
-        System,
-        Music
+        System = 0,
+        Music = 1,
+        VoiceCall = 2,
+        Alarm = 3
     }
 }
 

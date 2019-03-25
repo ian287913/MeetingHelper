@@ -49,7 +49,7 @@ namespace MeetingHelper
             app.mWifiController = new WifiController();
             AudioControl.OnException += AudioControl_OnException;
             ///
-            app.audioControl = new AudioControl();
+            app.audioControl = new AudioControl(TrackerType.System);
 
             //  init ItemSource
             Rooms = new ObservableCollection<ianRoom>();
