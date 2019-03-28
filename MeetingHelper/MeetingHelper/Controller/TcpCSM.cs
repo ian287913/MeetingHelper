@@ -244,8 +244,10 @@ namespace Controller.NetWork
         #endregion
 
         #region Setting
-        public int ReceiveTimeout { get => m_Socket.ReceiveTimeout; set { m_Socket.ReceiveTimeout = value; } }
-        public int SendTimeout { get => m_Socket.SendTimeout; set { m_Socket.SendTimeout = value; } }
+        public int ReceiveTimeout { get => m_Socket.ReceiveTimeout; set => m_Socket.ReceiveTimeout = value; }
+        public int SendTimeout { get => m_Socket.SendTimeout; set => m_Socket.SendTimeout = value; }
+        public int ReceiveBufferSize => receiveBuffer.Length;
+        public int SendBufferSize => m_Socket.SendBufferSize;
         #endregion
 
         #region Event
