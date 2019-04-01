@@ -18,18 +18,24 @@ namespace Controller
         SimpleTcpServer server;
         public List<Attendant> signedList { get; private set; }
         bool isSigning;
+        Dictionary<string,byte[]> signDataList;
         #endregion
 
         #region constructors
         public AttendenceSheet(string name)
         {
-            roomName = name + "_" + string.Format("{0:d}", DateTime.Now);
+            roomName = name + "_" + DateTime.Now.Date.ToString("yyyy-MM-dd");
             server = new SimpleTcpServer(NetWorkPort.Signing);
             server.OnMessage += SignIn;
             server.OnAccept += OnAccept;
             signedList = new List<Attendant>();
             signedList.Clear();
             StartSigning();
+        }
+        ~AttendenceSheet()
+        {
+            StopSigning();
+            signDataList.Clear();
         }
         #endregion
 
@@ -51,9 +57,7 @@ namespace Controller
             server.Stop();
             isSigning = false;
         }
-
         
-
         /// <summary>
         /// 得到要簽名的人(IP)與音訊
         /// </summary>
@@ -63,18 +67,21 @@ namespace Controller
         {
             SimpleTcpClient client = (SimpleTcpClient)conn;
             int nameL = BitConverter.ToInt32(e.Data,4);
-            string clientName = Encoding.UTF8.GetString(e.Data, 8, nameL);
+            bool isEnd = Convert.ToBoolean(e.Data[8]);
+            string clientName = Encoding.UTF8.GetString(e.Data, 9, nameL);
             Attendant signedUser = new Attendant(client, clientName);
             string filename = client.Address.ToString();
 
-            CreateFile(filename + ".wav", e.Data); //音訊存檔
+            byte[] data = new byte[e.Data.Length - 9 - nameL];
+            Array.Copy(e.Data, 9 + nameL, data, 0, e.Data.Length - 9 - nameL);
+            CreateFile(filename + ".wav", data); //音訊存檔
             signedList.Add(signedUser); //已簽到
         }
         #endregion
 
         #region Events
         /// <summary>
-        /// 在進入房間時存取名字
+        /// 在進入房間時KEEP ALIVE
         /// </summary>
         /// <param name="conn"></param>
         /// <param name="e"></param>
@@ -94,9 +101,27 @@ namespace Controller
         private void CreateFile(string fileName, byte[] data)
         {
             string filePath = Android.OS.Environment.ExternalStorageDirectory.Path;
-            DirectoryInfo file = new DirectoryInfo(filePath + "/AttendenceSheet/" + roomName);
+            DirectoryInfo file = new DirectoryInfo(filePath + "/AttendenceSheets/" + roomName);
             if (!file.Exists) file.Create();
             System.IO.File.WriteAllBytes(file.FullName + "/" + fileName, data);
+        }
+        void CollectData(string userName, byte[] data, bool isEnd)
+        {
+            if (!signDataList.ContainsKey(userName))
+            {
+                signDataList.Add(userName, data);
+            }
+            else
+            {
+                byte[] newb = new byte[signDataList[userName].Length + data.Length];
+                Buffer.BlockCopy(signDataList[userName], 0, newb, 0, signDataList[userName].Length);
+                Buffer.BlockCopy(data, 0, newb, signDataList[userName].Length, data.Length);
+                signDataList[userName] = newb;
+            }
+            if (isEnd)
+            {
+                CreateFile(userName, signDataList[userName]);
+            }
         }
         #endregion
     }
@@ -106,6 +131,7 @@ namespace Controller
         #region vars
         public string name { get; private set; }
         SimpleTcpClient client;
+        int bufferSize = 1000;
         #endregion
 
         #region constructors
@@ -123,9 +149,10 @@ namespace Controller
         #endregion
 
         #region Sign
-        public void Sign(byte[] audioData)
+        public async void Sign(byte[] audioData)
         {
-            client.Send(packageWarp(audioData));
+            DivSend(audioData);
+            await System.Threading.Tasks.Task.Factory.StartNew(()=>DivSend(audioData));
         }
 
         public void Close()
@@ -135,13 +162,36 @@ namespace Controller
         #endregion
 
         #region Helpers
-        private byte[] packageWarp(byte[] audioData)
+        void DivSend(byte[] data)
+        {
+            int index = 0;
+            while (index < data.Length)
+            {
+                if (data.Length - index > bufferSize)
+                {
+                    byte[] subarr = new byte[bufferSize];
+                    Array.Copy(data, index, subarr, 0, bufferSize);
+                    client.Send(packageWarp(subarr, false));
+                    index += bufferSize;
+                }
+                else
+                {
+                    byte[] subarr = new byte[data.Length - index];
+                    Array.Copy(data, index, subarr, 0, data.Length - index);
+                    client.Send(packageWarp(subarr, true));
+                    index = data.Length;
+                }
+                System.Threading.Thread.Sleep(50);
+            }
+        }
+        private byte[] packageWarp(byte[] audioData, bool isEnd)
         {
             byte[] output;
             using (MemoryStream ms = new MemoryStream())
             {
-                ms.Write(BitConverter.GetBytes(name.Length), 0, 4);
                 byte[] bytes = Encoding.UTF8.GetBytes(name);
+                ms.Write(BitConverter.GetBytes(bytes.Length), 0, 4);
+                ms.WriteByte(Convert.ToByte(isEnd));
                 ms.Write(bytes, 0, bytes.Length);
                 ms.Write(audioData, 0, audioData.Length);
                 output = BitConverter.GetBytes((int)ms.Length).Concat(ms.GetBuffer().Take((int)ms.Length)).ToArray();
