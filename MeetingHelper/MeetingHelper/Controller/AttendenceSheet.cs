@@ -24,12 +24,14 @@ namespace Controller
         #region constructors
         public AttendenceSheet(string name)
         {
+            isSigning = false;
             roomName = name + "_" + DateTime.Now.Date.ToString("yyyy-MM-dd");
             server = new SimpleTcpServer(NetWorkPort.Signing);
             server.OnMessage += SignIn;
             server.OnAccept += OnAccept;
             signedList = new List<Attendant>();
             signedList.Clear();
+            signDataList = new Dictionary<string, byte[]>();
             StartSigning();
         }
         ~AttendenceSheet()
