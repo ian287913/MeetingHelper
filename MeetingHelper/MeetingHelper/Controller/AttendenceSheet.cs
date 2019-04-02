@@ -154,7 +154,6 @@ namespace Controller
         #region Sign
         public async void Sign(byte[] audioData)
         {
-            DivSend(audioData);
             await System.Threading.Tasks.Task.Factory.StartNew(()=>DivSend(audioData));
         }
 
@@ -183,6 +182,7 @@ namespace Controller
                     Array.Copy(data, index, subarr, 0, data.Length - index);
                     client.Send(packageWarp(subarr, true));
                     index = data.Length;
+                    return;
                 }
                 System.Threading.Thread.Sleep(50);
             }
