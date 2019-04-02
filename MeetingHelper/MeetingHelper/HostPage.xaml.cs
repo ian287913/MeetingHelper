@@ -19,7 +19,9 @@ namespace MeetingHelper
         static App app = Application.Current as App;
         AttendenceSheet AttendenceSheet;
 
-        //  This will be "locked"
+        //  Thread locks
+        private static object List_Lock = new object();
+        private static object Button_Lock = new object();
         private static object Gueses_Lock = new object();
         private static ObservableCollection<ianGuest> Guests;
         ObservableCollection<ianAttendant> Attendants;
