@@ -106,9 +106,14 @@ namespace Controller
             string filePath = Android.OS.Environment.ExternalStorageDirectory.Path;
             DirectoryInfo file = new DirectoryInfo(filePath + "/AttendenceSheets/" + roomName);
             if (!file.Exists) file.Create();
-            System.IO.File.WriteAllBytes(file.FullName + "/" + fileName, data);
+            byte[] wavHeader;
+            MakeHeader(data.LongLength, out wavHeader);
+            byte[] newb = new byte[44 + data.Length];
+            Buffer.BlockCopy(wavHeader, 0, newb, 0, 44);
+            Buffer.BlockCopy(data, 0, newb, 44, data.Length);
+            System.IO.File.WriteAllBytes(file.FullName + "/" + fileName, newb);
         }
-        void CollectData(string userName, byte[] data, bool isEnd)
+        private void CollectData(string userName, byte[] data, bool isEnd)
         {
             if (!signDataList.ContainsKey(userName))
             {
@@ -125,6 +130,55 @@ namespace Controller
             {
                 CreateFile(userName, signDataList[userName]);
             }
+        }
+        private void MakeHeader(long audioLen, out byte[] header)
+        {
+            long totalDataLen = audioLen + 36;
+            header = new byte[44];
+            header[0] = (byte)'R'; // RIFF/WAVE header
+            header[1] = (byte)'I';
+            header[2] = (byte)'F';
+            header[3] = (byte)'F';
+            header[4] = (byte)(totalDataLen & 0xff);
+            header[5] = (byte)((totalDataLen >> 8) & 0xff);
+            header[6] = (byte)((totalDataLen >> 16) & 0xff);
+            header[7] = (byte)((totalDataLen >> 24) & 0xff);
+            header[8] = (byte)'W';
+            header[9] = (byte)'A';
+            header[10] = (byte)'V';
+            header[11] = (byte)'E';
+            header[12] = (byte)'f'; // 'fmt ' chunk
+            header[13] = (byte)'m';
+            header[14] = (byte)'t';
+            header[15] = (byte)' ';
+            header[16] = 16; // 4 bytes: size of 'fmt ' chunk
+            header[17] = 0;
+            header[18] = 0;
+            header[19] = 0;
+            header[20] = 1; // format = 1
+            header[21] = 0;
+            header[22] = 1;
+            header[23] = 0;
+            header[24] = 128;
+            header[25] = 62;
+            header[26] = 0;
+            header[27] = 0;
+            header[28] = 0;
+            header[29] = 125;
+            header[30] = 0;
+            header[31] = 0;
+            header[32] = 2; // block align
+            header[33] = 0;
+            header[34] = 16; // bits per sample
+            header[35] = 0;
+            header[36] = (byte)'d';
+            header[37] = (byte)'a';
+            header[38] = (byte)'t';
+            header[39] = (byte)'a';
+            header[40] = (byte)(audioLen & 0xff);
+            header[41] = (byte)((audioLen >> 8) & 0xff);
+            header[42] = (byte)((audioLen >> 16) & 0xff);
+            header[43] = (byte)((audioLen >> 24) & 0xff);
         }
         #endregion
     }
@@ -154,8 +208,9 @@ namespace Controller
         #region Sign
         public async void Sign(byte[] audioData)
         {
-            DivSend(audioData);
-            await System.Threading.Tasks.Task.Factory.StartNew(()=>DivSend(audioData));
+            // testing audio
+            byte[] testBytes = TestAudioReader("TestAudio.wav");
+            await System.Threading.Tasks.Task.Factory.StartNew(()=>DivSend(testBytes)); // ***testing
         }
 
         public void Close()
@@ -165,6 +220,21 @@ namespace Controller
         #endregion
 
         #region Helpers
+        private byte[] TestAudioReader(string fileName)
+        {
+            string filePath = Android.OS.Environment.ExternalStorageDirectory.Path;
+            try
+            {
+                byte[] wav = File.ReadAllBytes(filePath + "/AttendenceSheets/" + fileName);
+                byte[] output = new byte[wav.Length - 44];
+                Buffer.BlockCopy(wav, 44, output, 0, wav.Length - 44);
+                return output;
+            }
+            catch
+            {
+                return new byte[] { 0 };
+            }
+        }
         void DivSend(byte[] data)
         {
             int index = 0;
@@ -183,6 +253,7 @@ namespace Controller
                     Array.Copy(data, index, subarr, 0, data.Length - index);
                     client.Send(packageWarp(subarr, true));
                     index = data.Length;
+                    return;
                 }
                 System.Threading.Thread.Sleep(50);
             }
