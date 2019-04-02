@@ -164,7 +164,7 @@ namespace MeetingHelper
                         /// debug : warning
                     }
                 });
-                await Task.Delay(500);
+                await Task.Delay(1000);
             }
         }
 
@@ -301,20 +301,14 @@ namespace MeetingHelper
                 Attendance_Layout.IsVisible = true;
             });
         }
-
-        private async void AnimationTest()
-        {
-            await Attendance_Mic_Image.ScaleTo(1.5, 600, Easing.CubicOut);
-            await Attendance_Mic_Image.ScaleTo(1.0, 600, Easing.SpringOut);
-        }
         //  Attendance - Mic
         private void Attendance_Mic_Clicked(object sender, EventArgs e)
         {
             if (!Sign_In_Sent)
             {
-                /// TEST
-                AnimationTest();
-                ///
+                //  animation
+                ButtonAnimation();
+
                 Device.BeginInvokeOnMainThread(() =>
                 {        
                     if (!Sign_In_Recording)
@@ -344,6 +338,12 @@ namespace MeetingHelper
             {
                 /// Attendance had been sent. No need to record again...
             }
+        }
+        //  Attendance - Button animation
+        private async void ButtonAnimation()
+        {
+            await Attendance_Mic_Image.ScaleTo(1.5, 200, Easing.CubicOut);
+            await Attendance_Mic_Image.ScaleTo(1.0, 400, Easing.SpringOut);
         }
         //  Attendance - Dismiss
         private void Attendance_Dismiss_Clicked(object sender, EventArgs e)
@@ -390,7 +390,7 @@ namespace MeetingHelper
                 app.user.WantMic();
             }
 
-            /// This may not works because the data iss updated by the host(room)
+            /// This may not work because the data iss updated by the host(room)
             UpdateButton();
         }
         #endregion
