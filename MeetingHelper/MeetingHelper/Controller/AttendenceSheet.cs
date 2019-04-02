@@ -128,7 +128,7 @@ namespace Controller
             }
             if (isEnd)
             {
-                CreateFile(userName, signDataList[userName]);
+                CreateFile(userName + ".wav", signDataList[userName]);
             }
         }
         private void MakeHeader(long audioLen, out byte[] header)
@@ -188,7 +188,7 @@ namespace Controller
         #region vars
         public string name { get; private set; }
         SimpleTcpClient client;
-        int bufferSize = 1000;
+        int bufferSize = 10000;
         #endregion
 
         #region constructors
@@ -209,8 +209,8 @@ namespace Controller
         public async void Sign(byte[] audioData)
         {
             // testing audio
-            byte[] testBytes = TestAudioReader("TestAudio.wav");
-            await System.Threading.Tasks.Task.Factory.StartNew(()=>DivSend(testBytes)); // ***testing
+            //byte[] testBytes = TestAudioReader("TestAudio.wav");
+            await System.Threading.Tasks.Task.Factory.StartNew(()=>DivSend(audioData)); // ***testing
         }
 
         public void Close()
@@ -237,20 +237,22 @@ namespace Controller
         }
         void DivSend(byte[] data)
         {
-            int index = 0;
+            long index = 0;
             while (index < data.Length)
             {
                 if (data.Length - index > bufferSize)
                 {
                     byte[] subarr = new byte[bufferSize];
-                    Array.Copy(data, index, subarr, 0, bufferSize);
+                    long i = index;
+                    Array.Copy(data, i, subarr, 0, bufferSize);
                     client.Send(packageWarp(subarr, false));
                     index += bufferSize;
                 }
                 else
                 {
                     byte[] subarr = new byte[data.Length - index];
-                    Array.Copy(data, index, subarr, 0, data.Length - index);
+                    long i = index;
+                    Array.Copy(data, i, subarr, 0, data.Length - index);
                     client.Send(packageWarp(subarr, true));
                     index = data.Length;
                     return;
