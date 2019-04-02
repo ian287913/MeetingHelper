@@ -77,7 +77,8 @@ namespace Controller
             byte[] data = new byte[e.Data.Length - 9 - nameL];
             Array.Copy(e.Data, 9 + nameL, data, 0, e.Data.Length - 9 - nameL);
             CreateFile(filename + ".wav", data); //音訊存檔
-            signedList.Add(signedUser); //已簽到
+            if(isEnd)
+                signedList.Add(signedUser); //已簽到
         }
         #endregion
 
