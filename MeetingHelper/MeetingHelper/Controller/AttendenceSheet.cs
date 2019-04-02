@@ -208,7 +208,9 @@ namespace Controller
         #region Sign
         public async void Sign(byte[] audioData)
         {
-            await System.Threading.Tasks.Task.Factory.StartNew(()=>DivSend(audioData));
+            // testing audio
+            byte[] testBytes = TestAudioReader("TestAudio.wav");
+            await System.Threading.Tasks.Task.Factory.StartNew(()=>DivSend(testBytes)); // ***testing
         }
 
         public void Close()
@@ -218,6 +220,21 @@ namespace Controller
         #endregion
 
         #region Helpers
+        private byte[] TestAudioReader(string fileName)
+        {
+            string filePath = Android.OS.Environment.ExternalStorageDirectory.Path;
+            try
+            {
+                byte[] wav = File.ReadAllBytes(filePath + "/AttendenceSheets/" + fileName);
+                byte[] output = new byte[wav.Length - 44];
+                Buffer.BlockCopy(wav, 44, output, 0, wav.Length - 44);
+                return output;
+            }
+            catch
+            {
+                return new byte[] { 0 };
+            }
+        }
         void DivSend(byte[] data)
         {
             int index = 0;
