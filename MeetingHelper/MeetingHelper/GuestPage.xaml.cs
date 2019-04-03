@@ -12,6 +12,11 @@ using Controller.Component;
 using System.Collections.ObjectModel;
 using System.Net;
 
+/// <summary>
+/// ToDo:
+/// Use the thread properly :)
+/// </summary>
+
 namespace MeetingHelper
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
@@ -19,6 +24,10 @@ namespace MeetingHelper
     {
         App app = Application.Current as App;
         Attendant Attendant;
+
+        //  Thread lock
+        private static object UI_Lock = new object();
+
         ObservableCollection<ianGuest> Guests;
 
         bool Do_Update_WiFi = false;
@@ -67,15 +76,17 @@ namespace MeetingHelper
                 RoomName_Label.Text = app.user.RoomConfig.Name;
             });
             //  update list
-            UpdateList();
-            UpdateButton();
+            lock(UI_Lock)
+            {
+                UpdateList();
+                UpdateButton();
+            }
             //  update WiFi
             Do_Update_WiFi = true;
             //  Hook Events - User
             app.user.RemoveAllEventHandlers();
             app.user.OnMicCapture += User_OnMicCapture;
             app.user.OnMicMissing += User_OnMicMissing;
-            app.user.OnRoomListChanged += User_OnRoomListChanged;
             app.user.OnSpeakerChanged += User_OnSpeakerChanged;
             app.user.OnRequest += User_OnRequest;
             app.user.OnForbid += User_OnForbid;
@@ -97,19 +108,22 @@ namespace MeetingHelper
         private void UpdateList()
         {
             //  update list
-            ianGuest tempGuest;
-            Guests.Clear();
-            foreach (string guest in app.user.RoomConfig.UserList)
+            Device.BeginInvokeOnMainThread(() =>
             {
-                tempGuest = new ianGuest(guest);
-                if (guest == app.user.RoomConfig.Host)
-                    tempGuest.BeHost();
-                if (guest == app.user.RoomConfig.Speaker)
-                    tempGuest.BeSpeaker();
-                if (app.user.RoomConfig.AskerList.Contains(guest))
-                    tempGuest.BeRequested();
-                Guests.Add(tempGuest);
-            }
+                ianGuest tempGuest;
+                Guests.Clear();
+                foreach (string guest in app.user.RoomConfig.UserList)
+                {
+                    tempGuest = new ianGuest(guest);
+                    if (guest == app.user.RoomConfig.Host)
+                        tempGuest.BeHost();
+                    if (app.user.RoomConfig.AskerList.Contains(guest))
+                        tempGuest.BeRequested();
+                    if (guest == app.user.RoomConfig.Speaker)
+                        tempGuest.BeSpeaker();
+                    Guests.Add(tempGuest);
+                }
+            });
         }
 
         private void UpdateButton()
@@ -126,9 +140,9 @@ namespace MeetingHelper
                     Action_Button.IsEnabled = true;
                 }
                 //  Requested
-                else if (app.user.RoomConfig.AskerList.Contains(app.user.Config.Name))
+                else if (app.user.RoomConfig.ContainsAsker(app.user.Config.Name))
                 {
-                    Action_Button.Text = "已請求";
+                    Action_Button.Text = "(已請求發言)";
                     Action_Button.BackgroundColor = Color.FromHex("#555555");
                     Action_BoxView_L.BackgroundColor = Color.FromHex("#FFA500");
                     Action_BoxView_R.BackgroundColor = Color.FromHex("#FFA500");
@@ -171,8 +185,11 @@ namespace MeetingHelper
         #region User Events
         private void User_OnMicMissing(object sender, EventArgs e)
         {
-            UpdateList();
-            UpdateButton();
+            lock (UI_Lock)
+            {
+                UpdateList();
+                UpdateButton();
+            }
             /// Stop record audio
             Debug("Stop recording...");
             if (app.audioControl.isRecording)
@@ -180,28 +197,32 @@ namespace MeetingHelper
         }
         private void User_OnMicCapture(object sender, EventArgs e)
         {
-            UpdateList();
-            UpdateButton();
+            lock (UI_Lock)
+            {
+                UpdateList();
+                UpdateButton();
+            }
             /// Start record audio
             Debug("Start recording...");
             if (app.audioControl.isRecording)
                 app.audioControl.StopRecord();
             app.audioControl.StartRecord();
         }
-        private void User_OnRoomListChanged(object sender, EventArgs e)
-        {
-            UpdateList();
-            UpdateButton();
-        }
         private void User_OnSpeakerChanged(object sender, UserEventArgs e)
         {
-            UpdateList();
-            UpdateButton();
+            lock (UI_Lock)
+            {
+                UpdateList();
+                UpdateButton();
+            }
         }
         private void User_OnRequest(object sender, UserEventArgs e)
         {
-            UpdateList();
-            UpdateButton();
+            lock (UI_Lock)
+            {
+                UpdateList();
+                UpdateButton();
+            }
         }
         private void User_OnDisconnect(object sender, EventArgs e)
         {
@@ -217,8 +238,11 @@ namespace MeetingHelper
         }
         private void User_OnUpdate(object sender, EventArgs e)
         {
-            UpdateList();
-            UpdateButton();
+            lock (UI_Lock)
+            {
+                UpdateList();
+                UpdateButton();
+            }
         }
         private void User_OnForbid(object sender, EventArgs e)
         {
@@ -380,7 +404,6 @@ namespace MeetingHelper
             else if (app.user.RoomConfig.ContainsAsker(app.user.Config.Name))
             {
                 /// 原本是 app.user.RoomConfig.AskerList.Contains(app.user.Config.Name)
-                /// 可替代為 app.user.RoomConfig.ContainsAsker(app.user.Config.Name);
                 /// 但一般使用者的AskerList不會有東西，所以不會觸發。
                 /// Disable Request
             }
@@ -389,9 +412,12 @@ namespace MeetingHelper
                 //  send request
                 app.user.WantMic();
             }
-
-            /// This may not work because the data iss updated by the host(room)
-            UpdateButton();
+            
+            lock (UI_Lock)
+            {
+                UpdateList();
+                UpdateButton();
+            }
         }
         #endregion
 
