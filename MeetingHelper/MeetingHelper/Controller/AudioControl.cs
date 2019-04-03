@@ -12,14 +12,16 @@ namespace Controller.Component
         public event OnSendAudioEvent OnSendAudio;
         public delegate void OnExceptionEvent(string message);
         public static event OnExceptionEvent OnException;
-        //  Audio attributes
-        private static int frequence = 16000;
-        private static Encoding audioEncoding = Encoding.Pcm16bit;
+        //  Audio configurations
+        public int mFrequence = 16000;
+        public Android.Media.Stream mStream = Android.Media.Stream.System;
+        public Encoding mEncoding = Encoding.Pcm16bit;
+        public AudioSource mAudioSource = AudioSource.VoiceCommunication;
+
         //  Tracker
         AudioTrack AudioTracker = null;
         public int BufferSizeTrack { get; private set; }
-        /// Define the type of tracker
-        public TrackerType trackerType = TrackerType.System;
+
 
         //  Recorder
         AudioRecord AudioRecorder = null;
@@ -35,11 +37,21 @@ namespace Controller.Component
         /// <summary>
         /// Constructor
         /// </summary>
-        public AudioControl(int TrackType)
+        public AudioControl()
         {
-            trackerType = (TrackerType)TrackType;
             RecordAsync();
-           
+        }
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public AudioControl(int Frequence, Android.Media.Stream stream, Android.Media.Encoding encoding, Android.Media.AudioSource audioSource)
+        {
+            mFrequence = Frequence;
+            mStream = stream;
+            mEncoding = encoding;
+            mAudioSource = audioSource;
+
+            RecordAsync();
         }
         /// <summary>
         /// Activate AudioRecorder
@@ -186,41 +198,16 @@ namespace Controller.Component
         }
         private void CreateRecorder()
         {
-            BufferSize = AudioRecord.GetMinBufferSize(frequence, ChannelIn.Mono, audioEncoding);
-            AudioRecorder = new AudioRecord(AudioSource.Mic, frequence, ChannelIn.Mono, audioEncoding, BufferSize);
+            BufferSize = AudioRecord.GetMinBufferSize(mFrequence, ChannelIn.Mono, mEncoding);
+            AudioRecorder = new AudioRecord(mAudioSource, mFrequence, ChannelIn.Mono, mEncoding, BufferSize);
             buffer = new short[BufferSize];
         }
         private void CreateTracker()
         {
-            BufferSizeTrack = AudioTrack.GetMinBufferSize(frequence, ChannelOut.Mono, audioEncoding);
-
-            switch (trackerType)
-            {
-                case TrackerType.System:
-                    AudioTracker = new AudioTrack(Android.Media.Stream.System, frequence, ChannelOut.Mono, audioEncoding, BufferSizeTrack, AudioTrackMode.Stream);
-                    break;
-                case TrackerType.Music:
-                    AudioTracker = new AudioTrack(Android.Media.Stream.Music, frequence, ChannelOut.Mono, audioEncoding, BufferSizeTrack, AudioTrackMode.Stream);
-                    break;
-                case TrackerType.VoiceCall:
-                    AudioTracker = new AudioTrack(Android.Media.Stream.VoiceCall, frequence, ChannelOut.Mono, audioEncoding, BufferSizeTrack, AudioTrackMode.Stream);
-                    break;
-                case TrackerType.Alarm:
-                    AudioTracker = new AudioTrack(Android.Media.Stream.Alarm, frequence, ChannelOut.Mono, audioEncoding, BufferSizeTrack, AudioTrackMode.Stream);
-                    break;
-                default:
-                    AudioTracker = new AudioTrack(Android.Media.Stream.Notification, frequence, ChannelOut.Mono, audioEncoding, BufferSizeTrack, AudioTrackMode.Stream);
-                    break;
-            }
+            BufferSizeTrack = AudioTrack.GetMinBufferSize(mFrequence, ChannelOut.Mono, mEncoding);
+            AudioTracker = new AudioTrack(mStream, mFrequence, ChannelOut.Mono, mEncoding, BufferSizeTrack, AudioTrackMode.Stream);
             //AudioTracker.SetVolume(1);
         }
-    }
-    public enum TrackerType
-    {
-        System = 0,
-        Music = 1,
-        VoiceCall = 2,
-        Alarm = 3
     }
 }
 

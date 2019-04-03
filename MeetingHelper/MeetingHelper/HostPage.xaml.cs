@@ -19,12 +19,11 @@ namespace MeetingHelper
         static App app = Application.Current as App;
         AttendenceSheet AttendenceSheet;
 
-        //  Thread locks
-        private static object List_Lock = new object();
-        private static object Button_Lock = new object();
-        private static object Gueses_Lock = new object();
-        private static ObservableCollection<ianGuest> Guests;
-        ObservableCollection<ianAttendant> Attendants;
+        //  Thread lock
+        private static object UI_Lock = new object();
+
+        private ObservableCollection<ianGuest> Guests;
+        private ObservableCollection<ianAttendant> Attendants;
 
         bool Do_Update_WiFi = false;
         //  Button(switch) status
@@ -97,8 +96,11 @@ namespace MeetingHelper
                 RoomName_Label.Text = app.user.RoomConfig.Name;
             });
             //  update list
-            UpdateList();
-            UpdateButton();
+            lock(UI_Lock)
+            {
+                UpdateList();
+                UpdateButton();
+            }
             //  update WiFi
             Do_Update_WiFi = true;
             //  Hook Events - User
@@ -107,7 +109,6 @@ namespace MeetingHelper
             app.user.OnMicMissing += User_OnMicMissing;
             app.user.OnUserJoin += User_OnUserJoin;
             app.user.OnUserExit += User_OnUserExit;
-            app.user.OnRoomListChanged += User_OnRoomListChanged;
             app.user.OnSpeakerChanged += User_OnSpeakerChanged;
             app.user.OnRequest += User_OnRequest;
             app.user.OnForbid += User_OnForbid;
@@ -122,7 +123,7 @@ namespace MeetingHelper
             ///app.audioControl.OnSendAudio += AudioControl_OnSendAudio;
             AudioControl.OnException += AudioControl_OnException;
             
-            //  Debug
+            //  Debug Screen
             Debug("HostPage OnAppearing");
             Switch_Debug(false);
         }
@@ -150,11 +151,11 @@ namespace MeetingHelper
             app.audioControl.AudioWrite(Sarray, result);
         }
 
-        private static void UpdateList()
+        private void UpdateList()
         {
-            lock(Gueses_Lock)
+            //  update list
+            Device.BeginInvokeOnMainThread(() =>
             {
-                //  update list
                 ianGuest tempGuest;
                 Guests.Clear();
                 foreach (string guest in app.user.RoomConfig.UserList)
@@ -162,20 +163,42 @@ namespace MeetingHelper
                     tempGuest = new ianGuest(guest);
                     if (guest == app.user.Config.Name)
                         tempGuest.BeHost();
-                    if (guest == app.user.RoomConfig.Speaker)
-                        tempGuest.BeSpeaker();
                     if (app.user.RoomConfig.AskerList.Contains(guest))
                         tempGuest.BeRequested();
+                    if (guest == app.user.RoomConfig.Speaker.Trim())
+                        tempGuest.BeSpeaker();
                     Guests.Add(tempGuest);
                 }
-            }
+            });
         }
         private void UpdateButton()
         {
             Device.BeginInvokeOnMainThread(() =>
             {
-                //  Guest Speaking
-                if (!app.user.Config.HaveMic)
+                //  UR Speaking
+                if (app.user.RoomConfig.Speaker.Trim() == app.user.Config.Name)
+                {
+                    //  Show "Give Mic to the Requsted Guest"
+                    if (app.user.RoomConfig.AskerList.Length != 0)
+                    {
+                        Action_Button.Text = $"[{app.user.RoomConfig.AskerList[0]}]";
+                        Action_Button.BackgroundColor = Color.FromHex("#88FFA922");
+                        Action_BoxView_L.BackgroundColor = Color.FromHex("#44FF44");
+                        Action_BoxView_R.BackgroundColor = Color.FromHex("#44FF44");
+                        Action_Button.IsEnabled = true;
+                    }
+                    //  Show "UR speaking"
+                    else
+                    {
+                        Action_Button.Text = "發言中...";
+                        Action_Button.BackgroundColor = Color.FromHex("#88FFA922");
+                        Action_BoxView_L.BackgroundColor = Color.FromHex("#FFA500");
+                        Action_BoxView_R.BackgroundColor = Color.FromHex("#FFA500");
+                        Action_Button.IsEnabled = true;
+                    }
+                }
+                //  Show "Click to retrieve Mic"
+                else
                 {
                     Action_Button.Text = "取回發言權";
                     Action_Button.BackgroundColor = Color.FromHex("#555555");
@@ -183,24 +206,35 @@ namespace MeetingHelper
                     Action_BoxView_R.BackgroundColor = Color.FromHex("#808080");
                     Action_Button.IsEnabled = true;
                 }
-                //  Guest Requested
-                else if (app.user.RoomConfig.AskerList.Length != 0)
-                {
-                    Action_Button.Text = $"[{app.user.RoomConfig.AskerList[0]}]";
-                    Action_Button.BackgroundColor = Color.FromHex("#88FFA922");
-                    Action_BoxView_L.BackgroundColor = Color.FromHex("#44FF44");
-                    Action_BoxView_R.BackgroundColor = Color.FromHex("#44FF44");
-                    Action_Button.IsEnabled = true;
-                }
-                //  No Guest Requested
-                else
-                {
-                    Action_Button.Text = "發言中...";
-                    Action_Button.BackgroundColor = Color.FromHex("#88FFA922");
-                    Action_BoxView_L.BackgroundColor = Color.FromHex("#FFA500");
-                    Action_BoxView_R.BackgroundColor = Color.FromHex("#FFA500");
-                    Action_Button.IsEnabled = true;
-                }
+
+
+                ////  Guest Speaking
+                //if (!app.user.Config.HaveMic)
+                //{
+                //    Action_Button.Text = "取回發言權";
+                //    Action_Button.BackgroundColor = Color.FromHex("#555555");
+                //    Action_BoxView_L.BackgroundColor = Color.FromHex("#808080");
+                //    Action_BoxView_R.BackgroundColor = Color.FromHex("#808080");
+                //    Action_Button.IsEnabled = true;
+                //}
+                ////  Guest Requested
+                //else if (app.user.RoomConfig.AskerList.Length != 0)
+                //{
+                //    Action_Button.Text = $"[{app.user.RoomConfig.AskerList[0]}]";
+                //    Action_Button.BackgroundColor = Color.FromHex("#88FFA922");
+                //    Action_BoxView_L.BackgroundColor = Color.FromHex("#44FF44");
+                //    Action_BoxView_R.BackgroundColor = Color.FromHex("#44FF44");
+                //    Action_Button.IsEnabled = true;
+                //}
+                ////  No Guest Requested
+                //else
+                //{
+                //    Action_Button.Text = "發言中...";
+                //    Action_Button.BackgroundColor = Color.FromHex("#88FFA922");
+                //    Action_BoxView_L.BackgroundColor = Color.FromHex("#FFA500");
+                //    Action_BoxView_R.BackgroundColor = Color.FromHex("#FFA500");
+                //    Action_Button.IsEnabled = true;
+                //}
             });
         }
 
@@ -227,22 +261,31 @@ namespace MeetingHelper
         #region User Events
         private void User_OnUserExit(object sender, UserEventArgs e)
         {
-            UpdateList();
-            UpdateButton();
+            lock (UI_Lock)
+            {
+                UpdateList();
+                UpdateButton();
+            }
             app.user.UpdateUserList();
             Debug($"user [{e.Name}] exited.");
         }
         private void User_OnUserJoin(object sender, UserEventArgs e)
         {
-            UpdateList();
-            UpdateButton();
+            lock (UI_Lock)
+            {
+                UpdateList();
+                UpdateButton();
+            }
             app.user.UpdateUserList();
             Debug($"user [{e.Name}] joined.");
         }
         private void User_OnMicMissing(object sender, EventArgs e)
         {
-            UpdateList();
-            UpdateButton();
+            lock (UI_Lock)
+            {
+                UpdateList();
+                UpdateButton();
+            }
             app.user.UpdateUserList();
             /// Stop record audio
             Debug("Stop recording...");
@@ -251,8 +294,11 @@ namespace MeetingHelper
         }
         private void User_OnMicCapture(object sender, EventArgs e)
         {
-            UpdateList();
-            UpdateButton();
+            lock (UI_Lock)
+            {
+                UpdateList();
+                UpdateButton();
+            }
             app.user.UpdateUserList();
             /// Start record audio
             Debug("Start recording...");
@@ -260,22 +306,22 @@ namespace MeetingHelper
                 app.audioControl.StopRecord();
             app.audioControl.StartRecord();
         }
-        private void User_OnRoomListChanged(object sender, EventArgs e)
-        {
-            UpdateList();
-            UpdateButton();
-            app.user.UpdateUserList();
-        }
         private void User_OnSpeakerChanged(object sender, UserEventArgs e)
         {
-            UpdateList();
-            UpdateButton();
+            lock (UI_Lock)
+            {
+                UpdateList();
+                UpdateButton();
+            }
             app.user.UpdateUserList();
         }
         private void User_OnRequest(object sender, UserEventArgs e)
         {
-            UpdateList();
-            UpdateButton();
+            lock (UI_Lock)
+            {
+                UpdateList();
+                UpdateButton();
+            }
             app.user.UpdateUserList();
         }
         private void User_OnForbid(object sender, EventArgs e)
@@ -346,8 +392,7 @@ namespace MeetingHelper
                 Attendance_Layout.IsVisible = false;
             });
         }
-
-
+        
         private void Door_Clicked(object sender, EventArgs e)
         {
             if (isDoorOpen)
@@ -400,26 +445,39 @@ namespace MeetingHelper
         }
         private void Action_Clicked(object sender, EventArgs e)
         {
-            //  Guest Speaking
-            if (!app.user.Config.HaveMic)
+            //  U R Speaking
+            if(app.user.RoomConfig.Speaker.Trim() == app.user.Config.Name)
+            {
+                //  Give Mic to the Requsted Guest
+                if(app.user.RoomConfig.AskerList.Length != 0)
+                {
+                    //  Give Mic to the First name in the AskList
+                    app.user.AcceptAsker(app.user.RoomConfig.AskerList[0]);
+                }
+                /// Drop Mic
+                else
+                {
+                    Debug("No guest Requested");
+                }
+            }
+            //  Others or Nobody Speaking
+            else
             {
                 //  Take Mic
                 app.user.WantMic();
-                ///
                 Debug("(action-take mic)");
+                /// 直接修改 UI info source...
+                lock(UI_Lock)
+                {
+                    app.user.RoomConfig.Speaker = app.user.Config.Name.Trim();
+                }
             }
-            //  Guest Requested
-            else if (app.user.RoomConfig.AskerList.Length != 0)
+            
+            lock(UI_Lock)
             {
-                //  Give Mic to the first name in the AskList
-                app.user.AcceptAsker(app.user.RoomConfig.AskerList[0]);
+                UpdateButton();
+                UpdateList();
             }
-            //  No Guest Requested
-            else
-            {
-                /// do nothing...
-            }
-            UpdateButton();
         }
         #endregion
 

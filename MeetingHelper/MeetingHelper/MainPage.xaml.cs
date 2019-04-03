@@ -43,14 +43,14 @@ namespace MeetingHelper
             if (app.UserName == "Unnamed")
                 NameEntry.Text = "";
             else
-                NameEntry.Text = app.UserName;
+                NameEntry.Text = app.UserName.Trim();
 		}
 
         //  Enter clicked
         public void OnClicked1(object sender, EventArgs args)
         {
             if (NameEntry.Text.Contains("(") || NameEntry.Text.Contains(")"))
-                Label_Debug.Text = "The name can't include '(' or ')'.";
+                Label_Debug.Text = "The name cannot include '(' or ')'.";
             else if (NameEntry.Text == "")
                 Label_Debug.Text = "Username cannot be Unnamed.";
             else if (NameEntry.Text == "Unnamed")
@@ -59,19 +59,16 @@ namespace MeetingHelper
                 Label_Debug.Text = "Name length must less than 10.";
             else
             {
-                app.UserName = NameEntry.Text;
-                // Next page
+                //  Save Username
+                app.SaveName(NameEntry.Text.Trim());
+                //  Next page
                 Navigation.PushModalAsync(new SearchRoomPage(), false);
             }
         }
 
         public void Mode_Clicked(object sender, EventArgs args)
         {
-            app.TrackerType = (app.TrackerType + 1) % 4;
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                Mode_Button.Text = Enum.GetName(typeof(TrackerType), app.TrackerType);
-            });
+            /// Reserved for debugging
         }
 
 

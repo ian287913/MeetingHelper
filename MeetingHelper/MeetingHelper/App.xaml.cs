@@ -16,7 +16,6 @@ namespace MeetingHelper
         public Room myRoom;
         //  Audio
         public AudioControl audioControl;
-        public int TrackerType = 0;
         //  Debug
         public ObservableCollection<DebugInfo> DebugList;
         public int Debug_Status;
@@ -34,7 +33,7 @@ namespace MeetingHelper
             InitializeComponent();
 
             //  init User, WiFi and Audio
-            //  done by SearchRoomPage
+            //  (This is now done by SearchRoomPage
 
             //  init debug list
             DebugList = new ObservableCollection<DebugInfo>();
@@ -52,6 +51,12 @@ namespace MeetingHelper
                 UserName = "Unnamed";
 
             MainPage = new MainPage();
+        }
+        public void SaveName(string userName)
+        {
+            UserName = userName;
+            // Save UserName
+            Properties[Property_Username] = UserName;
         }
 
         protected override void OnStart()

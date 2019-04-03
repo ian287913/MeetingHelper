@@ -44,13 +44,13 @@
             </StackLayout>
             <Label 
                 IsVisible="False"
-            x:Name="Label_Debug"
-            Text="Debug"
-            FontSize="Small"
-            TextColor="Gray"
-            VerticalOptions="End"
-            HorizontalOptions="Center"/>
-            <Button x:Name="Mode_Button" Clicked="Mode_Clicked" TextColor="Gray" Text="System" VerticalOptions="End" HorizontalOptions="Center"/>
+                x:Name="Label_Debug"
+                Text="Debug"
+                FontSize="Small"
+                TextColor="Gray"
+                VerticalOptions="End"
+                HorizontalOptions="Center"/>
+            <Button IsVisible="False" x:Name="Mode_Button" Clicked="Mode_Clicked" TextColor="Gray" Text="Debug Mode" VerticalOptions="End" HorizontalOptions="Center"/>
         </StackLayout>
 
         <!--Warning Screen (Error & Debugging)-->
